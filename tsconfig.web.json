@@ -7,13 +7,12 @@
     "src/preload/*.d.ts"
   ],
   "compilerOptions": {
-    "composite": true,
-    "jsx": "react-jsx",
-    "baseUrl": ".",
+    "target": "ESNext",
+    "module": "ESNext",
+    "moduleResolution": "Bundler",
+    "skipLibCheck": true,
     "paths": {
-      "@renderer/*": [
-        "src/renderer/src/*"
-      ]
+      "@/*": ["./src/*"]
     }
   }
 }

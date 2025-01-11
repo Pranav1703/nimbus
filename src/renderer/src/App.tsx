@@ -1,9 +1,10 @@
-import Versions from './components/Versions'
+
 import electronLogo from './assets/electron.svg'
 
 function App(): JSX.Element {
-  const ipcHandle = (): void => window.electron.ipcRenderer.send('ping')
+  const ipcHandle = () => window.api.ipcHandle()
 
+  const func = ()=> window.api.testIpc()
   return (
     <>
       <img alt="logo" className="logo" src={electronLogo} />
@@ -25,9 +26,12 @@ function App(): JSX.Element {
           <a target="_blank" rel="noreferrer" onClick={ipcHandle}>
             Send IPC
           </a>
+          <a target="_blank" rel="noreferrer" onClick={func}>
+            Send test IPC
+          </a>
         </div>
       </div>
-      <Versions></Versions>
+      
     </>
   )
 }

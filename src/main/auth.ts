@@ -56,27 +56,27 @@ export async function authorize(): Promise<OAuth2Client> {
 }
 
 
-async function listFiles(authClient: OAuth2Client): Promise<void> {
-    try {
-        const drive = google.drive({ version: 'v3', auth: authClient });
-        const res = await drive.files.list({
-          pageSize: 10,
-          fields: 'nextPageToken, files(id, name)',
-        });
-        const files = res.data.files;
-        if (!files || files.length === 0) {
-          console.log('No files found.');
-          return;
-        }
+// async function listFiles(authClient: OAuth2Client): Promise<void> {
+//     try {
+//         const drive = google.drive({ version: 'v3', auth: authClient });
+//         const res = await drive.files.list({
+//           pageSize: 10,
+//           fields: 'nextPageToken, files(id, name)',
+//         });
+//         const files = res.data.files;
+//         if (!files || files.length === 0) {
+//           console.log('No files found.');
+//           return;
+//         }
       
-        console.log('Files:');
-        files.forEach((file) => {
-          console.log(`${file.name} (${file.id})`);
-        });
-    } catch (error) {
-        console.log(error)
-    }
-}
+//         console.log('Files:');
+//         files.forEach((file) => {
+//           console.log(`${file.name} (${file.id})`);
+//         });
+//     } catch (error) {
+//         console.log(error)
+//     }
+// }
 
 // authorize()
 //     .then(listFiles)

@@ -5,6 +5,7 @@ function App(): JSX.Element {
   const ipcHandle = () => window.api.ipcHandle()
 
   const func = ()=> window.api.testIpc()
+
   return (
     <>
       <img alt="logo" className="logo" src={electronLogo} />

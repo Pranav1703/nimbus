@@ -55,6 +55,8 @@ app.whenReady().then(() => {
     console.log("test ipc called");
   })
 
+  
+
   createWindow()
 
   app.on('activate', function () {

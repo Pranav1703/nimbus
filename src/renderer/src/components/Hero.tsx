@@ -4,12 +4,11 @@ import { FaArrowRight } from 'react-icons/fa'
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 
-
 function Hero(): JSX.Element {
   const [boxShadow, setBoxShadow] = useState('')
 
   const navigate = useNavigate()
-  const handleClick = (): void =>{
+  const handleClick = (): void => {
     navigate('/login')
   }
 
@@ -49,8 +48,16 @@ function Hero(): JSX.Element {
   }
   return (
     <>
-      <Container bgColor="teal.900" bgBlendMode="multiply" w="100vw" h="100vh">
-        <VStack pt={20} gap={3}>
+      <Container
+        bgColor="teal.900"
+        bgBlendMode="multiply"
+        w="100vw"
+        h="100vh"
+        display="flex"
+        justifyContent="center"
+        alignItems="center"
+      >
+        <VStack gap={3}>
           <Center>
             <Image src={Logo} h="200px" w="200px" />
           </Center>
@@ -66,7 +73,7 @@ function Hero(): JSX.Element {
             rounded="sm"
             bg="orange.500"
             color="black"
-            _hover={{ bg: 'orange.600',color:'teal.100',textStyle:"lg" }} // Slightly darker orange on hover
+            _hover={{ bg: 'orange.600', color: 'teal.100', textStyle: 'lg' }} // Slightly darker orange on hover
             boxShadow={boxShadow}
             transition="box-shadow 0.4s ease-in-out, background-color 0.3s ease-in-out, color 0.3s ease-in-out" // Smooth transition
             onMouseMove={handleMouseMove}

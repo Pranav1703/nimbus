@@ -4,7 +4,7 @@ import Login from './components/Login'
 function App(): JSX.Element {
   // const ipcHandle = (): void => window.api.ipcHandle()
 
-  // const func = (): void => window.api.testIpc()
+
   return (
     <>
       <HashRouter>

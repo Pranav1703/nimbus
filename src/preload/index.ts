@@ -10,13 +10,14 @@ if (process.contextIsolated) {
   try {
     contextBridge.exposeInMainWorld('api', {
       ipcHandle: ()=> ipcRenderer.send('ping'),
-      testIpc: ()=>ipcRenderer.invoke("test")
+      testIpc: ()=>ipcRenderer.invoke("test"),
+      authorizeUser: ()=>ipcRenderer.invoke("authorize"),
+      fileLIst: ()=> ipcRenderer.invoke("fileList")
     })
   } catch (error) {
     console.error(error)
   }
 } else {
-  // @ts-ignore (define in dts)
   // @ts-ignore (define in dts)
   window.api = api
 }

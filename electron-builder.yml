@@ -1,5 +1,5 @@
 appId: com.electron.app
-productName: my-app
+productName: nimbus
 directories:
   buildResources: build
 files:

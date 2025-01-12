@@ -2,6 +2,8 @@ import { app, shell, BrowserWindow, ipcMain } from 'electron'
 import { join } from 'path'
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 import icon from '../../resources/icon.png?asset'
+import { registerFileIpcHandlers } from './ipcHandlers/fileIPC'
+import { registerUserIpcHandlers } from './ipcHandlers/userIPC'
 
 function createWindow(): void {
   // Create the browser window.
@@ -55,7 +57,8 @@ app.whenReady().then(() => {
     console.log("test ipc called");
   })
 
-  
+  registerUserIpcHandlers()
+  registerFileIpcHandlers()
 
   createWindow()
 

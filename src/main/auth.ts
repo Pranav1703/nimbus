@@ -3,7 +3,7 @@ import path from 'path';
 import { authenticate } from '@google-cloud/local-auth';
 import { google } from 'googleapis';
 import { OAuth2Client } from 'google-auth-library';
-import { fileURLToPath } from 'url';
+import { app } from 'electron';
 
 // If modifying these scopes, delete token.json.
 const SCOPES = ['https://www.googleapis.com/auth/drive.metadata.readonly'];
@@ -11,9 +11,11 @@ const SCOPES = ['https://www.googleapis.com/auth/drive.metadata.readonly'];
 // created automatically when the authorization flow completes for the first
 // time.
 
-const currFilePath = fileURLToPath(import.meta.filename)
-const TOKEN_PATH = path.join(currFilePath, 'token.json');
-const CREDENTIALS_PATH = path.join(currFilePath, 'credentials.json');
+// const currFilePath = fileURLToPath(import.meta.url)
+
+// const TOKEN_PATH = path.join(process.cwd(),'src','main', 'token.json');
+const TOKEN_PATH = path.join(app.getPath("userData"),'token.json')
+const CREDENTIALS_PATH = path.join(process.cwd(), 'src', 'main', 'credentials.json');
 
 
 async function loadSavedCredentialsIfExist(): Promise<OAuth2Client | null> {
@@ -35,7 +37,9 @@ async function saveCredentials(client: OAuth2Client): Promise<void> {
     client_id: key.client_id,
     client_secret: key.client_secret,
     refresh_token: client.credentials.refresh_token,
+    expiry: client.credentials.expiry_date
   });
+  
   await fs.writeFile(TOKEN_PATH, payload);
 }
 

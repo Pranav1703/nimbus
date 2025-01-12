@@ -1,16 +1,18 @@
-import electronLogo from './assets/icon.png'
-import { Button } from '@chakra-ui/react'
-
-
+import Hero from './components/Hero'
+import { HashRouter, Route, Routes } from 'react-router-dom'
+import Login from './components/Login'
 function App(): JSX.Element {
-  const ipcHandle = (): void => window.api.ipcHandle()
+  // const ipcHandle = (): void => window.api.ipcHandle()
 
-  const func = (): void => window.api.testIpc()
+  // const func = (): void => window.api.testIpc()
   return (
     <>
-      <img alt="logo" className="logo" src={electronLogo} />
-      <Button onClick={ipcHandle}>HI</Button>
-      <Button onClick={func}>Hello</Button>
+      <HashRouter>
+        <Routes>
+          <Route path="/" element={<Hero />} />
+          <Route path='/login' element={<Login/>}/>
+        </Routes>
+      </HashRouter>
     </>
   )
 }

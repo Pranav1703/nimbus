@@ -44,7 +44,8 @@ async function saveCredentials(client: OAuth2Client): Promise<void> {
 }
 
 
-export async function authorize(): Promise<OAuth2Client> {
+export async function authorize(): Promise<OAuth2Client | null> {
+  try {
     let client = await loadSavedCredentialsIfExist();
     if (client) {
       return client;
@@ -57,6 +58,11 @@ export async function authorize(): Promise<OAuth2Client> {
       await saveCredentials(client);
     }
     return client;
+  } catch (error) {
+    console.log(error)
+    return null
+  }
+
 }
 
 

@@ -2,11 +2,23 @@ import { Box, Heading, Text, Button, Flex, Link, Container } from '@chakra-ui/re
 import { FcGoogle } from 'react-icons/fc'
 import { AiOutlineThunderbolt } from 'react-icons/ai'
 import { IoShieldCheckmarkOutline } from 'react-icons/io5'
+import { useNavigate } from 'react-router-dom'
 
 function Login(): JSX.Element {
 
-  const googleAuthorise = ()=>{
-    window.api.authorizeUser()
+  const navigate = useNavigate()
+
+  const googleAuthorise = async()=>{
+    
+    try {
+      const resp = await window.api.authorizeUser()
+      if(resp){
+        navigate("/")
+      }
+    } catch (error) {
+      console.log(error)
+    }
+
   }
 
   return (

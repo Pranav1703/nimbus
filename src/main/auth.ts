@@ -6,7 +6,11 @@ import { OAuth2Client } from 'google-auth-library';
 import { app } from 'electron';
 
 // If modifying these scopes, delete token.json.
-const SCOPES = ['https://www.googleapis.com/auth/drive.metadata.readonly'];
+const SCOPES = [
+  'https://www.googleapis.com/auth/drive.metadata',
+  'https://www.googleapis.com/auth/drive.readonly',
+  'https://www.googleapis.com/auth/drive'
+];
 // The file token.json stores the user's access and refresh tokens, and is
 // created automatically when the authorization flow completes for the first
 // time.
@@ -46,18 +50,18 @@ async function saveCredentials(client: OAuth2Client): Promise<void> {
 
 export async function authorize(): Promise<OAuth2Client | null> {
   try {
-    let client = await loadSavedCredentialsIfExist();
-    if (client) {
-      return client;
+    let authClient = await loadSavedCredentialsIfExist();
+    if (authClient) {
+      return authClient;
     }
-    client = await authenticate({
+    authClient = await authenticate({
       scopes: SCOPES,
       keyfilePath: CREDENTIALS_PATH,
     });
-    if (client.credentials) {
-      await saveCredentials(client);
+    if (authClient.credentials) {
+      await saveCredentials(authClient);
     }
-    return client;
+    return authClient;
   } catch (error) {
     console.log(error)
     return null

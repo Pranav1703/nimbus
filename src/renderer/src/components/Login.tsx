@@ -13,7 +13,7 @@ function Login(): JSX.Element {
     try {
       const resp = await window.api.authorizeUser()
       if(resp){
-        navigate("/")
+        navigate("/test")
       }
     } catch (error) {
       console.log(error)

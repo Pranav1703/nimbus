@@ -13,8 +13,9 @@ if (process.contextIsolated) {
       ipcHandle: ()=> ipcRenderer.send('ping'),
       testIpc: ()=>ipcRenderer.invoke("test"),
       authorizeUser: ()=>ipcRenderer.invoke("authorize"),
-      fileLIst: ()=> ipcRenderer.invoke("list"),
-      FileUpload: ()=> ipcRenderer.invoke('upload')
+      getList: ()=> ipcRenderer.invoke("list"),
+      fileUpload: (filePath:string)=> ipcRenderer.invoke('upload',filePath),
+      deleteFile: (fileID:string) => ipcRenderer.invoke('delete',fileID),
     })
   } catch (error) {
     console.error(error)

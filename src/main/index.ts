@@ -4,10 +4,21 @@ import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 import icon from '../../resources/icon.png?asset'
 import { registerFileIpcHandlers } from './ipcHandlers/fileIPC'
 import { registerUserIpcHandlers } from './ipcHandlers/userIPC'
+import path from "node:path"
+
+let mainWindow;
+
+if (process.defaultApp) {
+  if (process.argv.length >= 2) {
+    app.setAsDefaultProtocolClient('Nimbus', process.execPath, [path.resolve(process.argv[1])])
+  }
+} else {
+  app.setAsDefaultProtocolClient('Nimbus')
+}
 
 function createWindow(): void {
   // Create the browser window.
-  const mainWindow = new BrowserWindow({
+   mainWindow = new BrowserWindow({
     width: 1280,
     height: 720,
     show: false,
@@ -37,6 +48,21 @@ function createWindow(): void {
     mainWindow.loadFile(join(__dirname, '../renderer/index.html'))
   }
 }
+
+const gotTheLock = app.requestSingleInstanceLock()
+
+if (!gotTheLock) {
+  app.quit()
+} else {
+  app.on('second-instance', function () {
+    // Someone tried to run a second instance, we should focus our window.
+    if (mainWindow) {
+      if (mainWindow.isMinimized()) mainWindow.restore()
+      mainWindow.focus()
+    }
+  })
+}
+
 
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.

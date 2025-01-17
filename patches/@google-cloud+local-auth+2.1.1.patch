@@ -1,0 +1,28 @@
+diff --git a/node_modules/@google-cloud/local-auth/build/src/index.js b/node_modules/@google-cloud/local-auth/build/src/index.js
+index 93f05d4..a73d3c9 100644
+--- a/node_modules/@google-cloud/local-auth/build/src/index.js
++++ b/node_modules/@google-cloud/local-auth/build/src/index.js
+@@ -85,7 +85,22 @@ async function authenticate(options) {
+                 });
+                 client.credentials = tokens;
+                 resolve(client);
+-                res.end('Authentication successful! Please return to the console.');
++                res.writeHead(200, { 'Content-Type': 'text/html' });
++res.end(`
++  <html>
++    <head>
++        <script type="text/javascript">
++            setTimeout(() => {
++            window.location.href = "nimbus://";
++            }, 5000);
++        </script>
++    </head>
++    <body>
++      <p>thank you for login you will be redirect in 5 seconds.</p>
++    </body>
++  </html>
++`);
++               
+             }
+             catch (e) {
+                 reject(e);

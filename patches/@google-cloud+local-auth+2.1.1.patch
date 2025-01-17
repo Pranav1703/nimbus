@@ -1,0 +1,14 @@
+diff --git a/node_modules/@google-cloud/local-auth/build/src/index.js b/node_modules/@google-cloud/local-auth/build/src/index.js
+index 93f05d4..99ed8a2 100644
+--- a/node_modules/@google-cloud/local-auth/build/src/index.js
++++ b/node_modules/@google-cloud/local-auth/build/src/index.js
+@@ -85,7 +85,8 @@ async function authenticate(options) {
+                 });
+                 client.credentials = tokens;
+                 resolve(client);
+-                res.end('Authentication successful! Please return to the console.');
++                res.writeHead(302, { 'Location': 'nimbus://' });
++                res.end('Authentication successful! Please return to the Nimbus APP.');
+             }
+             catch (e) {
+                 reject(e);

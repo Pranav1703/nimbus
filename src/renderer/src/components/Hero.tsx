@@ -19,27 +19,31 @@ function Hero(): JSX.Element {
 
     // Find the distances from the cursor to each side
     const distances = {
-      top: offsetY,
-      bottom: offsetHeight - offsetY,
+      topLeft: Math.sqrt(offsetX ** 2 + offsetY ** 2),
+      topRight: Math.sqrt((offsetWidth - offsetX) ** 2 + offsetY ** 2),
+      bottomLeft: Math.sqrt(offsetX ** 2 + (offsetHeight - offsetY) ** 2),
+      bottomRight: Math.sqrt((offsetWidth - offsetX) ** 2 + (offsetHeight - offsetY) ** 2),
       left: offsetX,
       right: offsetWidth - offsetX
     }
 
     // Determine the side closest to the cursor
-    const closestSide = Object.keys(distances).reduce((a, b) =>
+    const closestCorner = Object.keys(distances).reduce((a, b) =>
       distances[a] < distances[b] ? a : b
     )
 
     // Define box-shadow for each side
-    const glowStyles = {
-      top: '0 -4px 14px teal',
-      bottom: '0 8px 14px teal',
-      left: '-10px 0 14px teal',
-      right: '10px 0 14px teal'
+    const glowStyles: { [key: string]: string } = {
+      topLeft: '0 -6px 20px teal, -4px -4px 20px teal', // Increased glow on top-left
+      topRight: '0 -6px 20px teal, 4px -4px 20px teal', // Increased glow on top-right
+      bottomLeft: '0 6px 20px teal, -4px 4px 20px teal', // Increased glow on bottom-left
+      bottomRight: '0 6px 20px teal, 4px 4px 20px teal', // Increased glow on bottom-right
+      left: '-8px 0 20px teal, -8px 0 20px teal', // Increased glow on left
+      right: '8px 0 20px teal, 8px 0 20px teal' // Increased glow on right
     }
 
     // Set the glow effect based on the closest side
-    setBoxShadow(glowStyles[closestSide])
+    setBoxShadow(glowStyles[closestCorner])
   }
 
   // Clear the glow when the cursor leaves
@@ -83,7 +87,7 @@ function Hero(): JSX.Element {
             <Text mb={1} textStyle="lg">
               Continue
             </Text>
-            <Icon>
+            <Icon h={5} w={5}>
               <FaArrowRight />
             </Icon>
           </Button>

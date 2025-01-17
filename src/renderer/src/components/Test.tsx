@@ -1,4 +1,4 @@
-import { Button, Input } from "@chakra-ui/react"
+import { Box, Button, Input } from "@chakra-ui/react"
 import { useState } from "react"
 
 const Test = () => {
@@ -7,6 +7,7 @@ const Test = () => {
   const [fileValue,setFileValue] = useState<string>("")
   const [fileList,setFileList] = useState<Array<any>>([])
   const [fileId,setFileId] = useState<string>("")
+  const [destPath,setDestPath] = useState<string>("")
 
   const fileChange = async(e:React.ChangeEvent<HTMLInputElement>)=>{
     setFileValue(e.target.value)
@@ -15,6 +16,10 @@ const Test = () => {
   }
 
   const uploadFile = async() => {
+    if(filePath.length===0){
+      console.log("no filePath provided.")
+      return
+    }
     try {
       console.log(filePath)
       await window.api.fileUpload(filePath);
@@ -43,13 +48,31 @@ const Test = () => {
     setFileId("")
   }
 
-
-
-  const downloadFile = async(id:string)=>{
+  const downloadFile = async(id:string,destPath)=>{
     console.log("id clicked:", id)
+    try {
+      await window.api.downloadFile(id,destPath)
+    } catch (error) {
+     console.log("error while downloading the file. ",error) 
+    }
   }
 
+  const DownloadBtn = ({id})=>{
+    //C:\Users\prana_zhfhs6u\OneDrive\Desktop\destPath\{filename.ext}  -> test path
+    return(
+      <Box
+      display={"flex"}
+      justifyContent={"space-between"}
 
+      >
+        <Input placeholder="destination path" value={destPath} onChange={(e)=>setDestPath(e.target.value)} width={"300px"}/>
+        <Button m={'1px'} onClick={()=>{downloadFile(id,destPath)}}>
+          download File
+        </Button>
+      </Box>
+    )
+  } 
+  
   return (
     <>
         <h1>testing api's</h1><br/>
@@ -69,7 +92,7 @@ const Test = () => {
           </Button>
           {
             fileList.length>0?(
-              <table border={1} style={{ marginTop: '10px', width: '50%' }}>
+              <table border={1} style={{ marginTop: '10px', width: '65%' }}>
               <thead>
                 <tr>
                   <th>Name</th>
@@ -83,9 +106,7 @@ const Test = () => {
                     <td>{file.name}</td>
                     <td>{file.id}</td>
                     <td>
-                    <Button m={'1px'}>
-                      download File
-                    </Button>
+                      <DownloadBtn id={file.id}/>
                     </td>
                   </tr>
                 ))}

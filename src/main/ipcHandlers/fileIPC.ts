@@ -88,6 +88,57 @@ export const registerFileIpcHandlers = ()=>{
     })
 
     ipcMain.handle("uploadFolder",async()=>{
-      
+
+    })
+
+    ipcMain.handle("download",async(_event,fileId,destPath)=>{
+      const drive = google.drive({
+        version: 'v3',
+        auth: authClient
+      })
+      try {
+        const file = await drive.files.get({
+          fileId: fileId,
+          alt: 'media',
+          acknowledgeAbuse: true,
+        },{responseType:'stream'})
+        console.log("file status: ",file.statusText)
+
+        const directory = path.dirname(destPath);
+        if (!fs.existsSync(directory)) {
+          fs.mkdirSync(directory, { recursive: true });
+        }
+
+        const destStream = fs.createWriteStream(destPath)
+
+        let bytesRead:number = 0;
+
+        await new Promise<void>((resolve,reject)=>{
+          file.data
+          .on("data", (chunk) => {
+            bytesRead += chunk.length;
+          })
+          .on("end", () => {
+            console.log(`Download completed. Total bytes read: ${bytesRead}`);
+          })
+          .on("error", (err) => {
+            console.error("Error during file download:", err);
+            reject(err);
+          })
+          .pipe(destStream)
+          .on("finish", () => {
+            console.log("File successfully saved to:", destPath);
+            resolve();
+          })
+          .on("error", (err) => {
+            console.error("Error writing file:", err);
+            reject(err);
+          });
+          
+        })
+
+      } catch (error) {
+        console.log(error)
+      }
     })
 }

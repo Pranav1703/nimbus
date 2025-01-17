@@ -17,6 +17,7 @@ if (process.contextIsolated) {
       fileUpload: (filePath:string)=> ipcRenderer.invoke('uploadFile',filePath),
       deleteFile: (fileID:string) => ipcRenderer.invoke('delete',fileID),
       folderUpload: ()=>ipcRenderer.invoke('uploadFolder'),
+      downloadFile: (fileId:string,destPath:string)=>ipcRenderer.invoke('download',fileId,destPath)
     })
   } catch (error) {
     console.error(error)

@@ -14,8 +14,9 @@ if (process.contextIsolated) {
       testIpc: ()=>ipcRenderer.invoke("test"),
       authorizeUser: ()=>ipcRenderer.invoke("authorize"),
       getList: ()=> ipcRenderer.invoke("list"),
-      fileUpload: (filePath:string)=> ipcRenderer.invoke('upload',filePath),
+      fileUpload: (filePath:string)=> ipcRenderer.invoke('uploadFile',filePath),
       deleteFile: (fileID:string) => ipcRenderer.invoke('delete',fileID),
+      folderUpload: ()=>ipcRenderer.invoke('uploadFolder'),
     })
   } catch (error) {
     console.error(error)

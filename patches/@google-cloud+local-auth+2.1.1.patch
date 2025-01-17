@@ -14,11 +14,11 @@ index 93f05d4..a73d3c9 100644
 +        <script type="text/javascript">
 +            setTimeout(() => {
 +            window.location.href = "nimbus://";
-+            }, 5000);
++            }, 1000);
 +        </script>
 +    </head>
 +    <body>
-+      <p>thank you for login you will be redirect in 5 seconds.</p>
++      <p>thank you for login you will be redirected to Nimbus.</p>
 +    </body>
 +  </html>
 +`);

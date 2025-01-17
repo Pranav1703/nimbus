@@ -32,7 +32,7 @@ export const registerFileIpcHandlers = ()=>{
         }
     })
 
-    ipcMain.handle("upload",async(_event,filePath:string):Promise<{uploaded:boolean}>=>{
+    ipcMain.handle("uploadFile",async(_event,filePath:string):Promise<{uploaded:boolean}>=>{
       
       const drive = google.drive({
         version: 'v3',
@@ -59,9 +59,11 @@ export const registerFileIpcHandlers = ()=>{
           requestBody,
           media: media
         })
+        console.log("----------------------------------")
         console.log('File Id:', file.data.id);
         console.log("mime type: ",mimeType)
         console.log("bytes read :",stream.bytesRead)
+        console.log("----------------------------------")
         return {
           uploaded: true
         }
@@ -79,8 +81,13 @@ export const registerFileIpcHandlers = ()=>{
         version: 'v3',
         auth: authClient
       })
-      const resp = drive.files.delete({
+      const resp = await drive.files.delete({
         fileId: fileID
       })
+      console.log("deleted FilE: ", resp)
+    })
+
+    ipcMain.handle("uploadFolder",async()=>{
+      
     })
 }

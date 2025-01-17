@@ -1,4 +1,4 @@
-import { Button } from "@chakra-ui/react"
+import { Button, Input } from "@chakra-ui/react"
 import { useState } from "react"
 
 const Test = () => {
@@ -6,6 +6,7 @@ const Test = () => {
   const [filePath,setFilePath] = useState<string>("")
   const [fileValue,setFileValue] = useState<string>("")
   const [fileList,setFileList] = useState<Array<any>>([])
+  const [fileId,setFileId] = useState<string>("")
 
   const fileChange = async(e:React.ChangeEvent<HTMLInputElement>)=>{
     setFileValue(e.target.value)
@@ -35,11 +36,19 @@ const Test = () => {
 
   const deleteHandler = async()=>{
     try {
-      
+      await window.api.deleteFile(fileId)
     } catch (error) {
       console.log(error)
     }
+    setFileId("")
   }
+
+
+
+  const downloadFile = async(id:string)=>{
+    console.log("id clicked:", id)
+  }
+
 
   return (
     <>
@@ -65,6 +74,7 @@ const Test = () => {
                 <tr>
                   <th>Name</th>
                   <th>Id</th>
+                  <th>------</th>
                 </tr>
               </thead>
               <tbody>
@@ -72,6 +82,11 @@ const Test = () => {
                   <tr key={file.id}>
                     <td>{file.name}</td>
                     <td>{file.id}</td>
+                    <td>
+                    <Button m={'1px'}>
+                      download File
+                    </Button>
+                    </td>
                   </tr>
                 ))}
               </tbody>
@@ -98,7 +113,8 @@ const Test = () => {
           </Button>
         </div>
         <br/>
-        <div className="download">
+        <div className="delete">
+          <Input placeholder="enter fileID" value={fileId} onChange={(e)=>setFileId(e.target.value)}/>
           <Button m={'15px'}
           onClick={deleteHandler}
           >

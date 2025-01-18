@@ -2,3 +2,10 @@ Launch on System Startup
 https://developers.google.com/drive/api/reference/rest/v3/about#About -> drive info api
 https://nimbus-cloud-backub8no.rollout.site/#files - frontend design
 https://nimbus-cloud-backuf2of.rollout.site/#settings - frontend2 design
+idp101\node_modules\@google-cloud\local-auth\build\src\index.js - changed in 88 line 
+                res.writeHead(302, { 'Location': 'nimbus://' });
+                res.end('Authentication successful! Please return to the Nimbus APP.');
+
+downloadFileIPC -> destPath should be same as filePath (duplication problem exists tho)
+uploadFolder(helper func) -> fix drive type problem 
+https://nimbus-cloud-backuf2of.rollout.site/#settings - frontend2 design

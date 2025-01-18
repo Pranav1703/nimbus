@@ -1,6 +1,5 @@
 import { contextBridge,ipcRenderer } from 'electron'
 
-
 // Custom APIs for renderer
 
 // Use `contextBridge` APIs to expose Electron APIs to
@@ -14,8 +13,10 @@ if (process.contextIsolated) {
       testIpc: ()=>ipcRenderer.invoke("test"),
       authorizeUser: ()=>ipcRenderer.invoke("authorize"),
       getList: ()=> ipcRenderer.invoke("list"),
-      fileUpload: (filePath:string)=> ipcRenderer.invoke('upload',filePath),
+      fileUpload: (filePath:string)=> ipcRenderer.invoke('uploadFile',filePath),
       deleteFile: (fileID:string) => ipcRenderer.invoke('delete',fileID),
+      folderUpload: (folderPath:string,parentFolderId?:string)=>ipcRenderer.invoke('uploadFolder',folderPath,parentFolderId),
+      downloadFile: (fileId:string,destPath:string)=>ipcRenderer.invoke('download',fileId,destPath)
     })
   } catch (error) {
     console.error(error)

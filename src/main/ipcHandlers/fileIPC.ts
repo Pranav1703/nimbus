@@ -1,14 +1,19 @@
 import { ipcMain } from "electron"
-import { google } from "googleapis";
+import { drive_v3, google } from "googleapis";
 import { authClient } from "./userIPC";
 import * as fs from 'fs';
 import path from 'path';
 import mime from 'mime';
+import { uploadFolder } from "./helper";
 
 //https://developers.google.com/drive/api/reference/rest/v3/about#About
 
+export type uploadResp = {
+  uploaded: boolean
+}
+
 export const registerFileIpcHandlers = ()=>{
-    ipcMain.handle("list",async(_event):Promise<Array<any> | void>=>{
+    ipcMain.handle("list",async(_event):Promise<drive_v3.Schema$File[]>=>{
         try {
             const drive = google.drive({ version: 'v3', auth: authClient });
             const res = await drive.files.list({
@@ -18,8 +23,7 @@ export const registerFileIpcHandlers = ()=>{
             if (!files || files.length === 0) {
               console.log('No files found.');
               return [];
-            }
-          
+            } 
             console.log('Files:');
             files.forEach((file) => {
               console.log(`${file.name} --- (${file.id})`);
@@ -29,10 +33,11 @@ export const registerFileIpcHandlers = ()=>{
 
         } catch (error) {
             console.log(error)
+            return []
         }
     })
 
-    ipcMain.handle("upload",async(_event,filePath:string):Promise<{uploaded:boolean}>=>{
+    ipcMain.handle("uploadFile",async(_event,filePath:string):Promise<uploadResp>=>{
       
       const drive = google.drive({
         version: 'v3',
@@ -59,9 +64,11 @@ export const registerFileIpcHandlers = ()=>{
           requestBody,
           media: media
         })
+        console.log("----------------------------------")
         console.log('File Id:', file.data.id);
         console.log("mime type: ",mimeType)
         console.log("bytes read :",stream.bytesRead)
+        console.log("----------------------------------")
         return {
           uploaded: true
         }
@@ -79,8 +86,84 @@ export const registerFileIpcHandlers = ()=>{
         version: 'v3',
         auth: authClient
       })
-      const resp = drive.files.delete({
-        fileId: fileID
+      try {
+        const resp = await drive.files.delete({
+          fileId: fileID
+        })
+        console.log("deleted FilE: ", resp)
+      } catch (error) {
+        console.log("Couldn't delete the file. Err: ",error)
+      }
+    })
+
+    ipcMain.handle("uploadFolder",async(_event,folderPath:string,parentFolderId?:string):Promise<uploadResp>=>{
+      const drive = google.drive({
+        version: 'v3',
+        auth: authClient
       })
+
+      try {
+        await uploadFolder(drive,folderPath,parentFolderId)
+        return {
+          uploaded: true
+        }
+      } catch (error) {
+        console.log("Error while uploading a folder: ",error)
+        return {
+          uploaded: false
+        }
+      }
+  
+    })
+
+    ipcMain.handle("download",async(_event,fileId:string,destPath:string)=>{
+      const drive = google.drive({
+        version: 'v3',
+        auth: authClient
+      })
+      try {
+        const file = await drive.files.get({
+          fileId: fileId,
+          alt: 'media',
+          acknowledgeAbuse: true,
+        },{responseType:'stream'})
+        console.log("file status: ",file.statusText)
+
+        const directory = path.dirname(destPath);
+        if (!fs.existsSync(directory)) {
+          fs.mkdirSync(directory, { recursive: true });
+        }
+
+        const destStream = fs.createWriteStream(destPath)
+
+        let bytesRead:number = 0;
+
+        await new Promise<void>((resolve,reject)=>{
+          file.data
+          .on("data", (chunk) => {
+            bytesRead += chunk.length;
+          })
+          .on("end", () => {
+            console.log(`Download completed. Total bytes read: ${bytesRead}`);
+          })
+          .on("error", (err) => {
+            console.error("Error during file download:", err);
+            reject(err);
+          })
+          .pipe(destStream)
+          .on("finish", () => {
+            console.log("File successfully saved to:", destPath);
+            resolve();
+          })
+          .on("error", (err) => {
+            console.error("Error writing file:", err);
+            reject(err);
+          });
+          
+        })
+
+      } catch (error) {
+        console.log(error)
+      }
     })
 }

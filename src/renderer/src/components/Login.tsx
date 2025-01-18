@@ -3,22 +3,18 @@ import { FcGoogle } from 'react-icons/fc'
 import { AiOutlineThunderbolt } from 'react-icons/ai'
 import { IoShieldCheckmarkOutline } from 'react-icons/io5'
 import { useNavigate } from 'react-router-dom'
-
 function Login(): JSX.Element {
-
   const navigate = useNavigate()
 
-  const googleAuthorise = async()=>{
-    
+  const googleAuthorise = async () => {
     try {
       const resp = await window.api.authorizeUser()
-      if(resp){
-        navigate("/test")
+      if (resp) {
+        navigate('/test')
       }
     } catch (error) {
       console.log(error)
     }
-
   }
 
   return (
@@ -49,7 +45,16 @@ function Login(): JSX.Element {
         <Text color="gray.400" mb={4}>
           Connect your Google account to get started
         </Text>
-        <Button w="full" mb={4} variant="outline" borderWidth="1px" borderColor="gray.500" mt={3} onClick={googleAuthorise}>
+        <Button
+          w="full"
+          mb={4}
+          variant="outline"
+          borderWidth="1px"
+          borderColor="gray.500"
+          mt={3}
+          onClick={googleAuthorise}
+          colorPalette="gray"
+        >
           <FcGoogle />
           Continue with Google
         </Button>

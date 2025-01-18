@@ -1,3 +1,4 @@
+import { AnyString } from '@chakra-ui/react/dist/types/styled-system/generated/system.gen'
 import { contextBridge,ipcRenderer } from 'electron'
 
 
@@ -16,7 +17,7 @@ if (process.contextIsolated) {
       getList: ()=> ipcRenderer.invoke("list"),
       fileUpload: (filePath:string)=> ipcRenderer.invoke('uploadFile',filePath),
       deleteFile: (fileID:string) => ipcRenderer.invoke('delete',fileID),
-      folderUpload: ()=>ipcRenderer.invoke('uploadFolder'),
+      folderUpload: (folderPath:string,parentFolderId?:string)=>ipcRenderer.invoke('uploadFolder',folderPath,parentFolderId),
       downloadFile: (fileId:string,destPath:string)=>ipcRenderer.invoke('download',fileId,destPath)
     })
   } catch (error) {

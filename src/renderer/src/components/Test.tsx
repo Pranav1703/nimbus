@@ -7,7 +7,6 @@ const Test = () => {
   const [fileValue,setFileValue] = useState<string>("")
   const [fileList,setFileList] = useState<Array<any>>([])
   const [fileId,setFileId] = useState<string>("")
-  const [destPath,setDestPath] = useState<string>("")
 
   const fileChange = async(e:React.ChangeEvent<HTMLInputElement>)=>{
     setFileValue(e.target.value)
@@ -57,21 +56,28 @@ const Test = () => {
     }
   }
 
-  const DownloadBtn = ({id})=>{
-    //C:\Users\prana_zhfhs6u\OneDrive\Desktop\destPath\{filename.ext}  -> test path
+  const DownloadBtn = ({id,name})=>{
+    //C:\Users\prana_zhfhs6u\OneDrive\Desktop\destPath\{filename.ext}  //test path
+    const destPath = `C:/Users/prana_zhfhs6u/OneDrive/Desktop/destPath/${name}`
     return(
       <Box
       display={"flex"}
       justifyContent={"space-between"}
-
       >
-        <Input placeholder="destination path" value={destPath} onChange={(e)=>setDestPath(e.target.value)} width={"300px"}/>
         <Button m={'1px'} onClick={()=>{downloadFile(id,destPath)}}>
           download File
         </Button>
       </Box>
     )
   } 
+
+  const uploadFolder = async()=>{
+    try {
+      await window.api.folderUpload("C:/Users/prana_zhfhs6u/OneDrive/Desktop/destPath")
+    } catch (error) {
+      console.log(error)
+    }
+  }
   
   return (
     <>
@@ -106,7 +112,7 @@ const Test = () => {
                     <td>{file.name}</td>
                     <td>{file.id}</td>
                     <td>
-                      <DownloadBtn id={file.id}/>
+                      <DownloadBtn id={file.id} name={file.name}/>
                     </td>
                   </tr>
                 ))}
@@ -121,7 +127,8 @@ const Test = () => {
         <br/>
 
         <div className="uploadFolder">
-          <Button m={'15px'}>
+          <Button m={'15px'}
+          onClick={uploadFolder}>
             Upload Folder
           </Button>
         </div>

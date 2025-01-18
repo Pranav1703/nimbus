@@ -4,6 +4,7 @@ import { authClient } from "./userIPC";
 import * as fs from 'fs';
 import path from 'path';
 import mime from 'mime';
+import { uploadFolder } from "./helper";
 
 //https://developers.google.com/drive/api/reference/rest/v3/about#About
 
@@ -18,8 +19,7 @@ export const registerFileIpcHandlers = ()=>{
             if (!files || files.length === 0) {
               console.log('No files found.');
               return [];
-            }
-          
+            } 
             console.log('Files:');
             files.forEach((file) => {
               console.log(`${file.name} --- (${file.id})`);
@@ -87,11 +87,21 @@ export const registerFileIpcHandlers = ()=>{
       console.log("deleted FilE: ", resp)
     })
 
-    ipcMain.handle("uploadFolder",async()=>{
+    ipcMain.handle("uploadFolder",async(_event,folderPath:string,parentFolderId?:string)=>{
+      const drive = google.drive({
+        version: 'v3',
+        auth: authClient
+      })
 
+      try {
+        await uploadFolder(drive,folderPath,parentFolderId)
+      } catch (error) {
+        console.log("Error while uploading a folder: ",error)
+      }
+  
     })
 
-    ipcMain.handle("download",async(_event,fileId,destPath)=>{
+    ipcMain.handle("download",async(_event,fileId:string,destPath:string)=>{
       const drive = google.drive({
         version: 'v3',
         auth: authClient

@@ -6,7 +6,7 @@ import mime from 'mime';
 export async function uploadFolder(drive, folderPath:string, parentFolderId?:string) {
     const folderName = path.basename(folderPath);
   
-    // Step 1: Create the folder in Google Drive
+    // Create the folder in Google Drive
     const folderMetadata = {
       name: folderName,
       mimeType: "application/vnd.google-apps.folder",
@@ -20,7 +20,7 @@ export async function uploadFolder(drive, folderPath:string, parentFolderId?:str
   
     console.log(`Created folder: ${folderName}, ID: ${folder.data.id}`);
   
-    // Step 2: Iterate through the local folder contents
+    // Iterate through the local folder contents
     const items = fs.readdirSync(folderPath);
   
     for (const item of items) {

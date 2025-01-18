@@ -7,3 +7,4 @@ idp101\node_modules\@google-cloud\local-auth\build\src\index.js - changed in 88 
                 res.end('Authentication successful! Please return to the Nimbus APP.');
 
 downloadFileIPC -> destPath should be same as filePath (duplication problem exists tho)
+uploadFolder(helper func) -> fix drive type problem 

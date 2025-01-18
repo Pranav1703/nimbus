@@ -1,6 +1,4 @@
-import { AnyString } from '@chakra-ui/react/dist/types/styled-system/generated/system.gen'
 import { contextBridge,ipcRenderer } from 'electron'
-
 
 // Custom APIs for renderer
 

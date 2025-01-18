@@ -45,6 +45,7 @@ const Test = () => {
       console.log(error)
     }
     setFileId("")
+    await getFiles()
   }
 
   const downloadFile = async(id:string,destPath)=>{

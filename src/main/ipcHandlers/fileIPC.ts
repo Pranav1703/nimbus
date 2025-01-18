@@ -1,5 +1,5 @@
 import { ipcMain } from "electron"
-import { google } from "googleapis";
+import { drive_v3, google } from "googleapis";
 import { authClient } from "./userIPC";
 import * as fs from 'fs';
 import path from 'path';
@@ -8,8 +8,12 @@ import { uploadFolder } from "./helper";
 
 //https://developers.google.com/drive/api/reference/rest/v3/about#About
 
+export type uploadResp = {
+  uploaded: boolean
+}
+
 export const registerFileIpcHandlers = ()=>{
-    ipcMain.handle("list",async(_event):Promise<Array<any> | void>=>{
+    ipcMain.handle("list",async(_event):Promise<drive_v3.Schema$File[]>=>{
         try {
             const drive = google.drive({ version: 'v3', auth: authClient });
             const res = await drive.files.list({
@@ -29,10 +33,11 @@ export const registerFileIpcHandlers = ()=>{
 
         } catch (error) {
             console.log(error)
+            return []
         }
     })
 
-    ipcMain.handle("uploadFile",async(_event,filePath:string):Promise<{uploaded:boolean}>=>{
+    ipcMain.handle("uploadFile",async(_event,filePath:string):Promise<uploadResp>=>{
       
       const drive = google.drive({
         version: 'v3',
@@ -81,13 +86,17 @@ export const registerFileIpcHandlers = ()=>{
         version: 'v3',
         auth: authClient
       })
-      const resp = await drive.files.delete({
-        fileId: fileID
-      })
-      console.log("deleted FilE: ", resp)
+      try {
+        const resp = await drive.files.delete({
+          fileId: fileID
+        })
+        console.log("deleted FilE: ", resp)
+      } catch (error) {
+        console.log("Couldn't delete the file. Err: ",error)
+      }
     })
 
-    ipcMain.handle("uploadFolder",async(_event,folderPath:string,parentFolderId?:string)=>{
+    ipcMain.handle("uploadFolder",async(_event,folderPath:string,parentFolderId?:string):Promise<uploadResp>=>{
       const drive = google.drive({
         version: 'v3',
         auth: authClient
@@ -95,8 +104,14 @@ export const registerFileIpcHandlers = ()=>{
 
       try {
         await uploadFolder(drive,folderPath,parentFolderId)
+        return {
+          uploaded: true
+        }
       } catch (error) {
         console.log("Error while uploading a folder: ",error)
+        return {
+          uploaded: false
+        }
       }
   
     })

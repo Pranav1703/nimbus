@@ -8,6 +8,7 @@ import Files from './Pages/Files'
 import Backup from './Pages/Backup'
 import Versions from './Pages/Versions'
 import Settings from './Pages/Settings'
+import Test2 from './Test/Test2'
 
 function App(): JSX.Element {
   // const googleAuthorise = async () => {
@@ -36,6 +37,7 @@ function App(): JSX.Element {
             <Route path="Versions" element={<Versions />} />
             <Route path="Settings" element={<Settings />} />
             <Route path="test" element={<Test />} />
+            <Route path="test2" element={<Test2 />} />
           </Route>
           <Route path="/login" element={<Login />} />
         </Routes>

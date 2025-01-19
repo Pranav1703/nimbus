@@ -1,4 +1,5 @@
 module.exports = {
+  parser: '@typescript-eslint/parser',
   extends: [
     'eslint:recommended',
     'plugin:react/recommended',
@@ -8,5 +9,6 @@ module.exports = {
   ],
   rules: {
     'prettier/prettier': 0,
+    '@typescript-eslint/no-unused-vars': 'off',
   }
 }

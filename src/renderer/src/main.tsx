@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 // import './assets/main.css'
 import {Provider} from './components/ui/provider'
 import React from 'react'

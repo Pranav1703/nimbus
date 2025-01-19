@@ -40,13 +40,16 @@ function Sidebar(): JSX.Element {
 
         {/* Drawer Trigger */}
         <DrawerTrigger asChild>
-          <Button variant="outline" size="sm">
+          <Button variant="outline" size="sm" mt={5}>
             <MdMenuOpen />
           </Button>
         </DrawerTrigger>
         <Outlet />
+
         {/* Content */}
         <DrawerContent>
+
+          {/* Heading */}
           <DrawerHeader>
             <DrawerTitle>
               <Flex align={'center'}>
@@ -56,6 +59,7 @@ function Sidebar(): JSX.Element {
           </DrawerHeader>
           <Separator />
 
+          {/* Body */}
           <DrawerBody>
             <Stack mt={3}>
               <For
@@ -65,7 +69,8 @@ function Sidebar(): JSX.Element {
                   { logo: <MdOutlineBackup />, data: 'Backup' },
                   { logo: <MdHistory />, data: 'Versions' },
                   { logo: <MdOutlineSettings />, data: 'Settings' },
-                  { logo: <MdOutlineSettings />, data: 'Test' }
+                  { logo: <MdOutlineSettings />, data: 'Test' },
+                  { logo: <MdOutlineSettings />, data: 'Test2' }
                 ]}
               >
                 {(item, index) => (
@@ -83,7 +88,10 @@ function Sidebar(): JSX.Element {
               </For>
             </Stack>
           </DrawerBody>
+
           <Separator />
+          
+          {/* Footer */}
           <DrawerFooter justifyContent={'center'}>
             <Avatar />
             <VStack w={'full'}>

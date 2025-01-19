@@ -22,13 +22,16 @@ import {
   MdOutlineSettings,
   MdOutlineSpaceDashboard
 } from 'react-icons/md'
-import { useNavigate } from 'react-router-dom'
+import { Outlet, useNavigate } from 'react-router-dom'
 
 function Sidebar(): JSX.Element {
-  const [currentPage, setcurrentPage] = useState('Dashboard')
   const navigate = useNavigate()
-  const handleSetPage = (page: SetStateAction<string>):void => {
+  const [currentPage, setcurrentPage] = useState('Dashboard')
+
+  const handleSetPage = (page: SetStateAction<string>): void => {
     setcurrentPage(page)
+    navigate('/' + page)
+    console.log(page)
   }
   return (
     <div>
@@ -38,10 +41,10 @@ function Sidebar(): JSX.Element {
         {/* Drawer Trigger */}
         <DrawerTrigger asChild>
           <Button variant="outline" size="sm">
-          <MdMenuOpen />
+            <MdMenuOpen />
           </Button>
         </DrawerTrigger>
-
+        <Outlet />
         {/* Content */}
         <DrawerContent>
           <DrawerHeader>
@@ -61,7 +64,8 @@ function Sidebar(): JSX.Element {
                   { logo: <MdOutlineFolder />, data: 'Files' },
                   { logo: <MdOutlineBackup />, data: 'Backup' },
                   { logo: <MdHistory />, data: 'Versions' },
-                  { logo: <MdOutlineSettings />, data: 'Settings' }
+                  { logo: <MdOutlineSettings />, data: 'Settings' },
+                  { logo: <MdOutlineSettings />, data: 'Test' }
                 ]}
               >
                 {(item, index) => (
@@ -77,14 +81,6 @@ function Sidebar(): JSX.Element {
                   </Button>
                 )}
               </For>
-              <Button
-              justifyContent={'flex-start'}
-              variant={'ghost'}
-              pl={30}
-              onClick={()=>navigate("/test")}
-              >
-                Test Page
-              </Button>
             </Stack>
           </DrawerBody>
           <Separator />

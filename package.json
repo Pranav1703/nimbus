@@ -23,6 +23,7 @@
   },
   "dependencies": {
     "@chakra-ui/react": "^3.4.0",
+    "@codaworks/react-glow": "^1.0.6",
     "@electron-toolkit/preload": "^3.0.1",
     "@electron-toolkit/utils": "^3.0.0",
     "@emotion/react": "^11.14.0",

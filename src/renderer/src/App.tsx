@@ -1,9 +1,13 @@
-import Hero from './Pages/Hero'
-import { HashRouter, Route, Routes } from 'react-router-dom'
+// import Hero from './Pages/Hero'
+import { HashRouter, Navigate, Route, Routes } from 'react-router-dom'
 import Login from './Pages/Login'
 import Test from './Test/Test'
-import Test2 from './Test/Test2'
 import Sidebar from './components/Sidebar'
+import Dashboard from './Pages/Dashboard'
+import Files from './Pages/Files'
+import Backup from './Pages/Backup'
+import Versions from './Pages/Versions'
+import Settings from './Pages/Settings'
 
 function App(): JSX.Element {
   // const googleAuthorise = async () => {
@@ -24,9 +28,16 @@ function App(): JSX.Element {
       <HashRouter>
         <Routes>
           {/* <Route path="/" element={googleAuthorise() ? <Sidebar /> : <Hero/>} /> */}
-          <Route path='/' element={<Sidebar/>}/>
+          <Route path="/" element={<Navigate to="/Dashboard" />} />
+          <Route path="/" element={<Sidebar />}>
+            <Route path="/Dashboard" element={<Dashboard />} />
+            <Route path="Files" element={<Files />} />
+            <Route path="Backup" element={<Backup />} />
+            <Route path="Versions" element={<Versions />} />
+            <Route path="Settings" element={<Settings />} />
+            <Route path="test" element={<Test />} />
+          </Route>
           <Route path="/login" element={<Login />} />
-          <Route path="/test" element={<Test />} />
         </Routes>
       </HashRouter>
     </>

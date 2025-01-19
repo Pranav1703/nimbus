@@ -24,7 +24,7 @@ function App(): JSX.Element {
       <HashRouter>
         <Routes>
           {/* <Route path="/" element={googleAuthorise() ? <Sidebar /> : <Hero/>} /> */}
-          <Route path='/' element={<Hero/>}/>
+          <Route path='/' element={<Sidebar/>}/>
           <Route path="/login" element={<Login />} />
           <Route path="/test" element={<Test />} />
         </Routes>

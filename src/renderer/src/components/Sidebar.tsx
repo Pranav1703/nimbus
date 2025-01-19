@@ -22,8 +22,11 @@ import {
   MdOutlineSettings,
   MdOutlineSpaceDashboard
 } from 'react-icons/md'
+import { useNavigate } from 'react-router-dom'
+
 function Sidebar(): JSX.Element {
   const [currentPage, setcurrentPage] = useState('Dashboard')
+  const navigate = useNavigate()
   const handleSetPage = (page: SetStateAction<string>):void => {
     setcurrentPage(page)
   }
@@ -74,6 +77,14 @@ function Sidebar(): JSX.Element {
                   </Button>
                 )}
               </For>
+              <Button
+              justifyContent={'flex-start'}
+              variant={'ghost'}
+              pl={30}
+              onClick={()=>navigate("/test")}
+              >
+                Test Page
+              </Button>
             </Stack>
           </DrawerBody>
           <Separator />

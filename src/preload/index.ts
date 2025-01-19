@@ -1,5 +1,5 @@
 import { contextBridge,ipcRenderer } from 'electron'
-
+import { uploadResp } from '../main/ipcHandlers/fileIPC'
 // Custom APIs for renderer
 
 // Use `contextBridge` APIs to expose Electron APIs to
@@ -11,7 +11,7 @@ if (process.contextIsolated) {
     contextBridge.exposeInMainWorld('api', {
       ipcHandle: ()=> ipcRenderer.send('ping'),
       testIpc: ()=>ipcRenderer.invoke("test"),
-      authorizeUser: ()=>ipcRenderer.invoke("authorize"),
+      authorizeUser: ():Promise<boolean>=>ipcRenderer.invoke("authorize"),
       getList: ()=> ipcRenderer.invoke("list"),
       fileUpload: (filePath:string)=> ipcRenderer.invoke('uploadFile',filePath),
       deleteFile: (fileID:string) => ipcRenderer.invoke('delete',fileID),

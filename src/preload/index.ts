@@ -11,7 +11,9 @@ if (process.contextIsolated) {
     contextBridge.exposeInMainWorld('api', {
       ipcHandle: ()=> ipcRenderer.send('ping'),
       testIpc: ()=>ipcRenderer.invoke("test"),
-      authorizeUser: ():Promise<boolean>=>ipcRenderer.invoke("authorize"),
+      authorizeUser: ()=>ipcRenderer.invoke("authorize"),
+      checkToken: ()=>ipcRenderer.invoke("checkToken"),
+
       getList: ()=> ipcRenderer.invoke("list"),
       fileUpload: (filePath:string)=> ipcRenderer.invoke('uploadFile',filePath),
       deleteFile: (fileID:string) => ipcRenderer.invoke('delete',fileID),

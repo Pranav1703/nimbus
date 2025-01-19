@@ -22,7 +22,7 @@ const TOKEN_PATH = path.join(app.getPath("userData"),'token.json')
 const CREDENTIALS_PATH = path.join(process.cwd(), 'src', 'main', 'credentials.json');
 
 
-async function loadSavedCredentialsIfExist(): Promise<OAuth2Client | null> {
+export async function loadSavedCredentialsIfExist(): Promise<OAuth2Client | null> {
   try {
     const content = await fs.readFile(TOKEN_PATH, 'utf8');
     const credentials = JSON.parse(content);

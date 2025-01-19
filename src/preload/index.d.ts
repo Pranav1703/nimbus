@@ -5,6 +5,8 @@ type api = {
   ipcHandle: ()=>void
   testIpc: ()=> Promise<any>
   authorizeUser: ()=>Promise<boolean>
+  checkToken: ()=>Promise<boolean>
+
   getList: ()=>Promise<any>
   fileUpload: (filePath:string)=>Promise<uploadResp>
   deleteFile: (fileID:string)=>Promise<any>

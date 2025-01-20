@@ -1,11 +1,13 @@
 import { ElectronAPI } from '@electron-toolkit/preload'
 import { uploadResp } from '../main/ipcHandlers/fileIPC'
+import { drive_v3 } from 'googleapis'
 
 type api = {
   ipcHandle: ()=>void
   testIpc: ()=> Promise<any>
   authorizeUser: ()=>Promise<boolean>
   checkToken: ()=>Promise<boolean>
+  getInfo: ()=>Promise<drive_v3.Schema$About | null>
 
   getList: ()=>Promise<any>
   fileUpload: (filePath:string)=>Promise<uploadResp>

@@ -80,6 +80,17 @@ const Test = () => {
     }
   }
   
+  const logger = async()=>{
+    try {
+      const info = await window.api.getInfo()  //user, storageQuota in Bytes, maxUploadSize
+      console.log("user info: ",info?.user)
+      console.log("storageQuota: ",info?.storageQuota)
+      console.log("maxUploadSize: ",info?.maxUploadSize)
+    } catch (error) {
+      console.log(error)
+
+    }
+  }
   return (
     <>
         <h1>testing api's</h1><br/>
@@ -148,6 +159,14 @@ const Test = () => {
           onClick={deleteHandler}
           >
             delete file
+          </Button>
+        </div>
+        <div className="logBtn">
+          <Button
+          m={10}
+          onClick={logger}
+          >
+            Log response
           </Button>
         </div>
     </>

@@ -1,6 +1,7 @@
 import { ipcMain } from 'electron'
 import { OAuth2Client } from 'google-auth-library'
 import { authorize, loadSavedCredentialsIfExist } from '../auth'
+import { drive_v3, google } from 'googleapis';
 
 export let authClient:OAuth2Client;
 export const registerUserIpcHandlers = ()=>{
@@ -30,5 +31,24 @@ export const registerUserIpcHandlers = ()=>{
             return false
         }
         return true
+    })
+
+    ipcMain.handle("userInfo",async():Promise<drive_v3.Schema$About | null>=>{
+
+        const drive = google.drive({
+            version: 'v3',
+            auth: authClient
+        })
+
+        try {
+            const info = await drive.about.get({
+                fields:'storageQuota,user,maxUploadSize' //storageQuota in Bytes
+            })
+            console.log(info.data)
+            return info.data
+        } catch (error) {
+            console.log(error)
+            return null
+        }
     })
 }

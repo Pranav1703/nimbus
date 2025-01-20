@@ -11,8 +11,10 @@ if (process.contextIsolated) {
     contextBridge.exposeInMainWorld('api', {
       ipcHandle: ()=> ipcRenderer.send('ping'),
       testIpc: ()=>ipcRenderer.invoke("test"),
+
       authorizeUser: ()=>ipcRenderer.invoke("authorize"),
       checkToken: ()=>ipcRenderer.invoke("checkToken"),
+      getInfo: ()=>ipcRenderer.invoke("userInfo"),
 
       getList: ()=> ipcRenderer.invoke("list"),
       fileUpload: (filePath:string)=> ipcRenderer.invoke('uploadFile',filePath),

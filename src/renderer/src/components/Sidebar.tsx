@@ -22,7 +22,7 @@ import {
   MdOutlineSettings,
   MdOutlineSpaceDashboard
 } from 'react-icons/md'
-import { Outlet, useNavigate } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 
 function Sidebar(): JSX.Element {
   const navigate = useNavigate()
@@ -44,7 +44,6 @@ function Sidebar(): JSX.Element {
             <MdMenuOpen />
           </Button>
         </DrawerTrigger>
-        <Outlet />
 
         {/* Content */}
         <DrawerContent>

@@ -29,4 +29,8 @@ export const registerUserIpcHandlers = ()=>{
         }
         return true
     })
+    
+    ipcMain.handle("userInfo",async()=>{
+        
+    })
 }

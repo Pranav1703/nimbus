@@ -1,6 +1,6 @@
-import { ipcMain } from "electron"
-import { OAuth2Client } from 'google-auth-library';
-import { authorize, loadSavedCredentialsIfExist } from "../auth";
+import { ipcMain } from 'electron'
+import { OAuth2Client } from 'google-auth-library'
+import { authorize, loadSavedCredentialsIfExist } from '../auth'
 
 export let authClient:OAuth2Client;
 export const registerUserIpcHandlers = ()=>{
@@ -22,15 +22,13 @@ export const registerUserIpcHandlers = ()=>{
             const client = await loadSavedCredentialsIfExist()
             if(client){
                 authClient = client
+            }else{
+                return false
             }
         } catch (error) {
             console.log(error)
             return false
         }
         return true
-    })
-    
-    ipcMain.handle("userInfo",async()=>{
-        
     })
 }

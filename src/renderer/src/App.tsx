@@ -2,43 +2,68 @@
 import { HashRouter, Navigate, Route, Routes } from 'react-router-dom'
 import Login from './Pages/Login'
 import Test from './Test/Test'
-import Sidebar from './components/Sidebar'
 import Dashboard from './Pages/Dashboard'
 import Files from './Pages/Files'
 import Backup from './Pages/Backup'
 import Versions from './Pages/Versions'
 import Settings from './Pages/Settings'
 import Test2 from './Test/Test2'
+import { useEffect, useState } from 'react'
+import Hero from './Pages/Hero'
+import Layout from './components/Layout'
 
 function App(): JSX.Element {
-  // const googleAuthorise = async () => {
+  const [user, setUser] = useState(false)
+
+  useEffect(() => {
+    const checkUserToken = async (): Promise<void> => {
+      try {
+        const resp = await window.api.checkToken()
+        if (resp) {
+          console.log(resp)
+          setUser(true)
+        }
+      } catch (error) {
+        console.log(error)
+      }
+    }
+
+    checkUserToken()
+  }, [])
+  // const googleAuthorise = async ():Promise<void> => {
   //   try {
-  //     const resp = await window.api.authorizeUser()
+  //     const resp = await window.api.checkToken()
   //     if (resp) {
-  //       console.log(res)
-  //       return true
+  //       console.log(resp)
   //     }
-  //     return false
   //   } catch (error) {
   //     console.log(error)
-  //     return false
   //   }
   // }
   return (
     <>
       <HashRouter>
         <Routes>
-          {/* <Route path="/" element={googleAuthorise() ? <Sidebar /> : <Hero/>} /> */}
-          <Route path="/" element={<Navigate to="/Dashboard" />} />
-          <Route path="/" element={<Sidebar />}>
-            <Route path="/Dashboard" element={<Dashboard />} />
-            <Route path="Files" element={<Files />} />
-            <Route path="Backup" element={<Backup />} />
-            <Route path="Versions" element={<Versions />} />
-            <Route path="Settings" element={<Settings />} />
-            <Route path="test" element={<Test />} />
-            <Route path="test2" element={<Test2 />} />
-          </Route>
+          {user ? (
+            <>
+              <Route path="/" element={<Navigate to="/Dashboard" />} />
+              <Route path="/" element={<Layout />}>
+                <Route path="/Dashboard" element={<Dashboard />} />
+                <Route path="Files" element={<Files />} />
+                <Route path="Backup" element={<Backup />} />
+                <Route path="Versions" element={<Versions />} />
+                <Route path="Settings" element={<Settings />} />
+                <Route path="test" element={<Test />} />
+                <Route path="test2" element={<Test2 />} />
+              </Route>
+            </>
+          ) : (
+            <>
+              <Route path="/" element={<Hero />} />
+              <Route path="*" element={<Navigate to="/" />} />
+            </>
+          )}
+
           <Route path="/login" element={<Login />} />
         </Routes>
       </HashRouter>

@@ -13,7 +13,7 @@ import {
 } from './ui/drawer'
 import logo from '../assets/logo1.2.png'
 import { Flex, For, Icon, Separator, Stack, Text, VStack } from '@chakra-ui/react'
-import { SetStateAction, useState } from 'react'
+import { SetStateAction, useEffect, useState } from 'react'
 import {
   MdHistory,
   MdMenuOpen,
@@ -23,16 +23,35 @@ import {
   MdOutlineSpaceDashboard
 } from 'react-icons/md'
 import { useNavigate } from 'react-router-dom'
+import { drive_v3 } from 'googleapis'
 
 function Sidebar(): JSX.Element {
+
   const navigate = useNavigate()
   const [currentPage, setcurrentPage] = useState('Dashboard')
-
+  const [userinfo, setuserinfo] = useState<drive_v3.Schema$About >({})
   const handleSetPage = (page: SetStateAction<string>): void => {
     setcurrentPage(page)
     navigate('/' + page)
     console.log(page)
   }
+
+  useEffect(() => {
+    const logger = async (): Promise<void> => {
+      try {
+        const info = await window.api.getInfo() //user, storageQuota in Bytes, maxUploadSize
+        if (info) {
+          setuserinfo(info)
+        } else {
+          setuserinfo({})
+        }
+      } catch (error) {
+        console.log(error)
+      }
+    }
+    logger()
+  }, [])
+
   return (
     <div>
       <DrawerRoot placement="start" size={'xs'}>
@@ -47,7 +66,6 @@ function Sidebar(): JSX.Element {
 
         {/* Content */}
         <DrawerContent>
-
           {/* Heading */}
           <DrawerHeader>
             <DrawerTitle>
@@ -89,13 +107,16 @@ function Sidebar(): JSX.Element {
           </DrawerBody>
 
           <Separator />
-          
+
           {/* Footer */}
           <DrawerFooter justifyContent={'center'}>
-            <Avatar />
+            <Avatar
+            name="userinfo['user']['displayName']"
+            src={userinfo?.user?.photoLink || ""} 
+            />
             <VStack w={'full'}>
-              <Text>name</Text>
-              <Text>name@gmail.com</Text>
+              <Text>{userinfo ? userinfo?.user?.displayName : ''}</Text>
+              <Text>{userinfo ? userinfo?.user?.emailAddress : ''}</Text>
             </VStack>
           </DrawerFooter>
           <DrawerCloseTrigger />

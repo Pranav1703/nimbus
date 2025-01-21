@@ -1,7 +1,9 @@
-import { Box, For, FormatByte, HStack, Icon, Text, VStack } from '@chakra-ui/react'
-import React from 'react'
+import { Box, For, HStack, Icon, Text, VStack } from '@chakra-ui/react'
+import React, { useState, useEffect } from 'react'
 import { MdHistoryToggleOff, MdSettingsBackupRestore, MdStorage } from 'react-icons/md'
 import { ProgressBar, ProgressRoot } from '../ui/progress'
+import StorageConv from './StorageConv'
+import { Skeleton } from '../ui/skeleton'
 
 function Main({
   Main_data
@@ -14,19 +16,36 @@ function Main({
     Num_versions: number
   }
 }): JSX.Element {
+  const [loading, setLoading] = useState(true)
+
+  // Check if any of the values are NaN
+  useEffect(() => {
+    if (
+      isNaN(Main_data.curr_storage) ||
+      isNaN(Main_data.storage_percent) ||
+      isNaN(Main_data.num_backups) ||
+      isNaN(Main_data.last_backup) ||
+      isNaN(Main_data.Num_versions)
+    ) {
+      setLoading(true)
+    } else {
+      setLoading(false)
+    }
+  }, [Main_data])
+
   const values = [
     {
       name: 'Total Storage Used',
       data: Main_data.curr_storage,
       icon: <MdStorage />,
-      value: Main_data.curr_storage,
+      value: Math.floor(Main_data.storage_percent),
       description: Main_data.storage_percent + ' % of 100 GB used'
     },
     {
       name: 'Active Backups',
       data: Main_data.num_backups,
       icon: <MdSettingsBackupRestore />,
-      description: 'Last backup: '+Main_data.last_backup+" hours ago"
+      description: 'Last backup: ' + Main_data.last_backup + ' hours ago'
     },
     {
       name: 'Version History',
@@ -35,13 +54,13 @@ function Main({
       description: 'Versions across all files'
     }
   ]
+
   return (
     <div>
       <HStack>
         <For each={values}>
           {(item, index) => (
             <Box
-              bg={'gray.800'}
               w={'1/3'}
               p={2}
               px={5}
@@ -49,16 +68,19 @@ function Main({
               padding={'3'}
               key={index}
               h={'40'}
+              borderWidth={1}
             >
               <HStack justifyContent={'space-between'} alignItems={'flex-start'}>
                 <VStack alignItems={'flex-start'}>
                   <Text color={'gray.400'}>{item.name}</Text>
-                  <Text textStyle={'2xl'} fontWeight={'semibold'}>
-                  {item.name === 'Total Storage Used' ? (
-                    <FormatByte value={item.data} />):(
+                  <Text textStyle={'2xl'} fontWeight={'semibold'} as={'span'}>
+                    {item.name === 'Total Storage Used' ? (
+                      <StorageConv bytes={item.data} />
+                    ) : loading ? (
+                      <Skeleton w={'100px'} h={'7'} mt={1} variant="shine" />
+                    ) : (
                       <>{item.data}</>
-                    )
-                  }
+                    )}
                   </Text>
                 </VStack>
                 <Icon color={'teal'} size={'lg'}>
@@ -66,16 +88,24 @@ function Main({
                 </Icon>
               </HStack>
               {item.name === 'Total Storage Used' ? (
-                <ProgressRoot defaultValue={item.value} shape={'full'} size={'md'} pt={5}>
-                  <ProgressBar />
-                </ProgressRoot>
+                loading ? (
+                  <Skeleton w={'full'} h={'7'} mt={3} variant="shine" />
+                ) : (
+                  <ProgressRoot defaultValue={item.value} shape={'full'} size={'md'} pt={5}>
+                    <ProgressBar />
+                  </ProgressRoot>
+                )
               ) : (
                 <></>
               )}
 
-              <Text pt={'3'} color={'gray.400'}>
-                {item.description}
-              </Text>
+              {loading ? (
+                <Skeleton w={'full'} h={'7'} mt={1} variant="shine" />
+              ) : (
+                <Text pt={'3'} color={'gray.400'}>
+                  {item.description}
+                </Text>
+              )}
             </Box>
           )}
         </For>{' '}

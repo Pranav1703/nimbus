@@ -88,7 +88,6 @@ const Test = () => {
       console.log("maxUploadSize: ",info?.maxUploadSize)
     } catch (error) {
       console.log(error)
-
     }
   }
   return (

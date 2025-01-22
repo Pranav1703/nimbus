@@ -94,10 +94,11 @@ const Test = () => {
 
   const watcher = async()=>{
     try {
-      await window.api.initWatcher(["C:/Users/prana_zhfhs6u/OneDrive/Desktop/testing/watchThis.txt"])      
-      // ipcRenderer.on("file-change",(_event,msg)=>{
-      //   console.log(msg)
-      // })
+      await window.api.initWatcher(["C:/Users/prana_zhfhs6u/OneDrive/Desktop/testing/*"])      
+      
+      window.api.onFileChange((_event,msg)=>{
+        console.log(msg)
+      })
     } catch (error) {
       console.log(error)
     }

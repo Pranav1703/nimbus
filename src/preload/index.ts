@@ -1,10 +1,11 @@
 import { contextBridge,ipcRenderer } from 'electron'
-import { uploadResp } from '../main/ipcHandlers/fileIPC'
 // Custom APIs for renderer
 
 // Use `contextBridge` APIs to expose Electron APIs to
 // renderer only if context isolation is enabled, otherwise
 // just add to the DOM global.
+
+
 
 if (process.contextIsolated) {
   try {
@@ -22,7 +23,8 @@ if (process.contextIsolated) {
       folderUpload: (folderPath:string,parentFolderId?:string)=>ipcRenderer.invoke('upload-folder',folderPath,parentFolderId),
       downloadFile: (fileId:string,destPath:string)=>ipcRenderer.invoke('download',fileId,destPath),
 
-      initWatcher: (watchPaths:string[])=>ipcRenderer.invoke("watch",watchPaths)
+      initWatcher: (watchPaths:string[])=>ipcRenderer.invoke("watch",watchPaths),
+      onFileChange: (callback) =>ipcRenderer.on("file-change",callback)
     })
   } catch (error) {
     console.error(error)

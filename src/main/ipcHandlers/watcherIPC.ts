@@ -12,7 +12,7 @@ export const registerWatcherIPCHandlers = ()=>{
         watcher.on('all',(event,path)=>{
             console.log(`Event: ${event} occurred on ${path}`);
             fileState = `Event: ${event} occurred on ${path}`;
-            // mainWindow.webContents.send("file-change",fileState)
+            mainWindow.webContents.send("file-change",fileState)
         })
     })
 }

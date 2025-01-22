@@ -5,8 +5,9 @@ import icon from '../../resources/icon.png?asset'
 import { registerFileIpcHandlers } from './ipcHandlers/fileIPC'
 import { registerUserIpcHandlers } from './ipcHandlers/userIPC'
 import path from "node:path"
+import { registerWatcherIPCHandlers } from './ipcHandlers/watcherIPC'
 
-let mainWindow;
+export let mainWindow: BrowserWindow;
 
 if (process.defaultApp) {
   if (process.argv.length >= 2) {
@@ -84,10 +85,11 @@ app.whenReady().then(() => {
     console.log("test ipc called");
   })
 
+  createWindow()
+
   registerUserIpcHandlers()
   registerFileIpcHandlers()
-
-  createWindow()
+  registerWatcherIPCHandlers()
 
   app.on('activate', function () {
     // On macOS it's common to re-create a window in the app when the

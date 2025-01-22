@@ -1,4 +1,5 @@
 import { Box, Button, Input } from "@chakra-ui/react"
+import { ipcRenderer } from "electron"
 import { useState } from "react"
 
 const Test = () => {
@@ -90,6 +91,18 @@ const Test = () => {
       console.log(error)
     }
   }
+
+  const watcher = async()=>{
+    try {
+      await window.api.initWatcher(["C:/Users/prana_zhfhs6u/OneDrive/Desktop/testing/watchThis.txt"])      
+      // ipcRenderer.on("file-change",(_event,msg)=>{
+      //   console.log(msg)
+      // })
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
   return (
     <>
         <h1>testing api's</h1><br/>
@@ -166,6 +179,14 @@ const Test = () => {
           onClick={logger}
           >
             Log response
+          </Button>
+        </div>
+        <div className="watcher">
+          <Button
+          m={5}
+          onClick={watcher}
+          >
+            Initialize Watchers
           </Button>
         </div>
     </>

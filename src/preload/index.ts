@@ -13,14 +13,16 @@ if (process.contextIsolated) {
       testIpc: ()=>ipcRenderer.invoke("test"),
 
       authorizeUser: ()=>ipcRenderer.invoke("authorize"),
-      checkToken: ()=>ipcRenderer.invoke("checkToken"),
-      getInfo: ()=>ipcRenderer.invoke("userInfo"),
+      checkToken: ()=>ipcRenderer.invoke("check-token"),
+      getInfo: ()=>ipcRenderer.invoke("user-info"),
 
       getList: ()=> ipcRenderer.invoke("list"),
-      fileUpload: (filePath:string)=> ipcRenderer.invoke('uploadFile',filePath),
+      fileUpload: (filePath:string)=> ipcRenderer.invoke('upload-file',filePath),
       deleteFile: (fileID:string) => ipcRenderer.invoke('delete',fileID),
-      folderUpload: (folderPath:string,parentFolderId?:string)=>ipcRenderer.invoke('uploadFolder',folderPath,parentFolderId),
-      downloadFile: (fileId:string,destPath:string)=>ipcRenderer.invoke('download',fileId,destPath)
+      folderUpload: (folderPath:string,parentFolderId?:string)=>ipcRenderer.invoke('upload-folder',folderPath,parentFolderId),
+      downloadFile: (fileId:string,destPath:string)=>ipcRenderer.invoke('download',fileId,destPath),
+
+      initWatcher: (watchPaths:string[])=>ipcRenderer.invoke("watch",watchPaths)
     })
   } catch (error) {
     console.error(error)

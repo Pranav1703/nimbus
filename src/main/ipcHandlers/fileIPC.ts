@@ -37,7 +37,7 @@ export const registerFileIpcHandlers = ()=>{
         }
     })
 
-    ipcMain.handle("uploadFile",async(_event,filePath:string):Promise<uploadResp>=>{
+    ipcMain.handle("upload-file",async(_event,filePath:string):Promise<uploadResp>=>{
       
       const drive = google.drive({
         version: 'v3',
@@ -96,7 +96,7 @@ export const registerFileIpcHandlers = ()=>{
       }
     })
 
-    ipcMain.handle("uploadFolder",async(_event,folderPath:string,parentFolderId?:string):Promise<uploadResp>=>{
+    ipcMain.handle("upload-folder",async(_event,folderPath:string,parentFolderId?:string):Promise<uploadResp>=>{
       const drive = google.drive({
         version: 'v3',
         auth: authClient

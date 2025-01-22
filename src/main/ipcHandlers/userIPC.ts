@@ -18,7 +18,7 @@ export const registerUserIpcHandlers = ()=>{
         }
         return true
     })
-    ipcMain.handle("checkToken",async():Promise<boolean>=>{
+    ipcMain.handle("check-token",async():Promise<boolean>=>{
         try {
             const client = await loadSavedCredentialsIfExist()
             if(client){
@@ -33,7 +33,7 @@ export const registerUserIpcHandlers = ()=>{
         return true
     })
 
-    ipcMain.handle("userInfo",async():Promise<drive_v3.Schema$About | null>=>{
+    ipcMain.handle("user-info",async():Promise<drive_v3.Schema$About | null>=>{
 
         const drive = google.drive({
             version: 'v3',

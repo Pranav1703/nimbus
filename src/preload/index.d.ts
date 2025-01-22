@@ -15,6 +15,8 @@ type api = {
   folderUpload: (folderPath:string,parentFolderId?:string)=>Promise<uploadResp>
   downloadFile: (fileId:string,destPath:string)=>Promise<any>
 
+  initWatcher: (watchPaths: string[])=>Promise<void>
+
 }
 //add this type after finishing all the ipcHandlers.
 

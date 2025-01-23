@@ -20,7 +20,8 @@ type api = {
 
   initWatcher: (watchPaths: string[])=>Promise<void>
   onFileChange: (callback: callbackFunc)=> void
-
+  cleanUpListeners: ()=>void
+  getFileHash: (filePath:string)=>Promise<string>
 }
 //add this type after finishing all the ipcHandlers.
 

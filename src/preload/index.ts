@@ -24,7 +24,9 @@ if (process.contextIsolated) {
       downloadFile: (fileId:string,destPath:string)=>ipcRenderer.invoke('download',fileId,destPath),
 
       initWatcher: (watchPaths:string[])=>ipcRenderer.invoke("watch",watchPaths),
-      onFileChange: (callback) =>ipcRenderer.on("file-change",callback)
+      onFileChange: (callback) =>ipcRenderer.on("file-change",callback),
+      cleanUpListeners: ()=>ipcRenderer.removeAllListeners("file-change"),
+      getFileHash: (filePath:string)=>ipcRenderer.invoke("get-hash",filePath)
     })
   } catch (error) {
     console.error(error)

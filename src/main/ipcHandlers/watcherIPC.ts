@@ -1,6 +1,7 @@
 import { ipcMain } from "electron"
 import chokidar from "chokidar"
 import { mainWindow } from "../index"
+import { computeFileHash } from "./helper"
 
 export const registerWatcherIPCHandlers = ()=>{
     ipcMain.handle("watch",async(_event,watchPaths:string[])=>{
@@ -14,5 +15,16 @@ export const registerWatcherIPCHandlers = ()=>{
             fileState = `Event: ${event} occurred on ${path}`;
             mainWindow.webContents.send("file-change",fileState)
         })
+    })
+
+    ipcMain.handle("get-hash",async(_event,filePath:string):Promise<string | null>=>{
+        try {
+            const hash = await computeFileHash(filePath)
+            return hash
+        } catch (error) {
+            console.log(error)
+            return null
+        }
+
     })
 }

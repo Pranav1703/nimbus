@@ -8,6 +8,7 @@ const Test = () => {
   const [fileValue,setFileValue] = useState<string>("")
   const [fileList,setFileList] = useState<Array<any>>([])
   const [fileId,setFileId] = useState<string>("")
+  const [hash,setHash] = useState<string>("")
 
   const fileChange = async(e:React.ChangeEvent<HTMLInputElement>)=>{
     setFileValue(e.target.value)
@@ -94,11 +95,21 @@ const Test = () => {
 
   const watcher = async()=>{
     try {
-      await window.api.initWatcher(["C:/Users/prana_zhfhs6u/OneDrive/Desktop/testing/*"])      
+      await window.api.initWatcher(["C:/Users/prana_zhfhs6u/OneDrive/Desktop/testing/watchThis.txt"])      
       
       window.api.onFileChange((_event,msg)=>{
         console.log(msg)
       })
+
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
+  const generateHash = async()=>{
+    try {
+      const hash = await window.api.getFileHash(filePath)
+      setHash(hash)
     } catch (error) {
       console.log(error)
     }
@@ -108,7 +119,7 @@ const Test = () => {
     <>
         <h1>testing api's</h1><br/>
         <div className="uploadFile">
-          <input type="file" value={fileValue} onChange={fileChange}/>
+          <input type="file" onChange={fileChange}/>
           <Button 
           m={'10px'}
           onClick={uploadFile}
@@ -189,6 +200,17 @@ const Test = () => {
           >
             Initialize Watchers
           </Button>
+        </div>
+
+        <div className="hash">
+          <input type="file" onChange={fileChange}/>
+          <Button 
+          m={'10px'}
+          onClick={generateHash}
+          >
+            generate Hash
+          </Button>
+          <p>{hash}</p>
         </div>
     </>
   )

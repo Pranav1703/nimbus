@@ -1,12 +1,7 @@
 import { Box, For, HStack, Icon } from '@chakra-ui/react'
 import React, { useState } from 'react'
 import { Button } from '../ui/button'
-import {
-  MdOutlineBackup,
-  MdOutlineRestorePage,
-  MdOutlineScheduleSend,
-  MdOutlineSettings
-} from 'react-icons/md'
+import Icons from '../../assets/Icons'
 
 function Actions(): JSX.Element {
   const handleButtonPress = (name): void => {
@@ -17,10 +12,10 @@ function Actions(): JSX.Element {
       <HStack mt={5} mr={10} gap={3}>
         <For
           each={[
-            { name: 'Backup Files', icon: <MdOutlineBackup /> },
-            { name: 'Restore Files', icon: <MdOutlineRestorePage /> },
-            { name: 'Settings', icon: <MdOutlineSettings /> },
-            { name: 'Schedule', icon: <MdOutlineScheduleSend /> }
+            { name: 'Backup Files', icon: <Icons.Backup1 /> },
+            { name: 'Restore Files', icon: <Icons.Download /> },
+            { name: 'Settings', icon: <Icons.Settings /> },
+            { name: 'Schedule', icon: <Icons.Schedule /> }
           ]}
         >
           {(item, index) => (

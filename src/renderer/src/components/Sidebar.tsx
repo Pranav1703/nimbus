@@ -11,20 +11,13 @@ import {
   DrawerTitle,
   DrawerTrigger
 } from './ui/drawer'
-import logo from '../assets/logo1.2.png'
+import logo from '../assets/Images/logo1.2.png'
 import { Flex, For, Icon, Separator, Stack, Text, VStack } from '@chakra-ui/react'
 import { SetStateAction, useState } from 'react'
-import {
-  MdHistory,
-  MdMenuOpen,
-  MdOutlineBackup,
-  MdOutlineFolder,
-  MdOutlineSettings,
-  MdOutlineSpaceDashboard
-} from 'react-icons/md'
 import { useNavigate } from 'react-router-dom'
 import { drive_v3 } from 'googleapis'
 import { SkeletonCircle, SkeletonText } from './ui/skeleton'
+import Icons from '../assets/Icons'
 
 function Sidebar({
   data
@@ -48,7 +41,7 @@ function Sidebar({
         {/* Drawer Trigger */}
         <DrawerTrigger asChild w={'fit-content'} float={'inline-start'} mt={5} ml={2}>
           <Button variant="outline" size="sm">
-            <MdMenuOpen />
+            <Icons.MenuOpen />
           </Button>
         </DrawerTrigger>
 
@@ -69,13 +62,13 @@ function Sidebar({
             <Stack mt={3}>
               <For
                 each={[
-                  { logo: <MdOutlineSpaceDashboard />, data: 'Dashboard' },
-                  { logo: <MdOutlineFolder />, data: 'Files' },
-                  { logo: <MdOutlineBackup />, data: 'Backup' },
-                  { logo: <MdHistory />, data: 'Versions' },
-                  { logo: <MdOutlineSettings />, data: 'Settings' },
-                  { logo: <MdOutlineSettings />, data: 'Test' },
-                  { logo: <MdOutlineSettings />, data: 'Test2' }
+                  { logo: <Icons.Dashboard />, data: 'Dashboard' },
+                  { logo: <Icons.Folder />, data: 'Files' },
+                  { logo: <Icons.Backup1 />, data: 'Backup' },
+                  { logo: <Icons.Versions1 />, data: 'Versions' },
+                  { logo: <Icons.Settings />, data: 'Settings' },
+                  { logo: <Icons.Settings />, data: 'Test' },
+                  { logo: <Icons.Settings />, data: 'Test2' }
                 ]}
               >
                 {(item, index) => (

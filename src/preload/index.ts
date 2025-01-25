@@ -1,10 +1,11 @@
 import { contextBridge,ipcRenderer } from 'electron'
-import { uploadResp } from '../main/ipcHandlers/fileIPC'
 // Custom APIs for renderer
 
 // Use `contextBridge` APIs to expose Electron APIs to
 // renderer only if context isolation is enabled, otherwise
 // just add to the DOM global.
+
+
 
 if (process.contextIsolated) {
   try {
@@ -13,14 +14,19 @@ if (process.contextIsolated) {
       testIpc: ()=>ipcRenderer.invoke("test"),
 
       authorizeUser: ()=>ipcRenderer.invoke("authorize"),
-      checkToken: ()=>ipcRenderer.invoke("checkToken"),
-      getInfo: ()=>ipcRenderer.invoke("userInfo"),
+      checkToken: ()=>ipcRenderer.invoke("check-token"),
+      getInfo: ()=>ipcRenderer.invoke("user-info"),
 
       getList: ()=> ipcRenderer.invoke("list"),
-      fileUpload: (filePath:string)=> ipcRenderer.invoke('uploadFile',filePath),
+      fileUpload: (filePath:string)=> ipcRenderer.invoke('upload-file',filePath),
       deleteFile: (fileID:string) => ipcRenderer.invoke('delete',fileID),
-      folderUpload: (folderPath:string,parentFolderId?:string)=>ipcRenderer.invoke('uploadFolder',folderPath,parentFolderId),
-      downloadFile: (fileId:string,destPath:string)=>ipcRenderer.invoke('download',fileId,destPath)
+      folderUpload: (folderPath:string,parentFolderId?:string)=>ipcRenderer.invoke('upload-folder',folderPath,parentFolderId),
+      downloadFile: (fileId:string,destPath:string)=>ipcRenderer.invoke('download',fileId,destPath),
+
+      initWatcher: (watchPaths:string[])=>ipcRenderer.invoke("watch",watchPaths),
+      onFileChange: (callback) =>ipcRenderer.on("file-change",callback),
+      cleanUpListeners: ()=>ipcRenderer.removeAllListeners("file-change"),
+      getFileHash: (filePath:string)=>ipcRenderer.invoke("get-hash",filePath)
     })
   } catch (error) {
     console.error(error)

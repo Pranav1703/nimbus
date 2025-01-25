@@ -2,6 +2,7 @@ import * as fs from 'fs';
 import path from 'path';
 import mime from 'mime';
 // import { drive_v3 } from 'googleapis';
+import crypto from 'crypto';
 
 export async function uploadFolder(drive, folderPath:string, parentFolderId?:string) {
     const folderName = path.basename(folderPath);
@@ -52,3 +53,15 @@ export async function uploadFolder(drive, folderPath:string, parentFolderId?:str
       }
     }
 }
+
+export function computeFileHash(filePath: string): Promise<string> {
+  return new Promise((resolve, reject) => {
+    const hash = crypto.createHash('sha256');
+    const stream = fs.createReadStream(filePath);
+
+    stream.on('data', (chunk) => hash.update(chunk));
+    stream.on('end', () => resolve(hash.digest('hex')));
+    stream.on('error', (err) => reject(err));
+  });
+}
+

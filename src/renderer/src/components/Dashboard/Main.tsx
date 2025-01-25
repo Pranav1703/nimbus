@@ -57,7 +57,7 @@ function Main({
 
   return (
     <div>
-      <HStack>
+      <HStack >
         <For each={values}>
           {(item, index) => (
             <Box
@@ -69,6 +69,7 @@ function Main({
               key={index}
               h={'40'}
               borderWidth={1}
+              
             >
               <HStack justifyContent={'space-between'} alignItems={'flex-start'}>
                 <VStack alignItems={'flex-start'}>

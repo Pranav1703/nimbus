@@ -3,15 +3,21 @@ import { FcGoogle } from 'react-icons/fc'
 import { AiOutlineThunderbolt } from 'react-icons/ai'
 import { IoShieldCheckmarkOutline } from 'react-icons/io5'
 import { useNavigate } from 'react-router-dom'
+import { useContext } from 'react'
+import { UserContext } from '../App'
 function Login(): JSX.Element {
   const navigate = useNavigate()
+
+  const {setUser} = useContext(UserContext)
 
   const googleAuthorise = async () => {
     try {
       const resp = await window.api.authorizeUser()
       if (resp) {
-        navigate('/test')
+        setUser(true)
+        navigate('/')
       }
+      console.log("resp: ",resp)
     } catch (error) {
       console.log(error)
     }

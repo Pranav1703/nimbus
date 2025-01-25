@@ -115,6 +115,13 @@ const Test = () => {
     }
   }
 
+  const createRoot = async()=>{
+    await window.api.createRoot()
+  }
+
+  const getRoot = async()=>{
+    await window.api.getRoot()
+  }
   return (
     <>
         <h1>testing api's</h1><br/>
@@ -185,20 +192,33 @@ const Test = () => {
             delete file
           </Button>
         </div>
-        <div className="logBtn">
+        <div className="log">
           <Button
           m={10}
           onClick={logger}
           >
             Log response
           </Button>
-        </div>
-        <div className="watcher">
+
           <Button
           m={5}
           onClick={watcher}
           >
             Initialize Watchers
+          </Button>
+
+          <Button
+          m={10}
+          onClick={createRoot}
+          >
+            create ROot folder
+         </Button>
+
+          <Button
+          m={10}
+          onClick={getRoot}
+          >
+            get ROot id
           </Button>
         </div>
 
@@ -212,6 +232,8 @@ const Test = () => {
           </Button>
           <p>{hash}</p>
         </div>
+
+
     </>
   )
 }

@@ -166,4 +166,45 @@ export const registerFileIpcHandlers = ()=>{
         console.log(error)
       }
     })
+
+    ipcMain.handle("create-root",async(_event)=>{
+      const drive = google.drive({
+        version: 'v3',
+        auth: authClient
+      })
+
+      const folderMetadata = {
+        name: "root",
+        mimeType: "application/vnd.google-apps.folder",
+      };
+    
+      try {
+        const folder = await drive.files.create({
+          requestBody: folderMetadata,
+          fields: "id",
+        });
+      
+        console.log(`Created root folder, folder ID: ${folder.data.id}`);
+
+
+      } catch (error) {
+        console.log("couldn't create root folder: ",error)
+
+      }
+
+    })
+
+    ipcMain.handle("get-root",async(_event)=>{
+      const drive = google.drive({
+        version: 'v3',
+        auth: authClient
+      })
+      const res = await drive.files.list({
+        q: `mimeType='application/vnd.google-apps.folder' and name='root' and trashed=false`,
+        fields: 'files(id, name)',
+      })
+
+      console.log("search result: ", res.data.files)
+
+    })
 }

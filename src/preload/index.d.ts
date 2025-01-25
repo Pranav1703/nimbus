@@ -17,13 +17,14 @@ type api = {
   deleteFile: (fileID:string)=>Promise<any>
   folderUpload: (folderPath:string,parentFolderId?:string)=>Promise<uploadResp>
   downloadFile: (fileId:string,destPath:string)=>Promise<any>
+  createRoot: ()=>Promise<void>
+  getRoot: ()=>Promise<void>
 
   initWatcher: (watchPaths: string[])=>Promise<void>
   onFileChange: (callback: callbackFunc)=> void
-  cleanUpListeners: ()=>void
+  cleanUpWatchers: ()=>void
   getFileHash: (filePath:string)=>Promise<string>
 }
-//add this type after finishing all the ipcHandlers.
 
 declare global {
   interface Window {

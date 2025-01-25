@@ -1,8 +1,8 @@
 import * as fs from 'fs';
 import path from 'path';
 import mime from 'mime';
-// import { drive_v3 } from 'googleapis';
 import crypto from 'crypto';
+import { activeWatchers } from './watcherIPC';
 
 export async function uploadFolder(drive, folderPath:string, parentFolderId?:string) {
     const folderName = path.basename(folderPath);
@@ -65,3 +65,10 @@ export function computeFileHash(filePath: string): Promise<string> {
   });
 }
 
+export async function cleanUpWatchers (){
+  for (const watcher of activeWatchers) {
+    await watcher.close();
+    console.log("Watcher closed");
+  }
+  activeWatchers.clear();
+}

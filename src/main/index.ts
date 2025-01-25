@@ -6,6 +6,7 @@ import { registerFileIpcHandlers } from './ipcHandlers/fileIPC'
 import { registerUserIpcHandlers } from './ipcHandlers/userIPC'
 import path from "node:path"
 import { registerWatcherIPCHandlers } from './ipcHandlers/watcherIPC'
+import { cleanUpWatchers } from './ipcHandlers/helper'
 
 export let mainWindow: BrowserWindow;
 
@@ -96,6 +97,10 @@ app.whenReady().then(() => {
     // dock icon is clicked and there are no other windows open.
     if (BrowserWindow.getAllWindows().length === 0) createWindow()
   })
+})
+
+app.on("before-quit",async()=>{
+  await cleanUpWatchers()
 })
 
 // Quit when all windows are closed, except on macOS. There, it's common

@@ -1,5 +1,4 @@
 import { Box, Button, Input } from "@chakra-ui/react"
-import { ipcRenderer } from "electron"
 import { useState } from "react"
 
 const Test = () => {

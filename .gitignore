@@ -5,3 +5,4 @@ out
 *.log*
 credentials.json
 token.json
+.env

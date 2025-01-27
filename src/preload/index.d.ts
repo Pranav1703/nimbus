@@ -12,13 +12,13 @@ type api = {
   checkToken: ()=>Promise<boolean>
   getInfo: ()=>Promise<drive_v3.Schema$About | null>
 
-  getList: ()=>Promise<any>
-  fileUpload: (filePath:string)=>Promise<uploadResp>
+  getList: (rootId:string)=>Promise<drive_v3.Schema$File[]>
+  fileUpload: (filePath:string,rootId:string)=>Promise<uploadResp>
   deleteFile: (fileID:string)=>Promise<any>
-  folderUpload: (folderPath:string,parentFolderId?:string)=>Promise<uploadResp>
+  folderUpload: (folderPath:string,rootFolderId:string)=>Promise<uploadResp>
   downloadFile: (fileId:string,destPath:string)=>Promise<any>
-  createRoot: ()=>Promise<void>
-  getRoot: ()=>Promise<void>
+  createRoot: ()=>Promise<boolean | null>
+  getRoot: ()=>Promise<string | null>
 
   initWatcher: (watchPaths: string[])=>Promise<void>
   onFileChange: (callback: callbackFunc)=> void

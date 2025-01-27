@@ -8,6 +8,7 @@ const Test = () => {
   const [fileList,setFileList] = useState<Array<any>>([])
   const [fileId,setFileId] = useState<string>("")
   const [hash,setHash] = useState<string>("")
+  const [rootId,setRootId] = useState<string>("")
 
   const fileChange = async(e:React.ChangeEvent<HTMLInputElement>)=>{
     setFileValue(e.target.value)
@@ -22,7 +23,7 @@ const Test = () => {
     }
     try {
       console.log(filePath)
-      await window.api.fileUpload(filePath);
+      await window.api.fileUpload(filePath,rootId);
     } catch (error) {
       console.log("error uploading file: ",error)
     }    
@@ -31,7 +32,7 @@ const Test = () => {
   
   const getFiles = async()=>{
     try {
-      const resp = await window.api.getList();
+      const resp = await window.api.getList(rootId);
       console.log("file list array: ",resp)
       setFileList(resp)
     } catch (error) {
@@ -75,7 +76,7 @@ const Test = () => {
 
   const uploadFolder = async()=>{
     try {
-      await window.api.folderUpload("C:/Users/prana_zhfhs6u/OneDrive/Desktop/destPath")
+      await window.api.folderUpload("C:/Users/prana_zhfhs6u/OneDrive/Desktop/destPath",rootId)
     } catch (error) {
       console.log(error)
     }
@@ -115,11 +116,15 @@ const Test = () => {
   }
 
   const createRoot = async()=>{
-    await window.api.createRoot()
+    const resp = await window.api.createRoot() // true - root created,  false - root already exists
+    console.log(resp)
   }
 
   const getRoot = async()=>{
-    await window.api.getRoot()
+    const rootId = await window.api.getRoot()
+    if(rootId){
+      setRootId(rootId)
+    }
   }
   return (
     <>
@@ -217,8 +222,9 @@ const Test = () => {
           m={10}
           onClick={getRoot}
           >
-            get ROot id
+            get Root id
           </Button>
+          <p>rootId-{rootId}</p>
         </div>
 
         <div className="hash">

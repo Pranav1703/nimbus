@@ -13,11 +13,12 @@ export type uploadResp = {
 }
 
 export const registerFileIpcHandlers = ()=>{
-    ipcMain.handle("list",async(_event):Promise<drive_v3.Schema$File[]>=>{
+    ipcMain.handle("list",async(_event,rootId):Promise<drive_v3.Schema$File[]>=>{
         try {
             const drive = google.drive({ version: 'v3', auth: authClient });
             const res = await drive.files.list({
               fields: 'nextPageToken, files(id, name)',
+              q: `'${rootId}' in parents and trashed = false`
             });
             const files = res.data.files;
             if (!files || files.length === 0) {
@@ -37,7 +38,7 @@ export const registerFileIpcHandlers = ()=>{
         }
     })
 
-    ipcMain.handle("upload-file",async(_event,filePath:string):Promise<uploadResp>=>{
+    ipcMain.handle("upload-file",async(_event,filePath:string,rootId:string):Promise<uploadResp>=>{
       
       const drive = google.drive({
         version: 'v3',
@@ -49,6 +50,7 @@ export const registerFileIpcHandlers = ()=>{
       const requestBody = {
         name: fileName,
         fields: 'id',
+        parents: [rootId]
       };
 
       const stream = fs.createReadStream(filePath)
@@ -96,14 +98,14 @@ export const registerFileIpcHandlers = ()=>{
       }
     })
 
-    ipcMain.handle("upload-folder",async(_event,folderPath:string,parentFolderId?:string):Promise<uploadResp>=>{
+    ipcMain.handle("upload-folder",async(_event,folderPath:string,rootFolderId:string):Promise<uploadResp>=>{
       const drive = google.drive({
         version: 'v3',
         auth: authClient
       })
 
       try {
-        await uploadFolder(drive,folderPath,parentFolderId)
+        await uploadFolder(drive,folderPath,rootFolderId)
         return {
           uploaded: true
         }
@@ -144,7 +146,7 @@ export const registerFileIpcHandlers = ()=>{
             bytesRead += chunk.length;
           })
           .on("end", () => {
-            console.log(`Download completed. Total bytes read: ${bytesRead}`);
+            console.log(`Download completed. Total bytes read: ${bytesRead}B`);
           })
           .on("error", (err) => {
             console.error("Error during file download:", err);
@@ -167,44 +169,57 @@ export const registerFileIpcHandlers = ()=>{
       }
     })
 
-    ipcMain.handle("create-root",async(_event)=>{
+    ipcMain.handle("create-root",async(_event):Promise<boolean | null>=>{
       const drive = google.drive({
         version: 'v3',
         auth: authClient
       })
 
-      const folderMetadata = {
-        name: "root",
-        mimeType: "application/vnd.google-apps.folder",
-      };
-    
-      try {
-        const folder = await drive.files.create({
-          requestBody: folderMetadata,
-          fields: "id",
-        });
+      const res = await drive.files.list({
+        fields: 'nextPageToken, files(id, name)',
+        q: "mimeType = 'application/vnd.google-apps.folder' and name='nimbus'"
+      });
+      const files = res.data.files;
+      if (!files || files.length === 0) {
+        const folderMetadata = {
+          name: "nimbus",
+          mimeType: "application/vnd.google-apps.folder",
+        };
       
-        console.log(`Created root folder, folder ID: ${folder.data.id}`);
-
-
-      } catch (error) {
-        console.log("couldn't create root folder: ",error)
-
+        try {
+          const folder = await drive.files.create({
+            requestBody: folderMetadata,
+            fields: "id",
+          });
+        
+          console.log(`Created root folder, folder ID: ${folder.data.id}`)
+          return true
+        } catch (error) {
+          console.log("couldn't create root folder: ",error)
+          return null
+        }
+      }else{
+        return false
       }
+
 
     })
 
-    ipcMain.handle("get-root",async(_event)=>{
+    ipcMain.handle("get-root",async(_event):Promise<string | null>=>{
       const drive = google.drive({
         version: 'v3',
         auth: authClient
       })
       const res = await drive.files.list({
-        q: `mimeType='application/vnd.google-apps.folder' and name='root' and trashed=false`,
+        q: `mimeType='application/vnd.google-apps.folder' and name='nimbus' and trashed=false`,
         fields: 'files(id, name)',
       })
-
-      console.log("search result: ", res.data.files)
+      if(res.data.files){
+        console.log("search result: ", res.data.files)
+        return res.data.files[0].id!        
+      }else{
+        return null
+      }
 
     })
 }

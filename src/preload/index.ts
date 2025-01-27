@@ -17,10 +17,10 @@ if (process.contextIsolated) {
       checkToken: ()=>ipcRenderer.invoke("check-token"),
       getInfo: ()=>ipcRenderer.invoke("user-info"),
 
-      getList: ()=> ipcRenderer.invoke("list"),
-      fileUpload: (filePath:string)=> ipcRenderer.invoke('upload-file',filePath),
+      getList: (rootId:string)=> ipcRenderer.invoke("list",rootId),
+      fileUpload: (filePath:string,rootId:string)=> ipcRenderer.invoke('upload-file',filePath,rootId),
       deleteFile: (fileID:string) => ipcRenderer.invoke('delete',fileID),
-      folderUpload: (folderPath:string,parentFolderId?:string)=>ipcRenderer.invoke('upload-folder',folderPath,parentFolderId),
+      folderUpload: (folderPath:string,rootFolderId:string)=>ipcRenderer.invoke('upload-folder',folderPath,rootFolderId),
       downloadFile: (fileId:string,destPath:string)=>ipcRenderer.invoke('download',fileId,destPath),
       createRoot: ()=> ipcRenderer.invoke("create-root"),
       getRoot: ()=>ipcRenderer.invoke("get-root"),

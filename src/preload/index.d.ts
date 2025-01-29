@@ -11,6 +11,7 @@ type api = {
   authorizeUser: ()=>Promise<boolean>
   checkToken: ()=>Promise<boolean>
   getInfo: ()=>Promise<drive_v3.Schema$About | null>
+  saveUser: (email:string,rootId:string)=> Promise<void>
 
   getList: (rootId:string)=>Promise<drive_v3.Schema$File[]>
   fileUpload: (filePath:string,rootId:string)=>Promise<uploadResp>
@@ -19,6 +20,7 @@ type api = {
   downloadFile: (fileId:string,destPath:string)=>Promise<any>
   createRoot: ()=>Promise<boolean | null>
   getRoot: ()=>Promise<string | null>
+  savePath: (email:string,filepath:string)=>Promise<void>
 
   initWatcher: (watchPaths: string[])=>Promise<void>
   onFileChange: (callback: callbackFunc)=> void

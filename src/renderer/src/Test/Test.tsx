@@ -9,6 +9,8 @@ const Test = () => {
   const [fileId,setFileId] = useState<string>("")
   const [hash,setHash] = useState<string>("")
   const [rootId,setRootId] = useState<string>("")
+  const [backupPath,setBackupPath] = useState<string>("")
+  const [backupFileValue,setBackupFileValue] = useState<string>("")
 
   const fileChange = async(e:React.ChangeEvent<HTMLInputElement>)=>{
     setFileValue(e.target.value)
@@ -126,6 +128,25 @@ const Test = () => {
       setRootId(rootId)
     }
   }
+
+  const backupFileChange = async(e:React.ChangeEvent<HTMLInputElement>)=>{
+    setBackupFileValue(e.target.value)
+    const filePath = e.target.files![0].path
+    setBackupPath(filePath)
+  }
+
+  const backup = async()=>{
+    const rootId = await window.api.getRoot()
+    const userInfo = await window.api.getInfo()
+
+    if(rootId && userInfo?.user?.emailAddress){
+      await window.api.saveUser(userInfo.user.emailAddress,rootId)
+      const resp = await window.api.fileUpload(backupPath,rootId)
+
+    }
+
+  }
+
   return (
     <>
         <h1>testing api's</h1><br/>
@@ -228,7 +249,7 @@ const Test = () => {
         </div>
 
         <div className="hash">
-          <input type="file" onChange={fileChange}/>
+          <input type="file" value={fileValue} onChange={fileChange}/>
           <Button 
           m={'10px'}
           onClick={generateHash}
@@ -238,9 +259,30 @@ const Test = () => {
           <p>{hash}</p>
         </div>
 
+        <div className="flow">
+          <Input type="file" value={backupFileValue} onChange={backupFileChange}/>
+          <Button
+          m={10}
+          onClick={backup}
+          >
+            BackUp
+          </Button>
+        </div>
 
     </>
   )
 }
 
 export default Test
+/*
+flow div 
+1. login
+2. get rootId after root gets created
+3. save user mail, rootID in DB
+4. select path{
+    i.    init watcher on said path
+    ii.   upload file/folder to drive, save file path in DB
+    iii.  wait for schedule time to backup again.
+   }
+
+*/

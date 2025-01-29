@@ -5,6 +5,7 @@ import * as fs from 'fs';
 import path from 'path';
 import mime from 'mime';
 import { uploadFolder } from "./helper";
+import { User } from "../models/user";
 
 //https://developers.google.com/drive/api/reference/rest/v3/about#About
 
@@ -220,6 +221,20 @@ export const registerFileIpcHandlers = ()=>{
       }else{
         return null
       }
+
+    })
+
+    ipcMain.handle("save-path",async(_event,email:string,filepath:string)=>{
+      const user = await User.find({
+        email:email
+      })
+      console.log(user)
+      if(user){
+
+      }
+    })
+
+    ipcMain.handle("save-state",async(_event)=>{
 
     })
 }

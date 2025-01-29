@@ -9,10 +9,10 @@ const UserSchema = new mongoose.Schema({
         type: String,
         required: true
     },
-    checkSums:{
+    fileStates:[{
         type: mongoose.Schema.Types.ObjectId,
         ref: "Integrity"
-    }
+    }]
 })
 
 export const User = mongoose.model("User",UserSchema)

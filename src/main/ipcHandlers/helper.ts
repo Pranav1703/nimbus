@@ -66,6 +66,7 @@ export function computeFileHash(filePath: string): Promise<string> {
 }
 
 export async function cleanUpWatchers (){
+  console.log("watcher clean up started")
   for (const watcher of activeWatchers) {
     await watcher.close();
     console.log("Watcher closed");

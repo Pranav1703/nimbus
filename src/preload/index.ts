@@ -27,6 +27,7 @@ if (process.contextIsolated) {
       createRoot: ()=> ipcRenderer.invoke("create-root"),
       getRoot: ()=>ipcRenderer.invoke("get-root"),
       savePath:(email:string,filepath:string)=>ipcRenderer.invoke("save-path",email,filepath),
+      saveState: (email:string,filePath:string,hash:string)=>ipcRenderer.invoke("save-state",email,filePath,hash),
 
       initWatcher: (watchPaths:string[])=>ipcRenderer.invoke("watch",watchPaths),
       onFileChange: (callback) =>ipcRenderer.on("file-change",callback),

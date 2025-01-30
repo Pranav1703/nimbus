@@ -54,11 +54,12 @@ export const registerUserIpcHandlers = ()=>{
     })
     ipcMain.handle("save-user",async(_event,email:string,rootId:string)=>{
 
-        const result = await User.find({
+        const result = await User.findOne({
             email: email
         })
-        console.log(result[0])
-        if(result[0]){
+        console.log("user already exists?",result)
+        if(result){
+            console.log("user already exists")
             return 
         }else{
             const newUser = await User.create({

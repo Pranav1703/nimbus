@@ -1,13 +1,19 @@
 import mongoose  from "mongoose"
 
-const FileStateSchema = new mongoose.Schema({
+export interface IFileState extends Document {
+    path: string;
+    hash?: string;  
+}
+
+const FileStateSchema = new mongoose.Schema<IFileState>({
     path:{
         type: String,
-        required: true
+        required: true,
+        unique:true
     },
-    checksum:{
+    hash:{
         type:String,
     }
 })
 
-export const FileState = mongoose.model("FileState",FileStateSchema)
+export const FileState = mongoose.model<IFileState>("FileState",FileStateSchema)

@@ -20,7 +20,8 @@ type api = {
   downloadFile: (fileId:string,destPath:string)=>Promise<any>
   createRoot: ()=>Promise<boolean | null>
   getRoot: ()=>Promise<string | null>
-  savePath: (email:string,filepath:string)=>Promise<void>
+  savePath: (email:string,filePath:string)=>Promise<void>
+  saveState: (email:string,filePath:string,hash:string) => Promise<void>
 
   initWatcher: (watchPaths: string[])=>Promise<void>
   onFileChange: (callback: callbackFunc)=> void

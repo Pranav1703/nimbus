@@ -6,6 +6,9 @@ import path from 'path';
 import mime from 'mime';
 import { uploadFolder } from "./helper";
 import { User } from "../models/user";
+import { FileState } from "../models/state";
+import { file } from "googleapis/build/src/apis/file";
+import { Console } from "console";
 
 //https://developers.google.com/drive/api/reference/rest/v3/about#About
 
@@ -225,16 +228,52 @@ export const registerFileIpcHandlers = ()=>{
     })
 
     ipcMain.handle("save-path",async(_event,email:string,filepath:string)=>{
-      const user = await User.find({
+      const user = await User.findOne({
         email:email
       })
       console.log(user)
       if(user){
 
+        const fileState = await FileState.create({
+          path:filepath
+        })
+
+
+        const updated = await User.updateOne(
+          {
+            email:email
+          },
+          {
+            $push: {
+              fileStates:fileState._id
+            }
+          }
+        )
+        console.log("added path: ",updated)
       }
     })
 
-    ipcMain.handle("save-state",async(_event)=>{
+    ipcMain.handle("save-state",async(_event,email:string,filePath:string,hash:string)=>{
+      
+      const user = await User.findOne({
+        email:email
+      })
 
+      if(!user){
+        console.log("user not found to update state")
+        return
+      }
+      const fileState = await FileState.updateOne(
+        {
+          _id: {$in:user.fileStates},
+          path:filePath
+        },
+        {
+          $set:{
+            hash:hash
+          }
+        }
+      )
+      console.log("updated fileState: ",fileState)
     })
 }

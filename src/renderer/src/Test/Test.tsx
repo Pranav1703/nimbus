@@ -1,3 +1,4 @@
+import { User } from "@/main/models/user"
 import { Box, Button, Input } from "@chakra-ui/react"
 import { useState } from "react"
 
@@ -11,6 +12,10 @@ const Test = () => {
   const [rootId,setRootId] = useState<string>("")
   const [backupPath,setBackupPath] = useState<string>("")
   const [backupFileValue,setBackupFileValue] = useState<string>("")
+
+  window.api.onFileChange((_event,msg)=>{
+    console.log(msg)
+  })
 
   const fileChange = async(e:React.ChangeEvent<HTMLInputElement>)=>{
     setFileValue(e.target.value)
@@ -99,9 +104,7 @@ const Test = () => {
     try {
       await window.api.initWatcher(["C:/Users/prana_zhfhs6u/OneDrive/Desktop/testing/watchThis.txt"])      
       
-      window.api.onFileChange((_event,msg)=>{
-        console.log(msg)
-      })
+
 
     } catch (error) {
       console.log(error)
@@ -142,7 +145,10 @@ const Test = () => {
     if(rootId && userInfo?.user?.emailAddress){
       await window.api.saveUser(userInfo.user.emailAddress,rootId)
       const resp = await window.api.fileUpload(backupPath,rootId)
-
+      window.api.initWatcher([backupPath])
+      await window.api.savePath(userInfo.user.emailAddress,backupPath)
+      const hash = await window.api.getFileHash(backupPath)
+      await window.api.saveState(userInfo.user.emailAddress,backupPath,hash)
     }
 
   }

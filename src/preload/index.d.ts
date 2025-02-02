@@ -11,14 +11,17 @@ type api = {
   authorizeUser: ()=>Promise<boolean>
   checkToken: ()=>Promise<boolean>
   getInfo: ()=>Promise<drive_v3.Schema$About | null>
+  saveUser: (email:string,rootId:string)=> Promise<void>
 
-  getList: ()=>Promise<any>
-  fileUpload: (filePath:string)=>Promise<uploadResp>
+  getList: (rootId:string)=>Promise<drive_v3.Schema$File[]>
+  fileUpload: (filePath:string,rootId:string)=>Promise<uploadResp>
   deleteFile: (fileID:string)=>Promise<any>
-  folderUpload: (folderPath:string,parentFolderId?:string)=>Promise<uploadResp>
+  folderUpload: (folderPath:string,rootFolderId:string)=>Promise<uploadResp>
   downloadFile: (fileId:string,destPath:string)=>Promise<any>
-  createRoot: ()=>Promise<void>
-  getRoot: ()=>Promise<void>
+  createRoot: ()=>Promise<boolean | null>
+  getRoot: ()=>Promise<string | null>
+  savePath: (email:string,filePath:string)=>Promise<void>
+  saveState: (email:string,filePath:string,hash:string) => Promise<void>
 
   initWatcher: (watchPaths: string[])=>Promise<void>
   onFileChange: (callback: callbackFunc)=> void

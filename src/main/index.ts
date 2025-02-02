@@ -7,6 +7,7 @@ import { registerUserIpcHandlers } from './ipcHandlers/userIPC'
 import path from "node:path"
 import { registerWatcherIPCHandlers } from './ipcHandlers/watcherIPC'
 import { cleanUpWatchers } from './ipcHandlers/helper'
+import { connectDB } from './db'
 
 export let mainWindow: BrowserWindow;
 
@@ -69,7 +70,7 @@ if (!gotTheLock) {
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
-app.whenReady().then(() => {
+app.whenReady().then(async() => {
   // Set app user model id for windows
   electronApp.setAppUserModelId('com.electron')
 
@@ -88,6 +89,7 @@ app.whenReady().then(() => {
 
   createWindow()
 
+  await connectDB()
   registerUserIpcHandlers()
   registerFileIpcHandlers()
   registerWatcherIPCHandlers()

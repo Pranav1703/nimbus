@@ -2,6 +2,7 @@ import { ipcMain } from 'electron'
 import { OAuth2Client } from 'google-auth-library'
 import { authorize, loadSavedCredentialsIfExist } from '../auth'
 import { drive_v3, google } from 'googleapis';
+import { User } from '../models/user';
 
 export let authClient:OAuth2Client;
 export const registerUserIpcHandlers = ()=>{
@@ -50,5 +51,23 @@ export const registerUserIpcHandlers = ()=>{
             console.log(error)
             return null
         }
+    })
+    ipcMain.handle("save-user",async(_event,email:string,rootId:string)=>{
+
+        const result = await User.findOne({
+            email: email
+        })
+        console.log("user already exists?",result)
+        if(result){
+            console.log("user already exists")
+            return 
+        }else{
+            const newUser = await User.create({
+                email: email,
+                rootId: rootId,
+            })
+            console.log("new user created. NewUser: ",newUser)
+        }
+
     })
 }

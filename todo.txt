@@ -9,5 +9,5 @@ expose a func from backend to check if the user is already loggedin or not
 
 file watching will stop after app closes, so cant detect changes while app is closed.
 work around :
-1.Record the State of Files: When your application stops, save the state of the watched files (e.g., their last modification times or checksums).
+1.Record the State of Files: When your application stops, save the state of the watched files (e.g., checksums).
 2.Compare the State on Restart: When the application starts, compare the current state of the files with the previously saved state to identify any changes.

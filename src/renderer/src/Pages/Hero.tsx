@@ -7,7 +7,7 @@ import {
   Text,
   VStack,
 } from '@chakra-ui/react';
-import Logo from '../assets/logo1.2.png';
+import Logo from '../assets/Images/logo1.2.png';
 import { FaArrowRight } from 'react-icons/fa';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';

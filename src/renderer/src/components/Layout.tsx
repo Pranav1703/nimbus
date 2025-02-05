@@ -1,17 +1,19 @@
 import React, { useEffect, useState } from 'react'
 import Sidebar from './Sidebar'
 import { Outlet, useLocation } from 'react-router-dom'
-import { Box, HStack } from '@chakra-ui/react'
+import { Box, HStack, IconButton } from '@chakra-ui/react'
 import { Avatar } from './ui/avatar'
 import { BreadcrumbCurrentLink, BreadcrumbLink, BreadcrumbRoot } from './ui/breadcrumb'
 import { drive_v3 } from 'googleapis'
 import { SkeletonCircle } from './ui/skeleton'
+import Icons from '../assets/Icons'
 
 function Layout(): JSX.Element {
   const location = useLocation()
   const [page, setPage] = useState('Dashboard')
   const [userinfo, setuserinfo] = useState<drive_v3.Schema$About>({})
   const [loading, setloading] = useState(true)
+
   useEffect(() => {
     // Extract and format the current route path
     const pathname = location.pathname
@@ -53,9 +55,13 @@ function Layout(): JSX.Element {
           {data.loading ? (
             <>
               <SkeletonCircle size={12} />
+              <SkeletonCircle size={12} />
             </>
           ) : (
             <>
+            <IconButton variant={'ghost'} aria-label={'Notifications'} borderRadius={'full'}>
+              <Icons.Notification />
+            </IconButton>
               <Avatar
                 name="userinfo['user']['displayName']"
                 src={data.userinfo?.user?.photoLink || ''}
@@ -63,7 +69,7 @@ function Layout(): JSX.Element {
             </>
           )}
         </HStack>
-        <BreadcrumbRoot m={3} size={"lg"} mb={5}>
+        <BreadcrumbRoot m={3} size={'lg'} mb={5}>
           <BreadcrumbLink href="/">Home</BreadcrumbLink>
           <BreadcrumbCurrentLink>{page}</BreadcrumbCurrentLink>
         </BreadcrumbRoot>

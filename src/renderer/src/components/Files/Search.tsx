@@ -1,9 +1,8 @@
 import { Button, HStack, Icon, Input, Kbd } from '@chakra-ui/react'
 import React, { useEffect, useRef } from 'react'
 import { InputGroup } from '../ui/input-group'
-import { LuDownload, LuSearch } from 'react-icons/lu'
 import Mousetrap from 'mousetrap';
-
+import Icons from '../../assets/Icons';
 const Search = (): JSX.Element => {
   const inputRef = useRef<HTMLInputElement>(null)
 
@@ -29,12 +28,12 @@ const Search = (): JSX.Element => {
   return (
     <div>
       <HStack>
-        <InputGroup flex="1" startElement={<LuSearch />} endElement={<Kbd>⌘K</Kbd>}>
+        <InputGroup flex="1" startElement={<Icons.Search />} endElement={<Kbd>⌘K</Kbd>}>
           <Input placeholder="Search Files..." ref={inputRef} />
         </InputGroup>
         <Button>
           <Icon>
-            <LuDownload />
+            <Icons.Download />
           </Icon>
           Download Files
         </Button>

@@ -15,8 +15,8 @@ import { MdOutlineRestorePage, MdOutlineScheduleSend } from 'react-icons/md'
 const Icons = {
   Add: IoAdd,
   Documents: IoDocumentTextOutline,
-  Image: IoImageOutline,
-  Video: IoVideocamOutline,
+  Images: IoImageOutline,
+  Videos: IoVideocamOutline,
   Download: LuDownload,
   Search: LuSearch,
   More: IoMdMore,

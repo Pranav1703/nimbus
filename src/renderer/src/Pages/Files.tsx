@@ -35,28 +35,31 @@ function Files(): JSX.Element {
             modified: '856 KB · Modified 5 hours ago'
         },
         {
-            id: 4,
-            name: 'mp320221103163317.mp3',
-            modified: '856 KB · Modified 5 hours ago'
-        },
-        {
             id: 5,
-            name: 'IMG20221103163317.mp4',
+            name: 'School',
             modified: '856 KB · Modified 5 hours ago'
         }
     ]
 
-    const countFileCategories = (items) => {
-      const categoryCount = {};
-      
-      items.forEach(item => {
-          const category = getFileCategory(item.name).category;
-          categoryCount[category] = (categoryCount[category] || 0) + 1;
-      });
-      
-      return categoryCount;
-  }
-    console.log(countFileCategories(Items))
+    const countFileCategories = (
+        items
+    ): { Documents: number; Images: number; Videos: number; Folder: number } => {
+        const categoryCount = {
+            Documents: 0,
+            Images: 0,
+            Videos: 0,
+            Folder: 0
+        }
+
+        items.forEach((item) => {
+            const category = getFileCategory(item.name).category
+            if (Object.prototype.hasOwnProperty.call(categoryCount, category)) {
+                categoryCount[category] += 1
+            }
+        })
+
+        return categoryCount
+    }
 
     const SearchedContent = Items.filter((item) =>
         item.name.toLowerCase().includes(SearchVal.toLowerCase())
@@ -73,7 +76,7 @@ function Files(): JSX.Element {
     return (
         <Box>
             <Search SearchVal={handleSerach} />
-            <Hero ButtonVal={handleButton} />
+            <Hero ButtonVal={handleButton} Count={countFileCategories(Items)} />
             <ResentFiles
                 Files={
                     SearchVal

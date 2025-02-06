@@ -3,25 +3,37 @@ import React, { useState } from 'react'
 import { Button } from '../ui/button'
 import Icons from '../../assets/Icons'
 
-const Hero = ({ ButtonVal }: { ButtonVal: (value: string) => void }): JSX.Element => {
+const Hero = ({
+    ButtonVal,
+    Count
+}: {
+    ButtonVal: (value: string) => void
+    Count: { Documents: number; Images: number; Videos: number; Folder: number }
+}): JSX.Element => {
     const values = [
         {
             heading: 'Documents',
-            content: 128,
+            content: Count.Documents,
             icon: <Icons.Documents />,
             color: 'blue'
         },
         {
             heading: 'Images',
-            content: 364,
+            content: Count.Images,
             icon: <Icons.Images />,
             color: 'pink'
         },
         {
             heading: 'Videos',
-            content: 48,
+            content: Count.Videos,
             icon: <Icons.Videos />,
             color: 'green'
+        },
+        {
+            heading: 'Folder',
+            content: Count.Folder,
+            icon: <Icons.Folder />,
+            color: 'purple'
         },
         {
             heading: 'Upload Now',
@@ -31,7 +43,6 @@ const Hero = ({ ButtonVal }: { ButtonVal: (value: string) => void }): JSX.Elemen
         }
     ]
     const [activeButton, setActiveButton] = useState(null)
-
     const handleButtonClick = (index, val): void => {
         if (val === 'Upload Now') {
             return

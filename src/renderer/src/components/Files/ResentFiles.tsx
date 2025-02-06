@@ -3,6 +3,7 @@ import React from 'react'
 import Icons from '../../assets/Icons'
 import getFileCategory from './FileCategory'
 import { NativeSelectField, NativeSelectRoot } from '../ui/native-select'
+import { MenuContent, MenuItem, MenuRoot, MenuTrigger } from '../ui/menu'
 
 interface FileProps {
     id: number
@@ -17,16 +18,6 @@ const ResentFiles = ({
     Files: FileProps[]
     HeadingName: string
 }): JSX.Element => {
-    const options = () => {
-        return (
-          <NativeSelectRoot>
-            <NativeSelectField>
-              <option value="1">Option 1</option>
-              <option value="2">Option 2</option>
-            </NativeSelectField>
-          </NativeSelectRoot>
-        );
-      }
     return (
         <div>
             <Box pt={5}>
@@ -68,9 +59,28 @@ const ResentFiles = ({
                                                 <IconButton variant="ghost">
                                                     <Icons.Download />
                                                 </IconButton>
-                                                <IconButton variant="ghost" onClick={() => { options(); }}>
-  <Icons.More />
-</IconButton>
+                                                <MenuRoot>
+                                                    <MenuTrigger asChild>
+                                                        <IconButton variant="ghost">
+                                                            <Icons.More />
+                                                        </IconButton>
+                                                    </MenuTrigger>
+                                                    <MenuContent>
+                                                        <MenuItem value="open-file">
+                                                            Open File...
+                                                        </MenuItem>
+                                                        <MenuItem
+                                                            value="delete"
+                                                            color="fg.error"
+                                                            _hover={{
+                                                                bg: 'bg.error',
+                                                                color: 'fg.error'
+                                                            }}
+                                                        >
+                                                            Delete...
+                                                        </MenuItem>
+                                                    </MenuContent>
+                                                </MenuRoot>
                                             </Group>
                                         </Table.Cell>
                                     </Table.Row>

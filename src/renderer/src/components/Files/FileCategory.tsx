@@ -10,13 +10,13 @@ function getFileCategory(filename: string): { category: string; color: string } 
   }
 
   if (imageExtensions.includes(extension)) {
-    return { category: 'Image', color: 'pink' };
+    return { category: 'Images', color: 'pink' };
   }
   if (documentExtensions.includes(extension)) {
     return { category: 'Documents', color: 'blue' };
   }
   if (videoExtensions.includes(extension)) {
-    return { category: 'Video', color: 'green' };
+    return { category: 'Videos', color: 'green' };
   }
 
   return { category: 'Other', color: 'orange' };

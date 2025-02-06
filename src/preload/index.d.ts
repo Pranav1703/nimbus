@@ -27,6 +27,7 @@ type api = {
   onFileChange: (callback: callbackFunc)=> void
   cleanUpWatchers: ()=>void
   getFileHash: (filePath:string)=>Promise<string>
+  checkState: (email:string)=>Promise<void>
 }
 
 declare global {

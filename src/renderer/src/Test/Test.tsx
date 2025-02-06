@@ -1,6 +1,5 @@
-import { User } from "@/main/models/user"
 import { Box, Button, Input } from "@chakra-ui/react"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 
 const Test = () => {
 
@@ -12,6 +11,16 @@ const Test = () => {
   const [rootId,setRootId] = useState<string>("")
   const [backupPath,setBackupPath] = useState<string>("")
   const [backupFileValue,setBackupFileValue] = useState<string>("")
+
+  const fileStateCheck = async()=>{
+    const userInfo = await window.api.getInfo()
+    window.api.checkState(userInfo!.user?.emailAddress as string)
+  }
+
+  useEffect(() => {
+    fileStateCheck()
+  }, [])
+  
 
   window.api.onFileChange((_event,msg)=>{
     console.log(msg)

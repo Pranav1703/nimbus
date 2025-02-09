@@ -7,8 +7,6 @@ import mime from 'mime';
 import { uploadFolder } from "./helper";
 import { User } from "../models/user";
 import { FileState } from "../models/state";
-import { file } from "googleapis/build/src/apis/file";
-import { Console } from "console";
 
 //https://developers.google.com/drive/api/reference/rest/v3/about#About
 
@@ -231,7 +229,6 @@ export const registerFileIpcHandlers = ()=>{
       const user = await User.findOne({
         email:email
       })
-      console.log(user)
       if(user){
 
         const fileState = await FileState.create({
@@ -250,6 +247,8 @@ export const registerFileIpcHandlers = ()=>{
           }
         )
         console.log("added path: ",updated)
+      }else{
+        console.log("user not found")
       }
     })
 

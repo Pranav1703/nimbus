@@ -57,9 +57,9 @@ export const registerUserIpcHandlers = ()=>{
         const result = await User.findOne({
             email: email
         })
-        console.log("user already exists?",result)
+        
         if(result){
-            console.log("user already exists")
+            console.log("user already exists. User: ",result)
             return 
         }else{
             const newUser = await User.create({

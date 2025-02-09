@@ -1,5 +1,4 @@
 import { contextBridge,ipcRenderer } from 'electron'
-import { file } from 'googleapis/build/src/apis/file'
 // Custom APIs for renderer
 
 // Use `contextBridge` APIs to expose Electron APIs to
@@ -32,7 +31,8 @@ if (process.contextIsolated) {
       initWatcher: (watchPaths:string[])=>ipcRenderer.invoke("watch",watchPaths),
       onFileChange: (callback) =>ipcRenderer.on("file-change",callback),
       cleanUpWatchers: ()=> ipcRenderer.invoke("cleanup-watchers"),
-      getFileHash: (filePath:string)=>ipcRenderer.invoke("get-hash",filePath)
+      getFileHash: (filePath:string)=>ipcRenderer.invoke("get-hash",filePath),
+      checkState: (email:string)=>ipcRenderer.invoke("check-state",email)
     })
   } catch (error) {
     console.error(error)

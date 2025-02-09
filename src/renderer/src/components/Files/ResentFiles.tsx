@@ -39,10 +39,10 @@ const ResentFiles = ({
                                             <HStack gap={4}>
                                                 <Box
                                                     p={3}
-                                                    bg={`${color}.900/80`}
+                                                    bg={`${color}.800/10`}
                                                     borderRadius={'lg'}
                                                 >
-                                                    <Icon fontSize="2xl" color={`${color}.200`}>
+                                                    <Icon fontSize="2xl" color={`${color}.400`}>
                                                         <CategoryIcon />
                                                     </Icon>
                                                 </Box>

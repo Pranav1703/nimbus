@@ -77,8 +77,8 @@ const Hero = ({
                             }}
                         >
                             <HStack>
-                                <Box p={3} bg={`${item.color}.900/80`} borderRadius={'lg'}>
-                                    <Icon fontSize="2xl" color={`${item.color}.200`}>
+                                <Box p={3} bg={`${item.color}.800/10`} borderRadius={'lg'}>
+                                    <Icon fontSize="2xl" color={`${item.color}.400`}>
                                         {item.icon}
                                     </Icon>
                                 </Box>

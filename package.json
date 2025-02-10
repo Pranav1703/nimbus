@@ -29,6 +29,7 @@
     "@emotion/react": "^11.14.0",
     "@google-cloud/local-auth": "^2.1.0",
     "chokidar": "^4.0.3",
+    "dotenv": "^16.4.7",
     "electron-updater": "^6.1.7",
     "googleapis": "^105.0.0",
     "mime": "^4.0.6",

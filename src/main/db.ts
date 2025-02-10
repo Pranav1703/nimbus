@@ -1,6 +1,7 @@
 import mongoose from "mongoose";
+import "dotenv/config"
 
-const MONGO_URI = "mongodb://localhost:27017/nimbus";
+const MONGO_URI = process.env.DB || "mongodb://localhost:27017/nimbus";
 
 export const connectDB = async () => {
     try {

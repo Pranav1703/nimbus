@@ -64,7 +64,7 @@ const Hero = ({
                 <For each={values}>
                     {(item, index) => (
                         <Button
-                            variant={activeButton === index ? 'subtle' : 'ghost'} // Active button styling
+                            variant={activeButton === index ? 'subtle' : 'plain'} // Active button styling
                             w={'1/4'}
                             p={3}
                             justifyContent={'flex-start'}
@@ -75,6 +75,7 @@ const Hero = ({
                             onClick={() => {
                                 handleButtonClick(index, item.heading)
                             }}
+                            _hover={{ borderColor: `${item.color}.400` }}
                         >
                             <HStack>
                                 <Box p={3} bg={`${item.color}.800/10`} borderRadius={'lg'}>

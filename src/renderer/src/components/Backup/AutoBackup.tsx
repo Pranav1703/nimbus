@@ -26,7 +26,7 @@ function AutoBackup(): JSX.Element {
     console.log(selectedTime)
     return (
         <>
-            <Box p={4} borderRadius={'lg'} borderColor={'gray.800'} borderWidth={1} w={'3/4'}>
+            <Box p={4} borderRadius={'lg'} borderColor={'gray.800'} borderWidth={1} w={'5/6'}>
                 <VStack alignItems={'flex-start'} gap={2}>
                     <Text textStyle={'xl'} fontWeight={'medium'} pb={2}>
                         Automatic Backup
@@ -57,7 +57,7 @@ function AutoBackup(): JSX.Element {
                             Backup Frequency
                         </SelectLabel>
                         <SelectTrigger>
-                            <SelectValueText placeholder="Every 6 Hours" />
+                            <SelectValueText placeholder="Backup Frequency..." />
                         </SelectTrigger>
                         <SelectContent>
                             {frameworks.items.map((movie) => (

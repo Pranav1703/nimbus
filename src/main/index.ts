@@ -89,7 +89,7 @@ app.whenReady().then(async() => {
 
   createWindow()
 
-  await connectDB()
+  // await connectDB()
   registerUserIpcHandlers()
   registerFileIpcHandlers()
   registerWatcherIPCHandlers()

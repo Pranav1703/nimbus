@@ -5,7 +5,7 @@ import AdvancedOpt from '../components/Backup/AdvancedOpt'
 function Backup(): JSX.Element {
   return (
     <div>
-      <HStack flexDirection={'column'}>
+      <HStack flexDirection={'column'} gap={4}>
         <AutoBackup/>
         <AdvancedOpt/>
       </HStack>

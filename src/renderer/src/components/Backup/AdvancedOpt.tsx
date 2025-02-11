@@ -5,9 +5,9 @@ import { Switch } from '../ui/switch'
 function AdvancedOpt(): JSX.Element {
     return (
         <>
-            <Box p={4} borderRadius={'lg'} borderColor={'gray.800'} borderWidth={1} w={'3/4'}>
+            <Box p={4} borderRadius={'lg'} borderColor={'gray.800'} borderWidth={1} w={'5/6'}>
                 <Text textStyle={'xl'} fontWeight={'medium'} pb={2}>
-                    Automatic Backup
+                    Advanced Options
                 </Text>
                 <VStack alignItems={'flex-start'} gap={4}>
                     <HStack justifyContent={'space-between'} w={'-webkit-fill-available'}>

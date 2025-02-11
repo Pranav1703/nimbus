@@ -34,7 +34,7 @@ const ResentFiles = ({
                                 const { category, color } = getFileCategory(item.name)
                                 const CategoryIcon = Icons[category] || Icons['Add']
                                 return (
-                                    <Table.Row key={index}>
+                                    <Table.Row key={index} _hover={{ bg: `${color}.800/10` }}>
                                         <Table.Cell>
                                             <HStack gap={4}>
                                                 <Box

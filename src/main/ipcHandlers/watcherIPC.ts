@@ -8,6 +8,7 @@ import { IFileState } from "../models/state";
 export const activeWatchers = new Map();
 
 export const registerWatcherIPCHandlers = ()=>{
+    const recentChanges = new Set();
     ipcMain.handle("watch",async(_event,watchPaths:string[])=>{
 
         watchPaths.forEach((path) => {
@@ -31,10 +32,14 @@ export const registerWatcherIPCHandlers = ()=>{
             activeWatchers.set(path, watcher); // Store watcher by path
 
             // Handle change event
-            watcher.on('change', (changedPath, stats) => {
-                if (stats && stats.isFile()) {
-                    console.log(`Change occurred on ${changedPath}`);
-                    mainWindow.webContents.send("file-change", changedPath);
+            watcher.on('all', (event, changedPath, stats) => {
+                if (!recentChanges.has(changedPath)) {
+                    recentChanges.add(changedPath);
+                    console.log(`Event: ${event} on ${changedPath}`);
+                    mainWindow.webContents.send("file-change", { event, changedPath });
+
+                    // Remove from Set after 300 ms to allow future events
+                    setTimeout(() => recentChanges.delete(changedPath), 300);
                 }
             });
 

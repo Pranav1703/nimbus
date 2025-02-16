@@ -4,14 +4,14 @@ import { authClient } from "./userIPC";
 import * as fs from 'fs';
 import path from 'path';
 import mime from 'mime';
-import { uploadFolder } from "./helper";
+import { uploadFolder } from "../helper";
 import { User } from "../models/user";
 import { FileState } from "../models/state";
 
 //https://developers.google.com/drive/api/reference/rest/v3/about#About
 
 export type uploadResp = {
-  uploaded: boolean
+  id: string | null | undefined
 }
 
 export const registerFileIpcHandlers = ()=>{
@@ -74,12 +74,12 @@ export const registerFileIpcHandlers = ()=>{
         console.log("bytes read :",stream.bytesRead)
         console.log("----------------------------------")
         return {
-          uploaded: true
+          id: file.data.id
         }
       } catch (error) {
         console.log("error while trying to upload, Error:",error)
         return {
-          uploaded: false
+          id: null
         }
       }
 
@@ -107,14 +107,14 @@ export const registerFileIpcHandlers = ()=>{
       })
 
       try {
-        await uploadFolder(drive,folderPath,rootFolderId)
+        const folderId = await uploadFolder(drive,folderPath,rootFolderId)
         return {
-          uploaded: true
+          id: folderId
         }
       } catch (error) {
         console.log("Error while uploading a folder: ",error)
         return {
-          uploaded: false
+          id: null
         }
       }
   
@@ -274,5 +274,27 @@ export const registerFileIpcHandlers = ()=>{
         }
       )
       console.log("updated fileState: ",fileState)
+    })
+
+    ipcMain.handle("update-file",async(_event,filePath:string,fileId:string)=>{
+      const drive = google.drive({
+        version: 'v3',
+        auth: authClient
+      })
+
+      const fileName = path.basename(filePath);
+
+      try {
+          const response = await drive.files.update({
+              fileId,
+              media: {
+                  mimeType: 'application/octet-stream',
+                  body: fs.createReadStream(filePath),
+              }
+          });
+          console.log(`File updated: ${fileName}`);
+      } catch (error) {
+          console.error(`Failed to update file: ${fileName}`, error);
+      }
     })
 }

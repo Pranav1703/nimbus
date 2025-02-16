@@ -1,31 +1,55 @@
 import { ipcMain } from "electron"
 import chokidar, { FSWatcher } from "chokidar"
 import { mainWindow } from "../index"
-import { computeFileHash } from "./helper"
+import { computeFileHash } from "../helper"
 import { User } from "../models/user";
 import { IFileState } from "../models/state";
 
-export const activeWatchers: Set<FSWatcher> = new Set();
+export const activeWatchers = new Map();
 
 export const registerWatcherIPCHandlers = ()=>{
     ipcMain.handle("watch",async(_event,watchPaths:string[])=>{
-        const watcher = chokidar.watch(watchPaths,{
-            persistent: true,
-            ignoreInitial: true
-        })
 
-        console.log(`watcher initialized on paths: ${watchPaths}`)
-        // "C:\Users\prana_zhfhs6u\OneDrive\Desktop\testing"
-        activeWatchers.add(watcher)
-        let fileState:string;
-        watcher.on('all',(event,path)=>{
-            console.log(`Event: ${event} occurred on ${path}`);
-            fileState = `Event: ${event} occurred on ${path}`;
-            mainWindow.webContents.send("file-change",fileState)
-        })
-        watcher.on("error", (error) => {
-            console.error("Watcher error:", error);
-        });
+        watchPaths.forEach((path) => {
+            // Check if the path is already being watched
+            if (activeWatchers.has(path)) {
+                console.log(`Already watching: ${path}`);
+                return;
+            }
+
+            // Create a new watcher
+            const watcher = chokidar.watch(path, {
+                persistent: true,
+                ignoreInitial: true,
+                awaitWriteFinish: {
+                    stabilityThreshold: 200,
+                    pollInterval: 100
+                }
+            });
+
+            console.log(`Watcher initialized on path: ${path}`);
+            activeWatchers.set(path, watcher); // Store watcher by path
+
+            // Handle change event
+            watcher.on('change', (changedPath, stats) => {
+                if (stats && stats.isFile()) {
+                    console.log(`Change occurred on ${changedPath}`);
+                    mainWindow.webContents.send("file-change", changedPath);
+                }
+            });
+
+            // Handle errors
+            watcher.on("error", (error) => {
+                console.error("Watcher error:", error);
+            });
+
+            // Log total files being watched
+            // const watchedPaths = watcher.getWatched();
+            // const watcherCount = Object.values(watchedPaths).reduce((total, files) => total + files.length, 0);
+            // console.log(`Total files being watched: ${watcherCount}`); // not working
+
+        });  
+
     })
 
     ipcMain.handle("get-hash",async(_event,filePath:string):Promise<string | null>=>{

@@ -6,7 +6,7 @@ import { registerFileIpcHandlers } from './ipcHandlers/fileIPC'
 import { registerUserIpcHandlers } from './ipcHandlers/userIPC'
 import path from "node:path"
 import { registerWatcherIPCHandlers } from './ipcHandlers/watcherIPC'
-import { cleanUpWatchers } from './ipcHandlers/helper'
+import { cleanUpWatchers } from './helper'
 import { connectDB } from './db'
 
 export let mainWindow: BrowserWindow;

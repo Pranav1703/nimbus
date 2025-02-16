@@ -22,6 +22,7 @@ type api = {
   getRoot: ()=>Promise<string | null>
   savePath: (email:string,filePath:string)=>Promise<void>
   saveState: (email:string,filePath:string,hash:string) => Promise<void>
+  updateFile: (filePath:string,fileId:string) => Promise<any>
 
   initWatcher: (watchPaths: string[])=>Promise<void>
   onFileChange: (callback: callbackFunc)=> void

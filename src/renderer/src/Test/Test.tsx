@@ -11,6 +11,8 @@ const Test = () => {
   const [rootId,setRootId] = useState<string>("")
   const [backupPath,setBackupPath] = useState<string>("")
   const [backupFileValue,setBackupFileValue] = useState<string>("")
+  const [backupFileId,setBackupFileId] = useState<string>("")
+
 
   const fileStateCheck = async()=>{
     const userInfo = await window.api.getInfo()
@@ -22,8 +24,10 @@ const Test = () => {
   }, [])
   
 
-  window.api.onFileChange((_event,msg)=>{
-    console.log(msg)
+  window.api.onFileChange(async(_event,path)=>{
+    console.log(path)
+    if (!path) return;
+    await window.api.updateFile(backupPath,backupFileId)
   })
 
   const fileChange = async(e:React.ChangeEvent<HTMLInputElement>)=>{
@@ -39,7 +43,7 @@ const Test = () => {
     }
     try {
       console.log(filePath)
-      await window.api.fileUpload(filePath,rootId);
+      const {id} = await window.api.fileUpload(filePath,rootId);
     } catch (error) {
       console.log("error uploading file: ",error)
     }    
@@ -98,7 +102,7 @@ const Test = () => {
     }
   }
   
-  const logger = async()=>{
+  const userInfoLogger = async()=>{
     try {
       const info = await window.api.getInfo()  //user, storageQuota in Bytes, maxUploadSize
       console.log("user info: ",info?.user)
@@ -113,8 +117,6 @@ const Test = () => {
     try {
       await window.api.initWatcher(["C:/Users/prana_zhfhs6u/OneDrive/Desktop/testing/watchThis.txt"])      
       
-
-
     } catch (error) {
       console.log(error)
     }
@@ -153,11 +155,12 @@ const Test = () => {
 
     if(rootId && userInfo?.user?.emailAddress){
       await window.api.saveUser(userInfo.user.emailAddress,rootId)
-      const resp = await window.api.fileUpload(backupPath,rootId)
+      const {id} = await window.api.fileUpload(backupPath,rootId)
+      setBackupFileId(id!)
       window.api.initWatcher([backupPath])
       await window.api.savePath(userInfo.user.emailAddress,backupPath)
       const hash = await window.api.getFileHash(backupPath)
-      await window.api.saveState(userInfo.user.emailAddress,backupPath,hash)
+      await window.api.saveState(userInfo.user.emailAddress,backupPath,hash) //before app quits 
     }
 
   }
@@ -235,7 +238,7 @@ const Test = () => {
         <div className="log">
           <Button
           m={10}
-          onClick={logger}
+          onClick={userInfoLogger}
           >
             Log response
           </Button>

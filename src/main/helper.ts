@@ -2,9 +2,9 @@ import * as fs from 'fs';
 import path from 'path';
 import mime from 'mime';
 import crypto from 'crypto';
-import { activeWatchers } from './watcherIPC';
+import { activeWatchers } from './ipcHandlers/watcherIPC';
 
-export async function uploadFolder(drive, folderPath:string, parentFolderId?:string) {
+export async function uploadFolder(drive, folderPath:string, parentFolderId?:string):Promise<any> {
     const folderName = path.basename(folderPath);
   
     // Create the folder in Google Drive
@@ -52,6 +52,7 @@ export async function uploadFolder(drive, folderPath:string, parentFolderId?:str
         await uploadFolder(drive, itemPath, folder.data.id);
       }
     }
+    return folder.data.id
 }
 
 export function computeFileHash(filePath: string): Promise<string> {
@@ -65,11 +66,15 @@ export function computeFileHash(filePath: string): Promise<string> {
   });
 }
 
-export async function cleanUpWatchers (){
-  console.log("watcher clean up started")
-  for (const watcher of activeWatchers) {
-    await watcher.close();
-    console.log("Watcher closed");
+export async function cleanUpWatchers() {
+  console.log("Watcher cleanup started");
+
+  // Iterate through all watchers in the Map
+  for (const [path, watcher] of activeWatchers.entries()) {
+      await watcher.close(); // Close each watcher
+      console.log(`Watcher closed for path: ${path}`);
   }
-  activeWatchers.clear();
+  
+  activeWatchers.clear(); // Clear the Map
+  console.log("All watchers cleared");
 }

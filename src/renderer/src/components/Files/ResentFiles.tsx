@@ -1,9 +1,27 @@
-import { Box, For, Group, HStack, Icon, IconButton, Table, Text, VStack } from '@chakra-ui/react'
-import React from 'react'
+import {
+    Box,
+    Center,
+    For,
+    Group,
+    HStack,
+    Icon,
+    IconButton,
+    Table,
+    Text,
+    VStack
+} from '@chakra-ui/react'
+import React, { useState } from 'react'
 import Icons from '../../assets/Icons'
 import getFileCategory from './FileCategory'
 import { NativeSelectField, NativeSelectRoot } from '../ui/native-select'
 import { MenuContent, MenuItem, MenuRoot, MenuTrigger } from '../ui/menu'
+import {
+    PaginationItems,
+    PaginationNextTrigger,
+    PaginationPageText,
+    PaginationPrevTrigger,
+    PaginationRoot
+} from '../ui/pagination'
 
 interface FileProps {
     id: number
@@ -18,6 +36,13 @@ const ResentFiles = ({
     Files: FileProps[]
     HeadingName: string
 }): JSX.Element => {
+    const [page, setPage] = useState(1)
+    const count = Files.length
+    const pageSize = 5
+    const startRange = (page - 1) * pageSize
+    const endRange = startRange + pageSize
+
+    const visibleItems = Files.slice(startRange, endRange)
     return (
         <div>
             <Box pt={5}>
@@ -29,7 +54,7 @@ const ResentFiles = ({
                         </Table.Row>
                     </Table.Header>
                     <Table.Body>
-                        <For each={Files}>
+                        <For each={visibleItems}>
                             {(item, index) => {
                                 const { category, color } = getFileCategory(item.name)
                                 const CategoryIcon = Icons[category] || Icons['Add']
@@ -89,6 +114,20 @@ const ResentFiles = ({
                         </For>
                     </Table.Body>
                 </Table.Root>
+                <HStack justifyContent="center" mt={5} hidden={count <= pageSize}>
+                    <PaginationRoot
+                        page={page}
+                        count={count}
+                        pageSize={pageSize}
+                        onPageChange={(e) => setPage(e.page)}
+                    >
+                        <HStack>
+                            <PaginationPrevTrigger />
+                            <PaginationPageText />
+                            <PaginationNextTrigger />
+                        </HStack>
+                    </PaginationRoot>
+                </HStack>
             </Box>
         </div>
     )

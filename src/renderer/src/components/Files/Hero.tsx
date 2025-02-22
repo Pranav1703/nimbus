@@ -70,12 +70,16 @@ const Hero = ({
                             justifyContent={'flex-start'}
                             borderRadius={'lg'}
                             key={index}
-                            borderColor={'gray.800'}
+                            
                             h={'max-content'}
                             onClick={() => {
                                 handleButtonClick(index, item.heading)
                             }}
                             _hover={{ borderColor: `${item.color}.400` }}
+                            // _active={{ borderColor: `${item.color}.400` }}
+                            // _focus={{ borderColor: activeButton === index ? `${item.color}.400`: '' }}
+                            borderColor={activeButton === index ? `${item.color}.400/60` : 'gray.800'}
+                            bgColor={activeButton === index ? `${item.color}.800/10` : ''}
                         >
                             <HStack>
                                 <Box p={3} bg={`${item.color}.800/10`} borderRadius={'lg'}>

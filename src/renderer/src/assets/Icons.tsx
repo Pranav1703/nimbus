@@ -10,7 +10,7 @@ import {
   MdOutlineSettings,
   MdOutlineSpaceDashboard
 } from 'react-icons/md'
-import { MdOutlineRestorePage, MdOutlineScheduleSend } from 'react-icons/md'
+import { MdOutlineRestorePage, MdOutlineScheduleSend, MdOutlineArrowDropDownCircle } from 'react-icons/md'
 import { FcGoogle } from "react-icons/fc";
 const Icons = {
   Add: IoAdd,
@@ -29,6 +29,7 @@ const Icons = {
   Dashboard: MdOutlineSpaceDashboard,
   Backup2: MdOutlineRestorePage,
   Schedule: MdOutlineScheduleSend,
-  Google: FcGoogle
+  Google: FcGoogle,
+  ArrowDown: MdOutlineArrowDropDownCircle
 }
 export default Icons

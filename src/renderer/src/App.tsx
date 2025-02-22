@@ -11,6 +11,7 @@ import Test2 from './Test/Test2'
 import { createContext, useEffect, useState } from 'react'
 import Hero from './Pages/Hero'
 import Layout from './components/Layout'
+import { useTheme } from 'next-themes'
 
 type userContext = {
   user: boolean
@@ -41,6 +42,10 @@ function App(): JSX.Element {
     checkUserToken()
   }, [])
 
+
+  const { setTheme } = useTheme()
+
+  setTheme('dark')
 
   return (
     <>

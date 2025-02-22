@@ -4,8 +4,9 @@ import { MdHistoryToggleOff, MdSettingsBackupRestore, MdStorage } from 'react-ic
 import { ProgressBar, ProgressRoot } from '../ui/progress'
 import StorageConv from './StorageConv'
 import { Skeleton } from '../ui/skeleton'
-import { useTheme } from 'next-themes'
 import { system } from '../theme'
+import { useTheme } from 'next-themes'
+import { set } from 'mongoose'
 
 function Main({
   Main_data
@@ -57,13 +58,6 @@ function Main({
     }
   ]
 
-  // const { theme, setTheme } = useTheme()
-  // if (system._config.globalCss) {
-  //   if (system._config.globalCss.html.colorPalette) {
-  //     setTheme(system._config.globalCss.html.colorPalette as string)
-  //   }
-  // }
-  console.log(system)
 
   return (
     <div>
@@ -94,7 +88,7 @@ function Main({
                     )}
                   </Text>
                 </VStack>
-                <Icon size={'lg'} color={"teal"}>
+                <Icon size={'lg'} color={system._config?.globalCss?.html?.colorPalette || 'teal'}>
                   {item.icon}
                 </Icon>
               </HStack>

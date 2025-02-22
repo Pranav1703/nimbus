@@ -5,6 +5,7 @@ import StorageUsage from '../components/Settings/StorageUsage'
 import DeleteAcc from '../components/Settings/DeleteAcc'
 import { useEffect, useState } from 'react'
 import { drive_v3 } from 'googleapis'
+import CollorPallet from '../components/Settings/CollorPallet'
 
 function Settings(): JSX.Element {
     const [userinfo, setuserinfo] = useState<drive_v3.Schema$About>({})
@@ -32,6 +33,7 @@ function Settings(): JSX.Element {
                 <Connected_Acc userinfo={userinfo} loading={loading}/>
                 <StorageUsage userinfo={userinfo} loading={loading}/>
                 <DeleteAcc />
+                <CollorPallet/>
             </HStack>
         </>
     )

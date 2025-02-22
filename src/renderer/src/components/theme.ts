@@ -20,7 +20,7 @@ const config = defineConfig({
         rotate: { value: "rotate 0.5s ease-in-out infinite" },
       },
     },
-  }  
+  },
 })
 
 export const system = createSystem(defaultConfig, config)

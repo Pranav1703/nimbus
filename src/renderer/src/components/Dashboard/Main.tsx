@@ -57,12 +57,13 @@ function Main({
     }
   ]
 
-  const { theme, setTheme } = useTheme()
-  if (system._config.globalCss) {
-    if (system._config.globalCss.html.colorPalette) {
-      setTheme(system._config.globalCss.html.colorPalette as string)
-    }
-  }
+  // const { theme, setTheme } = useTheme()
+  // if (system._config.globalCss) {
+  //   if (system._config.globalCss.html.colorPalette) {
+  //     setTheme(system._config.globalCss.html.colorPalette as string)
+  //   }
+  // }
+  console.log(system)
 
   return (
     <div>
@@ -93,7 +94,7 @@ function Main({
                     )}
                   </Text>
                 </VStack>
-                <Icon size={'lg'} color={theme}>
+                <Icon size={'lg'} color={"teal"}>
                   {item.icon}
                 </Icon>
               </HStack>

@@ -7,7 +7,12 @@ import { useEffect, useState } from 'react'
 import { drive_v3 } from 'googleapis'
 import CollorPallet from '../components/Settings/CollorPallet'
 
-function Settings(): JSX.Element {
+interface CollorPalletProps {
+    selectedColor: string
+    onChange: (color: string) => void
+}
+
+function Settings({ selectedColor, onChange }: CollorPalletProps): JSX.Element {
     const [userinfo, setuserinfo] = useState<drive_v3.Schema$About>({})
     const [loading, setloading] = useState(true)
     useEffect(() => {
@@ -29,11 +34,11 @@ function Settings(): JSX.Element {
     return (
         <>
             <HStack flexDirection={'column'} gap={4} mb={15}>
-                <Profile userinfo={userinfo} loading={loading}/>
-                <Connected_Acc userinfo={userinfo} loading={loading}/>
-                <StorageUsage userinfo={userinfo} loading={loading}/>
+                <Profile userinfo={userinfo} loading={loading} />
+                <CollorPallet selectedColor={selectedColor} onChange={onChange} />
+                <Connected_Acc userinfo={userinfo} loading={loading} />
+                <StorageUsage userinfo={userinfo} loading={loading} />
                 <DeleteAcc />
-                <CollorPallet/>
             </HStack>
         </>
     )

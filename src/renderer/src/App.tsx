@@ -12,6 +12,7 @@ import { createContext, useEffect, useState } from 'react'
 import Hero from './Pages/Hero'
 import Layout from './components/Layout'
 import { useTheme } from 'next-themes'
+import CustomChakraProvider from './components/CustomChakraProvider'
 
 type userContext = {
   user: boolean
@@ -42,13 +43,17 @@ function App(): JSX.Element {
     checkUserToken()
   }, [])
 
+  //Adding the color palette state
+  const [colorPalette, setColorPalette] = useState('teal'); // Default color
 
+
+  //Settind the default mode to dark
   const { setTheme } = useTheme()
-
   setTheme('dark')
 
   return (
     <>
+    <CustomChakraProvider colorPalette={colorPalette}>
       <UserContext.Provider value={{user,setUser}}>
         <HashRouter>
           <Routes>
@@ -56,11 +61,11 @@ function App(): JSX.Element {
               <>
                 <Route path="/" element={<Navigate to="/Dashboard" />} />
                 <Route path="/" element={<Layout />}>
-                  <Route path="Dashboard" element={<Dashboard />} />
+                  <Route path="Dashboard" element={<Dashboard selectedColor={colorPalette} />} />
                   <Route path="Files" element={<Files />} />
                   <Route path="Backup" element={<Backup />} />
                   <Route path="Versions" element={<Versions />} />
-                  <Route path="Settings" element={<Settings />} />
+                  <Route path="Settings" element={<Settings selectedColor={colorPalette} onChange={setColorPalette} />} />
                   <Route path="test" element={<Test />} />
                   <Route path="test2" element={<Test2 />} />
                 </Route>
@@ -76,6 +81,7 @@ function App(): JSX.Element {
           </Routes>
         </HashRouter>
       </UserContext.Provider>
+      </CustomChakraProvider>
     </>
   )
 }

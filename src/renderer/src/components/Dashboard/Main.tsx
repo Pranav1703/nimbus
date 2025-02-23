@@ -4,12 +4,11 @@ import { MdHistoryToggleOff, MdSettingsBackupRestore, MdStorage } from 'react-ic
 import { ProgressBar, ProgressRoot } from '../ui/progress'
 import StorageConv from './StorageConv'
 import { Skeleton } from '../ui/skeleton'
-import { system } from '../theme'
 import { useTheme } from 'next-themes'
 import { set } from 'mongoose'
 
 function Main({
-  Main_data
+  Main_data, selectedColor
 }: {
   Main_data: {
     curr_storage: number
@@ -17,7 +16,8 @@ function Main({
     num_backups: number
     last_backup: number
     Num_versions: number
-  }
+  },
+  selectedColor:string
 }): JSX.Element {
   const [loading, setLoading] = useState(true)
 
@@ -88,7 +88,7 @@ function Main({
                     )}
                   </Text>
                 </VStack>
-                <Icon size={'lg'} color={system._config?.globalCss?.html?.colorPalette || 'teal'}>
+                <Icon size={'lg'} color={selectedColor || 'teal'}>
                   {item.icon}
                 </Icon>
               </HStack>

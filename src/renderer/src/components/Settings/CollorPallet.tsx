@@ -1,22 +1,20 @@
-import { Box, HStack, Icon, Menu, Text, VStack } from '@chakra-ui/react'
+import { Box, HStack, Icon, Text, VStack } from '@chakra-ui/react'
 import React from 'react'
 import { Switch } from '../ui/switch'
-import {
-    MenuContent,
-    MenuItem,
-    MenuRadioItem,
-    MenuRadioItemGroup,
-    MenuRoot,
-    MenuTrigger
-} from '../ui/menu'
+import { MenuContent, MenuRadioItem, MenuRadioItemGroup, MenuRoot, MenuTrigger } from '../ui/menu'
 import { Button } from '../ui/button'
 import Icons from '../../assets/Icons'
 
-const CollorPallet = (): JSX.Element => {
-    const [color, setColor] = React.useState('Teal')
+interface CollorPalletProps {
+    selectedColor: string;
+    onChange: (color: string) => void;
+  }
+
+
+const CollorPallet = ({ selectedColor, onChange }: CollorPalletProps): JSX.Element => {
     
-    const handleValueChange = (value: string) => {
-        setColor(value)
+    const handleValueChange = (value: string):void => {
+        onChange(value.toLowerCase())
     }
     return (
         <>
@@ -29,7 +27,9 @@ const CollorPallet = (): JSX.Element => {
                 bg={'gray.900/50'}
             >
                 <VStack alignItems={'flex-start'} gap={3}>
-                    <Text fontSize={'xl'} fontWeight={'semibold'}>General</Text>
+                    <Text fontSize={'xl'} fontWeight={'semibold'}>
+                        General
+                    </Text>
                     <HStack justifyContent={'space-between'} w={'-webkit-fill-available'}>
                         <VStack alignItems={'flex-start'} gap={1}>
                             <Text textStyle={'lg'}>Launch on System Startup</Text>
@@ -49,7 +49,7 @@ const CollorPallet = (): JSX.Element => {
                                     w={'full'}
                                     justifyContent={'space-between'}
                                 >
-                                    {color}
+                                    {selectedColor}
                                     <Icon>
                                         <Icons.ArrowDown />
                                     </Icon>
@@ -57,18 +57,19 @@ const CollorPallet = (): JSX.Element => {
                             </MenuTrigger>
                             <MenuContent>
                                 <MenuRadioItemGroup
-                                    value={color}
-                                    onValueChange={(value) => {handleValueChange(value.value)}}
-                                    defaultValue={color}
+                                    value={selectedColor}
+                                    onValueChange={(value) => {
+                                        handleValueChange(value.value)
+                                    }}
+                                    defaultValue={selectedColor}
                                 >
-                                    <MenuRadioItem value="Teal">Teal</MenuRadioItem>
-                                    <MenuRadioItem value="Orange">Orange</MenuRadioItem>
-                                    <MenuRadioItem value="WhiteAlpha">WhiteAlpha</MenuRadioItem>
-                                    <MenuRadioItem value="Cyan">Cyan</MenuRadioItem>
-                                    <MenuRadioItem value="Blue">Blue</MenuRadioItem>
-                                    <MenuRadioItem value="Green">Green</MenuRadioItem>
-                                    <MenuRadioItem value="Yellow">Yellow</MenuRadioItem>
-                                    <MenuRadioItem value="Red">Red</MenuRadioItem>
+                                    <MenuRadioItem value="teal">Teal</MenuRadioItem>
+                                    <MenuRadioItem value="orange">Orange</MenuRadioItem>
+                                    <MenuRadioItem value="cyan">Cyan</MenuRadioItem>
+                                    <MenuRadioItem value="blue">Blue</MenuRadioItem>
+                                    <MenuRadioItem value="green">Green</MenuRadioItem>
+                                    <MenuRadioItem value="yellow">Yellow</MenuRadioItem>
+                                    <MenuRadioItem value="red">Red</MenuRadioItem>
                                 </MenuRadioItemGroup>
                             </MenuContent>
                         </MenuRoot>

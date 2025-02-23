@@ -10,8 +10,10 @@ import {
   MdOutlineSettings,
   MdOutlineSpaceDashboard
 } from 'react-icons/md'
-import { MdOutlineRestorePage, MdOutlineScheduleSend } from 'react-icons/md'
-
+import { MdOutlineRestorePage, MdOutlineScheduleSend, MdOutlineArrowDropDownCircle } from 'react-icons/md'
+import { FcGoogle } from "react-icons/fc";
+import { IoWarningOutline } from "react-icons/io5";
+import { IoMdCheckmarkCircleOutline } from "react-icons/io";
 const Icons = {
   Add: IoAdd,
   Documents: IoDocumentTextOutline,
@@ -28,6 +30,10 @@ const Icons = {
   Settings: MdOutlineSettings,
   Dashboard: MdOutlineSpaceDashboard,
   Backup2: MdOutlineRestorePage,
-  Schedule: MdOutlineScheduleSend
+  Schedule: MdOutlineScheduleSend,
+  Google: FcGoogle,
+  ArrowDown: MdOutlineArrowDropDownCircle,
+  warning: IoWarningOutline,
+  success: IoMdCheckmarkCircleOutline
 }
 export default Icons

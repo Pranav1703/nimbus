@@ -4,9 +4,11 @@ import { MdHistoryToggleOff, MdSettingsBackupRestore, MdStorage } from 'react-ic
 import { ProgressBar, ProgressRoot } from '../ui/progress'
 import StorageConv from './StorageConv'
 import { Skeleton } from '../ui/skeleton'
+import { useTheme } from 'next-themes'
+import { set } from 'mongoose'
 
 function Main({
-  Main_data
+  Main_data, selectedColor
 }: {
   Main_data: {
     curr_storage: number
@@ -14,7 +16,8 @@ function Main({
     num_backups: number
     last_backup: number
     Num_versions: number
-  }
+  },
+  selectedColor:string
 }): JSX.Element {
   const [loading, setLoading] = useState(true)
 
@@ -55,6 +58,7 @@ function Main({
     }
   ]
 
+
   return (
     <div>
       <HStack >
@@ -70,6 +74,8 @@ function Main({
               h={'40'}
               borderWidth={1}
               
+              bg={'gray.900/50'}
+              
             >
               <HStack justifyContent={'space-between'} alignItems={'flex-start'}>
                 <VStack alignItems={'flex-start'}>
@@ -84,7 +90,7 @@ function Main({
                     )}
                   </Text>
                 </VStack>
-                <Icon color={'teal'} size={'lg'}>
+                <Icon size={'lg'} color={selectedColor || 'teal'}>
                   {item.icon}
                 </Icon>
               </HStack>

@@ -1,28 +1,110 @@
 diff --git a/node_modules/@google-cloud/local-auth/build/src/index.js b/node_modules/@google-cloud/local-auth/build/src/index.js
-index 93f05d4..a73d3c9 100644
+index 93f05d4..8a39635 100644
 --- a/node_modules/@google-cloud/local-auth/build/src/index.js
 +++ b/node_modules/@google-cloud/local-auth/build/src/index.js
-@@ -85,7 +85,22 @@ async function authenticate(options) {
+@@ -85,7 +85,104 @@ async function authenticate(options) {
                  });
                  client.credentials = tokens;
                  resolve(client);
 -                res.end('Authentication successful! Please return to the console.');
 +                res.writeHead(200, { 'Content-Type': 'text/html' });
-+res.end(`
-+  <html>
-+    <head>
-+        <script type="text/javascript">
-+            setTimeout(() => {
-+            window.location.href = "nimbus://";
-+            }, 1000);
-+        </script>
-+    </head>
-+    <body>
-+      <p>thank you for login you will be redirected to Nimbus.</p>
-+    </body>
-+  </html>
++                res.end(`<!DOCTYPE html>
++<html lang="en">
++  <head>
++    <meta charset="UTF-8" />
++    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
++    <title>Nimbus Authentication</title>
++    <link
++      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap"
++      rel="stylesheet"
++    />
++    <link
++      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
++      rel="stylesheet"
++    />
++    <link
++      href="https://ai-public.creatie.ai/gen_page/tailwind-custom.css"
++      rel="stylesheet"
++    />
++    <script src="https://cdn.tailwindcss.com/3.4.5?plugins=forms@0.5.7,typography@0.5.13,aspect-ratio@0.4.2,container-queries@0.1.1"></script>
++    <script
++      src="https://ai-public.creatie.ai/gen_page/tailwind-config.min.js"
++      data-color="#000000"
++      data-border-radius="small"
++    ></script>
++  </head>
++  <body
++    class="min-h-screen bg-gray-50 flex flex-col items-center justify-between font-['Inter']"
++  >
++    <header class="w-full max-w-8xl">
++      <nav class="px-6 py-4">
++        <img
++          src="https://i.postimg.cc/15LmrqN4/logo1.jpg"
++          alt="Nimbus"
++          class="h-8 rounded-md"
++        />
++      </nav>
++    </header>
++
++    <main
++      class="flex-1 flex flex-col items-center justify-center w-full max-w-md px-6 -mt-16"
++    >
++      <div class="text-center">
++        <div class="mb-6">
++          <div
++            class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-custom/10 mb-4"
++          >
++            <i class="fas fa-check text-2xl text-custom"></i>
++          </div>
++          <h1 class="text-2xl font-semibold text-gray-900 mb-2">
++            Authentication Successful
++          </h1>
++          <p class="text-gray-600">Redirecting to Nimbus...</p>
++        </div>
++
++        <div
++          class="relative w-full h-2 bg-gray-200 rounded-full overflow-hidden mb-8"
++        >
++          <div
++            class="absolute top-0 left-0 h-full bg-custom animate-[progress_2s_linear]"
++          ></div>
++        </div>
++
++        <div class="text-sm text-gray-500">
++          If you are not automatically redirected,
++          <a
++            href="nimbus://"
++            class="text-custom hover:text-custom/80 font-medium"
++            >click here</a
++          >
++          to return to Nimbus
++        </div>
++      </div>
++    </main>
++
++    <footer class="w-full py-6 text-center text-sm text-gray-500">
++        <p>&copy; <span id="year"></span> Nimbus. All rights reserved.</p>
++    </footer>
++
++    <style>
++      @keyframes progress {
++        from {
++          width: 0;
++        }
++        to {
++          width: 100%;
++        }
++      }
++    </style>
++    <script>
++      setTimeout(() => {
++        window.location.href = "nimbus://";
++      }, 2000);
++      document.getElementById("year").textContent = new Date().getFullYear();
++    </script>
++  </body>
++</html>
 +`);
-+               
              }
              catch (e) {
                  reject(e);

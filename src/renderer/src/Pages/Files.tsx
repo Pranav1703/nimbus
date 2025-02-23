@@ -1,4 +1,4 @@
-import { Box } from '@chakra-ui/react'
+import { Box, VStack } from '@chakra-ui/react'
 import Search from '../components/Files/Search'
 import Hero from '../components/Files/Hero'
 import ResentFiles from '../components/Files/ResentFiles'
@@ -38,6 +38,21 @@ function Files(): JSX.Element {
             id: 5,
             name: 'School',
             modified: '856 KB · Modified 5 hours ago'
+        },
+        {
+            id: 6,
+            name: 'Screenshot_2025.png',
+            modified: '856 KB · Modified 5 hours ago'
+        },
+        {
+            id: 7,
+            name: 'IMG20221103163319.mp4',
+            modified: '856 KB · Modified 5 hours ago'
+        },
+        {
+            id: 8,
+            name: 'Schoow',
+            modified: '856 KB · Modified 5 hours ago'
         }
     ]
 
@@ -74,22 +89,22 @@ function Files(): JSX.Element {
     )
 
     return (
-        <Box>
-            <Search SearchVal={handleSerach} />
-            <Hero ButtonVal={handleButton} Count={countFileCategories(Items)} />
-            <ResentFiles
-                Files={
-                    SearchVal
-                        ? ButtonVal
-                            ? CombinedFilterContent
-                            : SearchedContent
-                        : ButtonVal
-                          ? FilteredContent
-                          : Items
-                }
-                HeadingName={SearchVal ? 'Searched Files' : 'Recent Files'}
-            />
-        </Box>
+            <VStack alignItems={'flex-start'} w={"full"} gap={6}>
+                <Search SearchVal={handleSerach} />
+                <Hero ButtonVal={handleButton} Count={countFileCategories(Items)} />
+                <ResentFiles
+                    Files={
+                        SearchVal
+                            ? ButtonVal
+                                ? CombinedFilterContent
+                                : SearchedContent
+                            : ButtonVal
+                              ? FilteredContent
+                              : Items
+                    }
+                    HeadingName={SearchVal ? 'Searched Files' : 'Recent Files'}
+                />
+            </VStack>
     )
 }
 

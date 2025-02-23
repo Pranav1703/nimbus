@@ -3,6 +3,7 @@ import Main from '../components/Dashboard/Main'
 import Actions from '../components/Dashboard/Actions'
 import { drive_v3 } from 'googleapis'
 import { useEffect, useState } from 'react'
+import ResentAct from '../components/Dashboard/ResentAct'
 
 interface CollorPalletProps {
   selectedColor: string;
@@ -41,9 +42,8 @@ export default function Dashboard({ selectedColor }: CollorPalletProps): JSX.Ele
                 Quick Actions
             </Text>
             <Actions />
-            <Text mt={5} textStyle={'xl'} fontWeight={'semibold'}>
-                Recent Activities
-            </Text>
+
+            <ResentAct />
         </Box>
     )
 }

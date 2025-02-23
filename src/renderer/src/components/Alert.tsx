@@ -6,21 +6,30 @@ const AlertContext = createContext<any>(null);
 export const AlertProvider = ({ children }: { children: React.ReactNode }) => {
   const [alerts, setAlerts] = useState<{ id: number; type: string; message: string }[]>([]);
 
-  const addAlert = (type: "error" | "info" | "warning" | "success", message: string) => {
+  const addAlert = (type: "error" | "info" | "warning" | "success", message: string, time: number | null = 2000) => {
     const id = Date.now();
     setAlerts((prev) => {
       const newAlerts = [...prev, { id, type, message }];
       return newAlerts.slice(-3); // Keep only the last 3 alerts
     });
 
-    // Auto-remove after 5 seconds
-    setTimeout(() => {
-      setAlerts((prev) => prev.filter((alert) => alert.id !== id));
-    }, 2000);
+    // Auto-remove only if time is provided
+    if (time !== null) {
+      setTimeout(() => {
+        setAlerts((prev) => prev.filter((alert) => alert.id !== id));
+      }, time);
+    }
+
+    return id; // Return alert ID for manual removal
+  };
+
+  // ✅ **New: Remove Alert Manually**
+  const removeAlert = (id: number) => {
+    setAlerts((prev) => prev.filter((alert) => alert.id !== id));
   };
 
   return (
-    <AlertContext.Provider value={addAlert}>
+    <AlertContext.Provider value={{ addAlert, removeAlert }}>
       {children}
       <AlertStack alerts={alerts} />
     </AlertContext.Provider>

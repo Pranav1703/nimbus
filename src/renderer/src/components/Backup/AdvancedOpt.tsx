@@ -5,7 +5,14 @@ import { Switch } from '../ui/switch'
 function AdvancedOpt(): JSX.Element {
     return (
         <>
-            <Box p={4} borderRadius={'lg'} borderColor={'gray.800'} borderWidth={1} w={'5/6'}>
+            <Box
+                p={4}
+                borderRadius={'lg'}
+                borderColor={'gray.800'}
+                borderWidth={1}
+                w={'5/6'}
+                bg={'gray.900/50'}
+            >
                 <Text textStyle={'xl'} fontWeight={'medium'} pb={2}>
                     Advanced Options
                 </Text>

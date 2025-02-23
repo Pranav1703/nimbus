@@ -1,20 +1,28 @@
 import { Box, HStack, Icon, Text, VStack } from '@chakra-ui/react'
-import React from 'react'
+import React, { useRef } from 'react'
 import { Switch } from '../ui/switch'
 import { MenuContent, MenuRadioItem, MenuRadioItemGroup, MenuRoot, MenuTrigger } from '../ui/menu'
 import { Button } from '../ui/button'
 import Icons from '../../assets/Icons'
+import { useAlert } from '../Alert'
 
 interface CollorPalletProps {
-    selectedColor: string;
-    onChange: (color: string) => void;
-  }
-
+    selectedColor: string
+    onChange: (color: string) => void
+}
 
 const CollorPallet = ({ selectedColor, onChange }: CollorPalletProps): JSX.Element => {
-    
-    const handleValueChange = (value: string):void => {
-        onChange(value.toLowerCase())
+    const alertSent = useRef(false)
+    const { addAlert } = useAlert()
+    const handleValueChange = (value: string): void => {
+        if (!alertSent.current) {
+            onChange(value.toLowerCase())
+            addAlert('success', `Color pallet changed to ${value}`)
+            alertSent.current = true
+        }
+        setTimeout(() => {
+            alertSent.current = false;
+        }, 2000); // Reset after 2 seconds (adjust as needed)
     }
     return (
         <>

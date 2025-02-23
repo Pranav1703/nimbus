@@ -74,6 +74,8 @@ function Main({
               h={'40'}
               borderWidth={1}
               
+              bg={'gray.900/50'}
+              
             >
               <HStack justifyContent={'space-between'} alignItems={'flex-start'}>
                 <VStack alignItems={'flex-start'}>

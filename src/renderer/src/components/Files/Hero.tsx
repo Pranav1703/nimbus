@@ -59,8 +59,8 @@ const Hero = ({
     }
 
     return (
-        <div>
-            <Group grow pt={7}>
+        <>
+            <Group grow w={'full'}>
                 <For each={values}>
                     {(item, index) => (
                         <Button
@@ -119,7 +119,7 @@ const Hero = ({
                     )}
                 </For>
             </Group>
-        </div>
+        </>
     )
 }
 

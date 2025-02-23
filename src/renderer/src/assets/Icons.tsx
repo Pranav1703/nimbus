@@ -12,6 +12,8 @@ import {
 } from 'react-icons/md'
 import { MdOutlineRestorePage, MdOutlineScheduleSend, MdOutlineArrowDropDownCircle } from 'react-icons/md'
 import { FcGoogle } from "react-icons/fc";
+import { IoWarningOutline } from "react-icons/io5";
+import { IoMdCheckmarkCircleOutline } from "react-icons/io";
 const Icons = {
   Add: IoAdd,
   Documents: IoDocumentTextOutline,
@@ -30,6 +32,8 @@ const Icons = {
   Backup2: MdOutlineRestorePage,
   Schedule: MdOutlineScheduleSend,
   Google: FcGoogle,
-  ArrowDown: MdOutlineArrowDropDownCircle
+  ArrowDown: MdOutlineArrowDropDownCircle,
+  warning: IoWarningOutline,
+  success: IoMdCheckmarkCircleOutline
 }
 export default Icons

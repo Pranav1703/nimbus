@@ -5,10 +5,12 @@ import Icons from '../../assets/Icons'
 
 const Hero = ({
     ButtonVal,
-    Count
+    Count,
+    rootId
 }: {
     ButtonVal: (value: string) => void
     Count: { Documents: number; Images: number; Videos: number; Folder: number }
+    rootId: string
 }): JSX.Element => {
     const values = [
         {
@@ -43,9 +45,48 @@ const Hero = ({
         }
     ]
     const [activeButton, setActiveButton] = useState(null)
+
+    const uploadFile = async (filePath) => {
+        if (filePath.length === 0) {
+            console.log('no filePath provided.')
+            return
+        }
+        try {
+            console.log(filePath)
+            const { id } = await window.api.fileUpload(filePath, rootId)
+        } catch (error) {
+            console.log('error uploading file: ', error)
+        }
+    }
+
+    const uploadFolder = async (folderPath) => {
+        try {
+            await window.api.folderUpload(folderPath, rootId)
+        } catch (error) {
+            console.log(error)
+        }
+    }
+
+    const handleUpload = async () => {
+        const multiOptions = {
+            title: 'Select a File to Upload',
+            buttonLabel: 'Upload',
+            filters: [
+                { name: 'Images', extensions: ['jpg', 'png', 'gif'] }, 
+                { name: 'Documents', extensions: ['pdf', 'docx', 'txt'] }
+            ],
+            properties: ['openFile' as const] // Allows selecting a single file
+        };
+        const result = await window.api.showOpenDialog(multiOptions)
+        if (!result.canceled && result.filePaths.length > 0) {
+            console.log('Selected paths:', result.filePaths)
+            uploadFile(result.filePaths[0])
+        }
+    }
+
     const handleButtonClick = (index, val): void => {
         if (val === 'Upload Now') {
-            return
+            handleUpload()
         }
         if (activeButton === index) {
             // If the same button is clicked again, deactivate it and send an empty value
@@ -70,7 +111,6 @@ const Hero = ({
                             justifyContent={'flex-start'}
                             borderRadius={'lg'}
                             key={index}
-                            
                             h={'max-content'}
                             onClick={() => {
                                 handleButtonClick(index, item.heading)
@@ -78,7 +118,9 @@ const Hero = ({
                             _hover={{ borderColor: `${item.color}.400` }}
                             // _active={{ borderColor: `${item.color}.400` }}
                             // _focus={{ borderColor: activeButton === index ? `${item.color}.400`: '' }}
-                            borderColor={activeButton === index ? `${item.color}.400/60` : 'gray.800'}
+                            borderColor={
+                                activeButton === index ? `${item.color}.400/60` : 'gray.800'
+                            }
                             bgColor={activeButton === index ? `${item.color}.800/10` : ''}
                         >
                             <HStack>

@@ -30,10 +30,11 @@ const Test = () => {
     await window.api.updateFile(backupPath,backupFileId)
   })
 
-  const fileChange = async(e:React.ChangeEvent<HTMLInputElement>)=>{
-    setFileValue(e.target.value)
-    const filePath = e.target.files![0].path
-    setFilePath(filePath)
+  const fileChange = async()=>{
+    // setFileValue(e.target.value)
+    // const filePath = e.target.files![0].path
+    setFilePath("D:/Btech/Btech-3/Sem-6/DATA WAREHOUSING AND MINING/Theory/Unit-1/1.1 Additional Topics.pdf")
+    console.log(filePath)
   }
 
   const uploadFile = async() => {
@@ -81,7 +82,7 @@ const Test = () => {
 
   const DownloadBtn = ({id,name})=>{
     //C:\Users\prana_zhfhs6u\OneDrive\Desktop\destPath\{filename.ext}  //test path
-    const destPath = `C:/Users/prana_zhfhs6u/OneDrive/Desktop/destPath/${name}`
+    const destPath = `C:/Users/shanm/Desktop/New folder/${name}`
     return(
       <Box
       display={"flex"}
@@ -96,7 +97,7 @@ const Test = () => {
 
   const uploadFolder = async()=>{
     try {
-      await window.api.folderUpload("C:/Users/prana_zhfhs6u/OneDrive/Desktop/destPath",rootId)
+      await window.api.folderUpload("C:/Users/shanm/Desktop/New folder",rootId)
     } catch (error) {
       console.log(error)
     }
@@ -170,6 +171,12 @@ const Test = () => {
         <h1>testing api's</h1><br/>
         <div className="uploadFile">
           <input type="file" onChange={fileChange}/>
+          <Button 
+          m={'10px'}
+          onClick={fileChange}
+          >
+            set file path
+          </Button>
           <Button 
           m={'10px'}
           onClick={uploadFile}

@@ -1,14 +1,14 @@
-import { Box, VStack } from '@chakra-ui/react'
+import { VStack } from '@chakra-ui/react'
 import Search from '../components/Files/Search'
 import Hero from '../components/Files/Hero'
 import ResentFiles from '../components/Files/ResentFiles'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import getFileCategory from '../components/Files/FileCategory'
 
-function Files(): JSX.Element {
+function Files({ rootId }: { rootId: string }): JSX.Element {
     const [SearchVal, SetSearchVal] = useState('')
     const [ButtonVal, SetButtonVal] = useState('')
-
+    const [fileList, setFileList] = useState<Array<any>>([])
     const handleSerach = (data): void => {
         SetSearchVal(data)
     }
@@ -17,6 +17,20 @@ function Files(): JSX.Element {
         SetButtonVal(data)
         console.log(data)
     }
+
+    const getFiles = async (): Promise<void> => {
+        try {
+            const resp = await window.api.getList(rootId)
+            console.log('file list array: ', resp)
+            setFileList(resp)
+        } catch (error) {
+            console.log(error)
+        }
+    }
+
+    useEffect(() => {
+        getFiles()
+    }, [])
 
     const Items = [
         {
@@ -57,7 +71,7 @@ function Files(): JSX.Element {
     ]
 
     const countFileCategories = (
-        items
+        fileList
     ): { Documents: number; Images: number; Videos: number; Folder: number } => {
         const categoryCount = {
             Documents: 0,
@@ -66,7 +80,7 @@ function Files(): JSX.Element {
             Folder: 0
         }
 
-        items.forEach((item) => {
+        fileList.forEach((item) => {
             const category = getFileCategory(item.name).category
             if (Object.prototype.hasOwnProperty.call(categoryCount, category)) {
                 categoryCount[category] += 1
@@ -76,11 +90,11 @@ function Files(): JSX.Element {
         return categoryCount
     }
 
-    const SearchedContent = Items.filter((item) =>
+    const SearchedContent = fileList.filter((item) =>
         item.name.toLowerCase().includes(SearchVal.toLowerCase())
     )
 
-    const FilteredContent = Items.filter((item) =>
+    const FilteredContent = fileList.filter((item) =>
         getFileCategory(item.name).category.toLowerCase().includes(ButtonVal.toLowerCase())
     )
 
@@ -89,22 +103,23 @@ function Files(): JSX.Element {
     )
 
     return (
-            <VStack alignItems={'flex-start'} w={"full"} gap={6}>
-                <Search SearchVal={handleSerach} />
-                <Hero ButtonVal={handleButton} Count={countFileCategories(Items)} />
-                <ResentFiles
-                    Files={
-                        SearchVal
-                            ? ButtonVal
-                                ? CombinedFilterContent
-                                : SearchedContent
-                            : ButtonVal
-                              ? FilteredContent
-                              : Items
-                    }
-                    HeadingName={SearchVal ? 'Searched Files' : 'Recent Files'}
-                />
-            </VStack>
+        <VStack alignItems={'flex-start'} w={'full'} gap={6}>
+            <Search SearchVal={handleSerach} />
+            <Hero ButtonVal={handleButton} Count={countFileCategories(fileList)} rootid={rootId}/>
+            <ResentFiles
+                Files={
+                    SearchVal
+                        ? ButtonVal
+                            ? CombinedFilterContent
+                            : SearchedContent
+                        : ButtonVal
+                          ? FilteredContent
+                          : fileList
+                }
+                HeadingName={SearchVal ? 'Searched Files' : 'Recent Files'}
+                getFiles={getFiles}
+            />
+        </VStack>
     )
 }
 

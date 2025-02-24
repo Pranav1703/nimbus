@@ -17,7 +17,7 @@ import {
     ActionBarSelectionTrigger,
     ActionBarSeparator
 } from '../ui/action-bar'
-
+import { useAlert } from '../Alert'
 interface FileProps {
     id: number
     name: string
@@ -26,10 +26,12 @@ interface FileProps {
 
 const ResentFiles = ({
     Files,
-    HeadingName
+    HeadingName,
+    getFiles
 }: {
     Files: FileProps[]
     HeadingName: string
+    getFiles: () => void
 }): JSX.Element => {
     const [page, setPage] = useState(1)
     const count = Files.length
@@ -43,7 +45,7 @@ const ResentFiles = ({
 
     const hasSelection = selection.length > 0
     const [showseletcion, setShowSelection] = useState(false)
-
+    const { addAlert } = useAlert()
     const handleActionTrigger = (): void => {
         setShowSelection(!showseletcion)
         setSelection([])
@@ -60,6 +62,57 @@ const ResentFiles = ({
             setShowSelection(false)
         }
     }, [selection])
+
+    const handleDownload = async (fileId, fielName):Promise<void> => {
+        try {
+            const { filePath, canceled } = await window.api.showSaveDialog({
+                title: 'Select Download Location',
+                defaultPath: fielName,
+                buttonLabel: 'Save',
+                filters: [{ name: 'All Files', extensions: ['*'] }]
+            })
+
+            if (canceled || !filePath) {
+                addAlert('error', 'Download Cancelled', 2000)
+                return
+            }
+
+            addAlert('info', 'Downloading...', 2000, true)
+            await window.api.downloadFile(fileId, filePath)
+            addAlert('success', 'Download Completed', 2000)
+        } catch (error) {
+            console.error('Error during download:', error)
+            addAlert('error', 'Download Failed', 2000)
+        }
+    }
+
+    const handleDelete = async (fileId, fieldname):Promise<void> => {
+        try {
+            await window.api.deleteFile(fileId)
+            addAlert('success', `${fieldname} Deleted Successfully`, 2000)
+            getFiles()
+        } catch (error) {
+            console.log(error)
+            addAlert('error', 'Error in Deleting File', 2000)
+        }
+    }
+    const handleDownloadAndOpen = async (fileId,fielName):Promise<void> => {
+        try {
+            addAlert('info', 'Downloading...', 2000, true)
+            const filePath = await window.api.CreateTempFile(fielName)
+            if(filePath){
+                await window.api.downloadFile(fileId, filePath)
+                await window.api.OpenFileLocation(filePath)
+            }else{
+                addAlert('error', 'Failed to create temp file.', 2000)
+            }
+            addAlert('success', 'File opened successfully!', 2000)
+        } catch (error) {
+            console.error('Error:', error)
+            addAlert('error', 'Failed to open file.', 2000)
+        }
+    }
+
     return (
         <>
             <Box
@@ -127,7 +180,8 @@ const ResentFiles = ({
                                                 <VStack alignItems="flex-start" gap={1}>
                                                     <Text>{item.name}</Text>
                                                     <Text fontSize="sm" color="gray.500">
-                                                        {item.modified}
+                                                        {/* {item.modified} */}
+                                                        {category}
                                                     </Text>
                                                 </VStack>
                                             </HStack>
@@ -137,7 +191,12 @@ const ResentFiles = ({
                                             style={isLastRow ? { border: 'none' } : {}}
                                         >
                                             <Group>
-                                                <IconButton variant="ghost">
+                                                <IconButton
+                                                    variant="ghost"
+                                                    onClick={() =>
+                                                        handleDownload(item.id, item.name)
+                                                    }
+                                                >
                                                     <Icons.Download />
                                                 </IconButton>
                                                 <MenuRoot>
@@ -147,7 +206,12 @@ const ResentFiles = ({
                                                         </IconButton>
                                                     </MenuTrigger>
                                                     <MenuContent>
-                                                        <MenuItem value="open-file">
+                                                        <MenuItem
+                                                            value="open-file"
+                                                            onClick={() =>
+                                                                handleDownloadAndOpen(item.id,item.name)
+                                                            }
+                                                        >
                                                             Open File...
                                                         </MenuItem>
                                                         <MenuItem
@@ -157,6 +221,9 @@ const ResentFiles = ({
                                                                 bg: 'bg.error',
                                                                 color: 'fg.error'
                                                             }}
+                                                            onClick={() =>
+                                                                handleDelete(item.id, item.name)
+                                                            }
                                                         >
                                                             Delete...
                                                         </MenuItem>
@@ -191,10 +258,37 @@ const ResentFiles = ({
                         {selection.length} selected
                     </ActionBarSelectionTrigger>
                     <ActionBarSeparator />
-                    <Button variant="outline" size="sm">
+                    <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => {
+                            selection.forEach((name) => {
+                                const itemToDownload = visibleItems.find(
+                                    (item) => item.name === name
+                                )
+                                if (itemToDownload) {
+                                    handleDownload(itemToDownload.id, itemToDownload.name)
+                                }
+                            })
+                            setSelection([]) // Clear selection after deletion
+                        }}
+                    >
                         Download <Icons.Download />
                     </Button>
-                    <Button variant="outline" size="sm" colorPalette={"red"}>
+                    <Button
+                        variant="outline"
+                        size="sm"
+                        colorPalette={'red'}
+                        onClick={() => {
+                            selection.forEach((name) => {
+                                const itemToDelete = visibleItems.find((item) => item.name === name)
+                                if (itemToDelete) {
+                                    handleDelete(itemToDelete.id, itemToDelete.name)
+                                }
+                            })
+                            setSelection([]) // Clear selection after deletion
+                        }}
+                    >
                         Delete <Icons.warning />
                     </Button>
                 </ActionBarContent>

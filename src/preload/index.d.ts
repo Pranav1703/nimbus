@@ -29,6 +29,12 @@ type api = {
   cleanUpWatchers: ()=>void
   getFileHash: (filePath:string)=>Promise<string>
   checkState: (email:string)=>Promise<void>
+  
+  showSaveDialog: (options: Electron.SaveDialogOptions)=>Promise<Electron.SaveDialogReturnValue>
+  downloadAndOpenFile: (fileId:string,fileName:string)=>Promise<void>
+  CreateTempFile: (fileName:string)=>Promise<string>
+  OpenFileLocation: (filePath:string)=>Promise<void>
+  showOpenDialog: (options: Electron.OpenDialogOptions)=>Promise<Electron.OpenDialogReturnValue>
 }
 
 declare global {

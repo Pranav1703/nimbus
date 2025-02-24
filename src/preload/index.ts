@@ -34,7 +34,12 @@ if (process.contextIsolated) {
       onFileChange: (callback) =>ipcRenderer.on("file-change",callback),
       cleanUpWatchers: ()=> ipcRenderer.invoke("cleanup-watchers"),
       getFileHash: (filePath:string)=>ipcRenderer.invoke("get-hash",filePath),
-      checkState: (email:string)=>ipcRenderer.invoke("check-state",email)
+      checkState: (email:string)=>ipcRenderer.invoke("check-state",email),
+
+      showSaveDialog: (options) => ipcRenderer.invoke("show-save-dialog", options),
+      CreateTempFile: (fileName:string) => ipcRenderer.invoke("create-temp-file", fileName),
+      OpenFileLocation: (filePath:string) => ipcRenderer.invoke("open-file-location", filePath),
+      showOpenDialog: (options) => ipcRenderer.invoke("show-open-dialog", options),
     })
   } catch (error) {
     console.error(error)

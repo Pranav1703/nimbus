@@ -114,7 +114,7 @@ function App(): JSX.Element {
         }
     }, [wasOffline])
     // console.log('You are in app')
-
+    console.log(rootId)
     return (
         <>
             <CustomChakraProvider colorPalette={colorPalette}>

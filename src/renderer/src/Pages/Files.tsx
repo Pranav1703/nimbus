@@ -2,13 +2,16 @@ import { VStack } from '@chakra-ui/react'
 import Search from '../components/Files/Search'
 import Hero from '../components/Files/Hero'
 import ResentFiles from '../components/Files/ResentFiles'
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import getFileCategory from '../components/Files/FileCategory'
+import { useAlert } from '../components/Alert'
 
 function Files({ rootId }: { rootId: string }): JSX.Element {
     const [SearchVal, SetSearchVal] = useState('')
     const [ButtonVal, SetButtonVal] = useState('')
     const [fileList, setFileList] = useState<Array<any>>([])
+    const {addAlert, removeAlert} = useAlert()
+    const alertIdRef = useRef<number | null>(null); // Store alert ID without triggering re-renders
     const handleSerach = (data): void => {
         SetSearchVal(data)
     }
@@ -20,16 +23,31 @@ function Files({ rootId }: { rootId: string }): JSX.Element {
 
     const getFiles = async (): Promise<void> => {
         try {
-            const resp = await window.api.getList(rootId)
-            console.log('file list array: ', resp)
-            setFileList(resp)
+            if (!alertIdRef.current) {
+                alertIdRef.current = addAlert('info', 'Loading...', null, true);
+            }
+
+            const resp = await window.api.getList(rootId);
+            console.log('file list array: ', resp);
+            setFileList(resp);
+
+            if (alertIdRef.current) {
+                removeAlert(alertIdRef.current);
+                alertIdRef.current = null;
+            }
         } catch (error) {
-            console.log(error)
+            console.error(error);
+            if (alertIdRef.current) {
+                removeAlert(alertIdRef.current);
+                alertIdRef.current = null;
+            }
+            addAlert('error', 'Failed to load files', 2000);
         }
-    }
+    };
 
     useEffect(() => {
         getFiles()
+
     }, [])
 
     const Items = [
@@ -101,11 +119,10 @@ function Files({ rootId }: { rootId: string }): JSX.Element {
     const CombinedFilterContent = FilteredContent.filter((item) =>
         item.name.toLowerCase().includes(SearchVal.toLowerCase())
     )
-
     return (
         <VStack alignItems={'flex-start'} w={'full'} gap={6}>
             <Search SearchVal={handleSerach} />
-            <Hero ButtonVal={handleButton} Count={countFileCategories(fileList)} rootid={rootId}/>
+            <Hero ButtonVal={handleButton} Count={countFileCategories(fileList)} rootId={rootId} getFiles={getFiles}/>
             <ResentFiles
                 Files={
                     SearchVal

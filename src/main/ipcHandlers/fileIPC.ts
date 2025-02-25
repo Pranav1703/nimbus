@@ -22,7 +22,7 @@ export const registerFileIpcHandlers = () => {
         try {
             const drive = google.drive({ version: 'v3', auth: authClient })
             const res = await drive.files.list({
-                fields: 'nextPageToken, files(id, name)',
+                fields: 'nextPageToken, files(id, name, size, modifiedByMeTime)',
                 q: `'${rootId}' in parents and trashed = false`
             })
             const files = res.data.files
@@ -133,7 +133,6 @@ export const registerFileIpcHandlers = () => {
     ipcMain.handle('show-open-dialog', async (_event, options) => {
         const result = await dialog.showOpenDialog(mainWindow, {
             title: 'Select a File or Folder',
-            properties: ['openFile', 'openDirectory', 'multiSelections'], 
             ...options,
         });
     

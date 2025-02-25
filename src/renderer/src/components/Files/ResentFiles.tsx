@@ -1,5 +1,5 @@
 import { Box, For, Group, HStack, Icon, IconButton, Table, Text, VStack } from '@chakra-ui/react'
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import Icons from '../../assets/Icons'
 import getFileCategory from './FileCategory'
 import { MenuContent, MenuItem, MenuRoot, MenuTrigger } from '../ui/menu'
@@ -21,7 +21,8 @@ import { useAlert } from '../Alert'
 interface FileProps {
     id: number
     name: string
-    modified: string
+    size: number
+    modifiedByMeTime: string
 }
 
 const ResentFiles = ({
@@ -45,10 +46,27 @@ const ResentFiles = ({
 
     const hasSelection = selection.length > 0
     const [showseletcion, setShowSelection] = useState(false)
-    const { addAlert } = useAlert()
+    const { addAlert,removeAlert } = useAlert()
     const handleActionTrigger = (): void => {
         setShowSelection(!showseletcion)
         setSelection([])
+    }
+
+    const formatBytesBase2 = (bytes: number): string | null => {
+        if (bytes === 0) {
+            return '0 Bytes'
+        }
+
+        const k = 1024
+        const sizes: string[] = ['Bytes', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB']
+
+        let i = 0
+        while (bytes >= k && i < sizes.length - 1) {
+            bytes /= k
+            i++
+        }
+        // `${bytes.toFixed(2)} ${sizes[i]}`
+        return isNaN(bytes) ? null : `${bytes.toFixed(2)} ${sizes[i]}`
     }
 
     const toggleSelection = (itemName: string): void => {
@@ -63,11 +81,11 @@ const ResentFiles = ({
         }
     }, [selection])
 
-    const handleDownload = async (fileId, fielName):Promise<void> => {
+    const handleDownload = async (fileId, fileName): Promise<void> => {
         try {
             const { filePath, canceled } = await window.api.showSaveDialog({
                 title: 'Select Download Location',
-                defaultPath: fielName,
+                defaultPath: fileName,
                 buttonLabel: 'Save',
                 filters: [{ name: 'All Files', extensions: ['*'] }]
             })
@@ -77,16 +95,25 @@ const ResentFiles = ({
                 return
             }
 
-            addAlert('info', 'Downloading...', 2000, true)
-            await window.api.downloadFile(fileId, filePath)
-            addAlert('success', 'Download Completed', 2000)
+            // Set sticky alert
+            const alertId = addAlert('info', 'Downloading...', null, true)
+
+            try {
+                await window.api.downloadFile(fileId, filePath)
+                removeAlert(alertId) // Remove sticky alert after success
+                addAlert('success', 'Download Completed', 2000)
+            } catch (downloadError) {
+                console.error('Error during download:', downloadError)
+                removeAlert(alertId) // Remove sticky alert on failure
+                addAlert('error', 'Download Failed', 2000)
+            }
         } catch (error) {
-            console.error('Error during download:', error)
-            addAlert('error', 'Download Failed', 2000)
+            console.error('Unexpected error:', error)
+            addAlert('error', 'Something went wrong', 2000)
         }
     }
 
-    const handleDelete = async (fileId, fieldname):Promise<void> => {
+    const handleDelete = async (fileId, fieldname): Promise<void> => {
         try {
             await window.api.deleteFile(fileId)
             addAlert('success', `${fieldname} Deleted Successfully`, 2000)
@@ -96,14 +123,14 @@ const ResentFiles = ({
             addAlert('error', 'Error in Deleting File', 2000)
         }
     }
-    const handleDownloadAndOpen = async (fileId,fielName):Promise<void> => {
+    const handleDownloadAndOpen = async (fileId, fielName): Promise<void> => {
         try {
             addAlert('info', 'Downloading...', 2000, true)
             const filePath = await window.api.CreateTempFile(fielName)
-            if(filePath){
+            if (filePath) {
                 await window.api.downloadFile(fileId, filePath)
                 await window.api.OpenFileLocation(filePath)
-            }else{
+            } else {
                 addAlert('error', 'Failed to create temp file.', 2000)
             }
             addAlert('success', 'File opened successfully!', 2000)
@@ -111,6 +138,12 @@ const ResentFiles = ({
             console.error('Error:', error)
             addAlert('error', 'Failed to open file.', 2000)
         }
+    }
+
+    const formatDate = (modifiedByMeTime): string => {
+        const dateObj = new Date(modifiedByMeTime)
+        const formattedDate = new Intl.DateTimeFormat('en-GB').format(dateObj)
+        return formattedDate
     }
 
     return (
@@ -181,7 +214,9 @@ const ResentFiles = ({
                                                     <Text>{item.name}</Text>
                                                     <Text fontSize="sm" color="gray.500">
                                                         {/* {item.modified} */}
-                                                        {category}
+                                                        {/* {category} */}
+                                                        {formatBytesBase2(item.size)} · Modified{' '}
+                                                        {formatDate(item.modifiedByMeTime)}
                                                     </Text>
                                                 </VStack>
                                             </HStack>
@@ -209,7 +244,10 @@ const ResentFiles = ({
                                                         <MenuItem
                                                             value="open-file"
                                                             onClick={() =>
-                                                                handleDownloadAndOpen(item.id,item.name)
+                                                                handleDownloadAndOpen(
+                                                                    item.id,
+                                                                    item.name
+                                                                )
                                                             }
                                                         >
                                                             Open File...

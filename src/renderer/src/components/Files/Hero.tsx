@@ -1,16 +1,19 @@
 import { Box, For, Group, HStack, Icon, Text, VStack } from '@chakra-ui/react'
-import React, { useState } from 'react'
+import React, { useRef, useState } from 'react'
 import { Button } from '../ui/button'
 import Icons from '../../assets/Icons'
+import { useAlert } from '../Alert'
 
 const Hero = ({
     ButtonVal,
     Count,
-    rootId
+    rootId,
+    getFiles
 }: {
     ButtonVal: (value: string) => void
     Count: { Documents: number; Images: number; Videos: number; Folder: number }
-    rootId: string
+    rootId: string,
+    getFiles: () => void
 }): JSX.Element => {
     const values = [
         {
@@ -45,7 +48,8 @@ const Hero = ({
         }
     ]
     const [activeButton, setActiveButton] = useState(null)
-
+    const { addAlert, removeAlert } = useAlert()
+    const offlineAlertId = useRef<number | null>(null) // Track the alert ID
     const uploadFile = async (filePath) => {
         if (filePath.length === 0) {
             console.log('no filePath provided.')
@@ -68,25 +72,49 @@ const Hero = ({
     }
 
     const handleUpload = async () => {
-        const multiOptions = {
-            title: 'Select a File to Upload',
-            buttonLabel: 'Upload',
-            filters: [
-                { name: 'Images', extensions: ['jpg', 'png', 'gif'] }, 
-                { name: 'Documents', extensions: ['pdf', 'docx', 'txt'] }
-            ],
-            properties: ['openFile' as const] // Allows selecting a single file
-        };
-        const result = await window.api.showOpenDialog(multiOptions)
-        if (!result.canceled && result.filePaths.length > 0) {
-            console.log('Selected paths:', result.filePaths)
-            uploadFile(result.filePaths[0])
+        try {
+            const multiOptions = {
+                title: 'Select a File to Upload',
+                buttonLabel: 'Upload',
+                properties: ['openFile' as const] // Allows selecting a single file
+            };
+    
+            const result = await window.api.showOpenDialog(multiOptions);
+    
+            if (result.canceled || !result.filePaths) {
+                addAlert('error', 'Upload Cancelled', 2000);
+                return;
+            }
+    
+            if (result.filePaths.length > 0) {
+                // Set sticky alert
+                offlineAlertId.current = addAlert('info', 'Uploading...', null, true);
+                console.log('Selected paths:', result.filePaths);
+    
+                try {
+                    await uploadFile(result.filePaths[0]); // Ensure upload completes before removing alert
+                    removeAlert(offlineAlertId.current);
+                    offlineAlertId.current = null;
+                    addAlert('success', 'Upload Completed', 2000);
+                    getFiles()
+                } catch (uploadError) {
+                    console.error('Error during upload:', uploadError);
+                    removeAlert(offlineAlertId.current);
+                    offlineAlertId.current = null;
+                    addAlert('error', 'Upload Failed', 2000);
+                }
+            }
+        } catch (error) {
+            console.error('Unexpected error:', error);
+            addAlert('error', 'Something went wrong', 2000);
         }
-    }
+    };
+    
 
     const handleButtonClick = (index, val): void => {
         if (val === 'Upload Now') {
             handleUpload()
+            return
         }
         if (activeButton === index) {
             // If the same button is clicked again, deactivate it and send an empty value

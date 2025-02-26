@@ -1,5 +1,5 @@
 import { Box, createListCollection, HStack, Input, Text, VStack } from '@chakra-ui/react'
-import React, { useState } from 'react'
+import React, { useRef, useState } from 'react'
 import { Switch } from '../ui/switch'
 import {
     SelectContent,
@@ -11,11 +11,14 @@ import {
 } from '../ui/select'
 import { Button } from '../ui/button'
 import { HiUpload } from 'react-icons/hi'
-import { FileUploadList, FileUploadRoot, FileUploadTrigger } from '../ui/file-upload'
+import { useAlert } from '../Alert'
 
-function AutoBackup(): JSX.Element {
+function AutoBackup({ rootId }: { rootId }): JSX.Element {
     const [IsChecked, setIsChecked] = useState(false)
     const [selectedTime, setSelectedTime] = useState('')
+    const [backupFileId, setBackupFileId] = useState<string>('')
+    const [backupPath, setBackupPath] = useState<string>('')
+    const { addAlert } = useAlert() // Now supports manual removal
     const frameworks = createListCollection({
         items: [
             { label: 'Every 6 Hours', value: '6_Hours' },
@@ -24,9 +27,64 @@ function AutoBackup(): JSX.Element {
         ]
     })
     console.log(selectedTime)
+
+    window.api.onFileChange(async (_event, path) => {
+        console.log(path)
+        if (!path) return
+        await window.api.updateFile(backupPath, backupFileId)
+    })
+    const backup = async ():Promise<void> => {
+        const userInfo = await window.api.getInfo()
+
+        if (rootId && userInfo?.user?.emailAddress) {
+            await window.api.saveUser(userInfo.user.emailAddress, rootId)
+            const { id } = await window.api.fileUpload(backupPath, rootId)
+            setBackupFileId(id!)
+            window.api.initWatcher([backupPath])
+            await window.api.savePath(userInfo.user.emailAddress, backupPath)
+            const hash = await window.api.getFileHash(backupPath)
+            await window.api.saveState(userInfo.user.emailAddress, backupPath, hash) //before app quits
+        }
+    }
+
+    const handleFolderUpload = () => async (): Promise<void> => {
+        try {
+            console.log('Folder Upload function called')
+            const multiOptions = {
+                title: 'Select a File to Upload',
+                buttonLabel: 'Upload',
+                properties: ['openDirectory' as const] // Allows selecting a folder
+            }
+
+            const result = await window.api.showOpenDialog(multiOptions)
+
+            if (result.canceled || !result.filePaths) {
+                addAlert('error', 'Upload Cancelled', 2000)
+                return
+            }
+
+            if (result.filePaths.length > 0) {
+                // Set sticky alert
+                addAlert('info', 'Uploading...', 2000, true)
+                console.log('Selected Folder:', result.filePaths)
+                setBackupPath(result.filePaths[0])
+                await backup()
+            }
+        } catch (error) {
+            console.error('Unexpected error:', error)
+            addAlert('error', 'Something went wrong', 2000)
+        }
+    }
     return (
         <>
-            <Box p={4} borderRadius={'lg'} borderColor={'gray.800'} borderWidth={1} w={'5/6'}                 bg={'gray.900/50'}>
+            <Box
+                p={4}
+                borderRadius={'lg'}
+                borderColor={'gray.800'}
+                borderWidth={1}
+                w={'5/6'}
+                bg={'gray.900/50'}
+            >
                 <VStack alignItems={'flex-start'} gap={2}>
                     <Text textStyle={'xl'} fontWeight={'medium'} pb={2}>
                         Automatic Backup
@@ -87,14 +145,10 @@ function AutoBackup(): JSX.Element {
                         <Text textStyle={'lg'} pb={1} color={!IsChecked ? 'gray' : ''}>
                             Track Folder
                         </Text>
-                        <FileUploadRoot disabled={!IsChecked}>
-                            <FileUploadTrigger asChild>
-                                <Button variant="outline" size="sm">
-                                    <HiUpload /> Folder Location
-                                </Button>
-                            </FileUploadTrigger>
-                            <FileUploadList />
-                        </FileUploadRoot>
+                        <Button variant="outline" size="sm" onClick={() => handleFolderUpload()()} 
+                        disabled={!IsChecked}>
+                            <HiUpload /> Folder Location
+                        </Button>
                     </VStack>
                 </VStack>
             </Box>

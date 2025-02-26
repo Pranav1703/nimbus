@@ -131,7 +131,7 @@ function App(): JSX.Element {
                                             element={<Dashboard selectedColor={colorPalette} />}
                                         />
                                         <Route path="Files" element={<Files rootId={rootId}/>} />
-                                        <Route path="Backup" element={<Backup />} />
+                                        <Route path="Backup" element={<Backup rootId={rootId}/>} />
                                         <Route path="Versions" element={<Versions />} />
                                         <Route
                                             path="Settings"

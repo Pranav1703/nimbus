@@ -181,10 +181,10 @@ const ResentFiles = ({
                                         key={index}
                                         _hover={{ bg: `${color}.800/10` }}
                                         bg={'transparent'}
-                                        onClick={() => toggleSelection(item.name)}
+                                        
                                         cursor="pointer"
                                     >
-                                        <Table.Cell style={isLastRow ? { border: 'none' } : {}}>
+                                        <Table.Cell style={isLastRow ? { border: 'none' } : {}} onClick={() => toggleSelection(item.name)}>
                                             <HStack gap={4}>
                                                 <Checkbox
                                                     top="1"

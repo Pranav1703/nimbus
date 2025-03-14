@@ -13,7 +13,7 @@ import Hero from './Pages/Hero'
 import Layout from './components/Layout'
 import { useTheme } from 'next-themes'
 import CustomChakraProvider from './components/CustomChakraProvider'
-import { AlertProvider, useAlert } from './components/Alert'
+import { useAlert } from './components/Alert'
 
 type userContext = {
     user: boolean
@@ -27,17 +27,20 @@ export const UserContext = createContext<userContext>({
 
 function App(): JSX.Element {
     const [user, setUser] = useState(false)
-    //Adding the color palette state
     const [colorPalette, setColorPalette] = useState('teal') // Default color
-    //Settind the default mode to dark
     const { setTheme } = useTheme()
-    //Cheking if there is in ternet connection
     const { addAlert, removeAlert } = useAlert() // Now supports manual removal
     const [wasOffline, setWasOffline] = useState(!navigator.onLine)
     const offlineAlertId = useRef<number | null>(null) // Track the alert ID
     const [rootId, setRootId] = useState<string>('')
     const hasRun = useRef(false)
 
+    //Setting the theme when opened
+    window.api.storeGet('Color_Pallet').then((color) => {
+        if (color) {
+            setColorPalette(color)
+        }
+    })
     const getRoot = async (): Promise<void> => {
         const create_root = await window.api.createRoot() // true - root created,  false - root already exists
         if (create_root) {
@@ -74,7 +77,6 @@ function App(): JSX.Element {
     }
     useEffect(() => {
         checkUserToken()
-
     }, [])
 
     setTheme('dark')
@@ -130,8 +132,8 @@ function App(): JSX.Element {
                                             path="Dashboard"
                                             element={<Dashboard selectedColor={colorPalette} />}
                                         />
-                                        <Route path="Files" element={<Files rootId={rootId}/>} />
-                                        <Route path="Backup" element={<Backup rootId={rootId}/>} />
+                                        <Route path="Files" element={<Files rootId={rootId} />} />
+                                        <Route path="Backup" element={<Backup rootId={rootId} />} />
                                         <Route path="Versions" element={<Versions />} />
                                         <Route
                                             path="Settings"

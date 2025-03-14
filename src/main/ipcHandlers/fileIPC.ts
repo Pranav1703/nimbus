@@ -10,8 +10,11 @@ import { User } from '../models/user'
 import { FileState } from '../models/state'
 import { dialog } from 'electron/main'
 import { mainWindow } from '..'
-
+import Store from 'electron-store';
 //https://developers.google.com/drive/api/reference/rest/v3/about#About
+
+
+const store = new Store();
 
 export type uploadResp = {
     id: string | null | undefined
@@ -124,6 +127,16 @@ export const registerFileIpcHandlers = () => {
             }
         }
     )
+
+    // Handle data saving
+    ipcMain.handle('store-set', (_event, key: string, value: string) => {
+        store.set(key, value);
+    });
+
+    // Handle data retrieval
+    ipcMain.handle('store-get', (_event, key: string) => {
+        return store.get(key);
+    });
 
     ipcMain.handle('show-save-dialog', async (_event, options) => {
         const result = await dialog.showSaveDialog(mainWindow, options)

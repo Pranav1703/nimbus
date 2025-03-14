@@ -28,7 +28,6 @@ export const AlertProvider = ({ children }: { children: React.ReactNode }) => {
         return id // Return alert ID for manual removal
     }
 
-    // ✅ **New: Remove Alert Manually**
     const removeAlert = (id: number) => {
         setAlerts((prev) => prev.filter((alert) => alert.id !== id))
     }

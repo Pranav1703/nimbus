@@ -49,36 +49,38 @@ function Layout(): JSX.Element {
 
     return (
         <>
-            <Sidebar data={data} />
-            <Box mx={5} pt={5}>
-                <HStack justifyContent={'flex-end'} mx={15}>
-                    {data.loading ? (
-                        <>
-                            <SkeletonCircle size={12} />
-                            <SkeletonCircle size={12} />
-                        </>
-                    ) : (
-                        <>
-                            <IconButton
-                                variant={'ghost'}
-                                aria-label={'Notifications'}
-                                borderRadius={'full'}
-                            >
-                                <Icons.Notification />
-                            </IconButton>
-                            <Avatar
-                                name="userinfo['user']['displayName']"
-                                src={data.userinfo?.user?.photoLink || ''}
-                            />
-                        </>
-                    )}
-                </HStack>
-                <BreadcrumbRoot m={3} size={'lg'} mb={5}>
-                    <BreadcrumbLink href="/">Home</BreadcrumbLink>
-                    <BreadcrumbCurrentLink>{page}</BreadcrumbCurrentLink>
-                </BreadcrumbRoot>
-                <Outlet />
-            </Box>
+            <HStack gap={0} align="start">
+                <Sidebar data={data} />
+                <Box mx={5} pt={5} w={"-webkit-fill-available"}>
+                    <HStack justifyContent={'flex-end'} mx={15}>
+                        {data.loading ? (
+                            <>
+                                <SkeletonCircle size={12} />
+                                <SkeletonCircle size={12} />
+                            </>
+                        ) : (
+                            <>
+                                <IconButton
+                                    variant={'ghost'}
+                                    aria-label={'Notifications'}
+                                    borderRadius={'full'}
+                                >
+                                    <Icons.Notification />
+                                </IconButton>
+                                <Avatar
+                                    name="userinfo['user']['displayName']"
+                                    src={data.userinfo?.user?.photoLink || ''}
+                                />
+                            </>
+                        )}
+                    </HStack>
+                    <BreadcrumbRoot m={3} size={'lg'} mb={5}>
+                        <BreadcrumbLink href="/">Home</BreadcrumbLink>
+                        <BreadcrumbCurrentLink>{page}</BreadcrumbCurrentLink>
+                    </BreadcrumbRoot>
+                    <Outlet />
+                </Box>
+            </HStack>
         </>
     )
 }

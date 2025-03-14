@@ -40,6 +40,8 @@ if (process.contextIsolated) {
       CreateTempFile: (fileName:string) => ipcRenderer.invoke("create-temp-file", fileName),
       OpenFileLocation: (filePath:string) => ipcRenderer.invoke("open-file-location", filePath),
       showOpenDialog: (options) => ipcRenderer.invoke("show-open-dialog", options),
+      storeGet: (key:string) => ipcRenderer.invoke("store-get", key),
+      storeSet: (key:string, value:string) => ipcRenderer.invoke("store-set", key, value),
     })
   } catch (error) {
     console.error(error)

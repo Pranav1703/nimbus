@@ -35,6 +35,8 @@ type api = {
   CreateTempFile: (fileName:string)=>Promise<string>
   OpenFileLocation: (filePath:string)=>Promise<void>
   showOpenDialog: (options: Electron.OpenDialogOptions)=>Promise<Electron.OpenDialogReturnValue>
+  storeGet: (key:string)=>Promise<string | null>
+  storeSet: (key:string,value:string)=>Promise<void>
 }
 
 declare global {

@@ -73,7 +73,6 @@ function Main({
               key={index}
               h={'40'}
               borderWidth={1}
-              
               bg={'gray.900/50'}
               
             >

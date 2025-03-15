@@ -1,4 +1,3 @@
-import { Field } from '@chakra-ui/react'
 import { contextBridge,ipcRenderer } from 'electron'
 // Custom APIs for renderer
 

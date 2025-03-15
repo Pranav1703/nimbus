@@ -51,7 +51,8 @@ export const registerWatcherIPCHandlers = ()=>{
             // Log total files being watched
             // const watchedPaths = watcher.getWatched();
             // const watcherCount = Object.values(watchedPaths).reduce((total, files) => total + files.length, 0);
-            // console.log(`Total files being watched: ${watcherCount}`); // not working
+            // console.log(`Total files being watched: ${watcherCount}`); 
+            // not working
 
         });  
 

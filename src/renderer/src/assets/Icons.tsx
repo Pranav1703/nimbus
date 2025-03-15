@@ -14,6 +14,7 @@ import { MdOutlineRestorePage, MdOutlineScheduleSend, MdOutlineArrowDropDownCirc
 import { FcGoogle } from "react-icons/fc";
 import { IoWarningOutline } from "react-icons/io5";
 import { IoMdCheckmarkCircleOutline } from "react-icons/io";
+import { MdOutlineMenuOpen } from "react-icons/md";
 const Icons = {
   Add: IoAdd,
   Documents: IoDocumentTextOutline,
@@ -25,6 +26,7 @@ const Icons = {
   Notification: IoMdNotificationsOutline,
   Versions1: MdHistory,
   MenuOpen: MdMenuOpen,
+  MenuClosed: MdOutlineMenuOpen,
   Backup1: MdOutlineBackup,
   Folder: MdOutlineFolder,
   Settings: MdOutlineSettings,

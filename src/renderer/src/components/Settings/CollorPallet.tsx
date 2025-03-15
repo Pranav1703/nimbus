@@ -14,16 +14,21 @@ interface CollorPalletProps {
 const CollorPallet = ({ selectedColor, onChange }: CollorPalletProps): JSX.Element => {
     const alertSent = useRef(false)
     const { addAlert } = useAlert()
-    const handleValueChange = (value: string): void => {
-        if (!alertSent.current) {
-            onChange(value.toLowerCase())
-            addAlert('success', `Color pallet changed to ${value}`)
-            alertSent.current = true
-        }
+
+    const handleValueChange = async (value: string): Promise<void> => {
+        if (alertSent.current) return // Prevent multiple alerts
+
+        alertSent.current = true // Lock to prevent multiple alerts
+        onChange(value.toLowerCase())
+        await window.api.storeSet('Color_Pallet', value) // Save the color pallet to the store
+        console.log('from Electron Store', await window.api.storeGet('Color_Pallet'))
+        addAlert('success', `Color pallet changed to ${value}`)
+
         setTimeout(() => {
-            alertSent.current = false;
-        }, 2000); // Reset after 2 seconds (adjust as needed)
+            alertSent.current = false // Unlock after 2 seconds
+        }, 2000)
     }
+
     return (
         <>
             <Box

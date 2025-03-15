@@ -21,11 +21,12 @@ interface EditProfileProps {
 function Edit_Profile({ userinfo }: EditProfileProps): JSX.Element {
     const addAlert = useAlert();
     const [ChangePhoto, setChangePhoto] = React.useState(false)
-    const handleSubmit = (event: React.FormEvent<HTMLFormElement>): void => {
+    const handleSubmit = async(event: React.FormEvent<HTMLFormElement>): Promise<void> => {
         event.preventDefault()
         const form = event.currentTarget
         const nameInput = form.elements.namedItem('name') as HTMLInputElement
-        console.log(nameInput.value)
+        await window.api.storeSet('Name', nameInput.value);
+        console.log(await window.api.storeGet('Name'))
         addAlert('success', 'Name updated successfully')
     }
     const handlefileSubmit = (details: FileUploadFileAcceptDetails): void => {

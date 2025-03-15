@@ -3,6 +3,10 @@ downloadFileIPC -> destPath should be same as filePath (duplication problem exis
 uploadFolder(helper func) -> fix drive type problem 
 https://developers.google.com/drive/api/guides/user-info -> to get users name and pic
 
+when file is uploaded it gives fake file path
+value:"C:\\fakepath\\Screenshot 2025-01-25 202700.png"
+
+root folder is not automatically creted
 
 file watching will stop after app closes, so cant detect changes while app is closed.
 work around :

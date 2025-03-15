@@ -1,7 +1,6 @@
 Launch on System Startup
 downloadFileIPC -> destPath should be same as filePath (duplication problem exists tho)
 uploadFolder(helper func) -> fix drive type problem 
-https://developers.google.com/drive/api/guides/user-info -> to get users name and pic
 
 when file is uploaded it gives fake file path
 value:"C:\\fakepath\\Screenshot 2025-01-25 202700.png"

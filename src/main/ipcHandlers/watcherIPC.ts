@@ -4,11 +4,13 @@ import { mainWindow } from "../index"
 import { computeFileHash } from "../helper"
 import { User } from "../models/user";
 import { IFileState } from "../models/state";
+import { file } from "googleapis/build/src/apis/file";
 
 export const activeWatchers = new Map();
+const filesToBackup = new Set<string>();
 
 export const registerWatcherIPCHandlers = ()=>{
-    const recentChanges = new Set();
+
     ipcMain.handle("watch",async(_event,watchPaths:string[])=>{
 
         watchPaths.forEach((path) => {
@@ -29,32 +31,36 @@ export const registerWatcherIPCHandlers = ()=>{
             });
 
             console.log(`Watcher initialized on path: ${path}`);
-            activeWatchers.set(path, watcher); // Store watcher by path
+            activeWatchers.set(path, watcher);
 
-            // Handle change event
-            watcher.on('all', (event, changedPath, stats) => {
-                if (!recentChanges.has(changedPath)) {
-                    recentChanges.add(changedPath);
-                    console.log(`Event: ${event} on ${changedPath}`);
-                    mainWindow.webContents.send("file-change", { event, changedPath });
-
-                    // Remove from Set after 300 ms to allow future events
-                    setTimeout(() => recentChanges.delete(changedPath), 300);
+            // Track files for backup
+            watcher.on('all', (event, changedPath) => {
+                if (event === 'add' || event === 'change' || event === 'unlink') {
+                    filesToBackup.add(changedPath); // Collect files for backup
+                    console.log(`Marked for backup: ${changedPath}`);
+                    // console.log("filesToBackUP: ",filesToBackup)
                 }
             });
 
-            // Handle errors
             watcher.on("error", (error) => {
                 console.error("Watcher error:", error);
             });
-
-            // Log total files being watched
-            // const watchedPaths = watcher.getWatched();
-            // const watcherCount = Object.values(watchedPaths).reduce((total, files) => total + files.length, 0);
-            // console.log(`Total files being watched: ${watcherCount}`); 
-            // not working
+            console.log("active watchers: ",activeWatchers.entries())
 
         });  
+
+        // setInterval(() => {
+        //     if (filesToBackup.size > 0) {
+        //         console.log(`Backing up ${filesToBackup.size} file(s)...`);
+        //         const filesArray = [...filesToBackup];
+                
+        //         backup(filesArray); //implement backup func for both files and folders in helper.ts
+    
+        //         filesToBackup.clear(); // Clear the list after backup
+        //     } else {
+        //         console.log("No new changes to backup.");
+        //     }
+        // }, 6 * 60 * 60 * 1000);
 
     })
 

@@ -166,9 +166,13 @@ const Test = () => {
 
   }
 
+  const watchTest = async()=>{
+    await window.api.initWatcher(["C:/Users/prana_zhfhs6u/OneDrive/Desktop/testing"])
+  } 
+
   return (
     <>
-        <h1>testing api's</h1><br/>
+        {/* <h1>testing api's</h1><br/>
         <div className="uploadFile">
           <input type="file" onChange={fileChange}/>
           <Button 
@@ -292,7 +296,11 @@ const Test = () => {
           >
             BackUp
           </Button>
-        </div>
+        </div> */}
+
+        <Button onClick={watchTest}>
+          test
+        </Button>
 
     </>
   )

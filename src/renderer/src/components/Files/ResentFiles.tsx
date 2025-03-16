@@ -53,6 +53,10 @@ const ResentFiles = ({
     }
 
     const formatBytesBase2 = (bytes: number): string | null => {
+        if(typeof bytes !== 'number' || isNaN(bytes)) {
+            return null // Handle invalid input gracefully
+        }
+
         if (bytes === 0) {
             return '0 Bytes'
         }

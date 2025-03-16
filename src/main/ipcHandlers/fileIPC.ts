@@ -5,7 +5,7 @@ import * as fs from 'fs'
 import path from 'path'
 import os from 'os'
 import mime from 'mime'
-import { uploadFolder } from '../helper'
+import { downloadFile, downloadFolder, uploadFolder } from '../helper'
 import { User } from '../models/user'
 import { FileState } from '../models/state'
 import { dialog } from 'electron/main'
@@ -158,50 +158,29 @@ export const registerFileIpcHandlers = () => {
             version: 'v3',
             auth: authClient
         })
+    
         try {
-            const file = await drive.files.get(
-                {
-                    fileId: fileId,
-                    alt: 'media',
-                    acknowledgeAbuse: true
-                },
-                { responseType: 'stream' }
-            )
-            console.log('file status: ', file.statusText)
-
-            const directory = path.dirname(destPath)
-            if (!fs.existsSync(directory)) {
-                fs.mkdirSync(directory, { recursive: true })
-            }
-
-            const destStream = fs.createWriteStream(destPath)
-
-            let bytesRead: number = 0
-
-            await new Promise<void>((resolve, reject) => {
-                file.data
-                    .on('data', (chunk) => {
-                        bytesRead += chunk.length
-                    })
-                    .on('end', () => {
-                        console.log(`Download completed. Total bytes read: ${bytesRead}B`)
-                    })
-                    .on('error', (err) => {
-                        console.error('Error during file download:', err)
-                        reject(err)
-                    })
-                    .pipe(destStream)
-                    .on('finish', () => {
-                        console.log('File successfully saved to:', destPath)
-                        resolve()
-                    })
-                    .on('error', (err) => {
-                        console.error('Error writing file:', err)
-                        reject(err)
-                    })
+            // Step 1: Get file metadata to identify type
+            const fileMetadata = await drive.files.get({
+                fileId: fileId,
+                fields: 'mimeType, name'
             })
+    
+            const mimeType = fileMetadata.data.mimeType
+            const fileName = fileMetadata.data.name
+            const isFolder = mimeType === 'application/vnd.google-apps.folder'
+    
+            if (isFolder) {
+                console.log(`Downloading folder: ${fileName}`)
+                await downloadFolder(drive, fileId, destPath)
+            } else {
+                console.log(`Downloading file: ${fileName}`)
+                await downloadFile(drive, fileId, destPath)
+            }
+    
+            console.log(`Download completed: ${destPath}`)
         } catch (error) {
-            console.log(error)
+            console.error('Error:', error)
         }
     })
 

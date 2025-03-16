@@ -1,4 +1,3 @@
-import { Field } from '@chakra-ui/react'
 import { contextBridge,ipcRenderer } from 'electron'
 // Custom APIs for renderer
 
@@ -32,7 +31,7 @@ if (process.contextIsolated) {
 
       initWatcher: (watchPaths:string[])=>ipcRenderer.invoke("watch",watchPaths),
       onFileChange: (callback) =>ipcRenderer.on("file-change",callback),
-      cleanUpWatchers: ()=> ipcRenderer.invoke("cleanup-watchers"),
+      // cleanUpWatchers: ()=> ipcRenderer.invoke("cleanup-watchers"),
       getFileHash: (filePath:string)=>ipcRenderer.invoke("get-hash",filePath),
       checkState: (email:string)=>ipcRenderer.invoke("check-state",email),
 

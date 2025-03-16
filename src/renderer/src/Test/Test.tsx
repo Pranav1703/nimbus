@@ -166,6 +166,10 @@ const Test = () => {
 
   }
 
+  const watchTest = async()=>{
+    await window.api.initWatcher(["C:/Users/prana_zhfhs6u/OneDrive/Desktop/testing"])
+  } 
+
   return (
     <>
         <h1>testing api's</h1><br/>
@@ -293,6 +297,10 @@ const Test = () => {
             BackUp
           </Button>
         </div>
+
+        <Button onClick={watchTest}>
+          test
+        </Button>
 
     </>
   )

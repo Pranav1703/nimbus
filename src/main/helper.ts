@@ -78,3 +78,64 @@ export async function cleanUpWatchers() {
   activeWatchers.clear(); // Clear the Map
   console.log("All watchers cleared");
 }
+
+export async function downloadFile(drive: any, fileId: string, destPath: string) {
+  const file = await drive.files.get(
+      {
+          fileId: fileId,
+          alt: 'media',
+          acknowledgeAbuse: true
+      },
+      { responseType: 'stream' }
+  )
+
+  const destStream = fs.createWriteStream(destPath)
+
+  let bytesRead: number = 0
+
+  await new Promise<void>((resolve, reject) => {
+      file.data
+          .on('data', (chunk) => {
+              bytesRead += chunk.length
+          })
+          .on('end', () => {
+              console.log(`Download completed. Total bytes read: ${bytesRead}B`)
+              resolve()
+          })
+          .on('error', (err) => {
+              console.error('Error during file download:', err)
+              reject(err)
+          })
+          .pipe(destStream)
+          .on('finish', () => {
+              console.log('File successfully saved to:', destPath)
+              resolve()
+          })
+          .on('error', (err) => {
+              console.error('Error writing file:', err)
+              reject(err)
+          })
+  })
+}
+
+export async function downloadFolder(drive: any, folderId: string, folderPath: string) {
+  // Create the folder locally
+  if (!fs.existsSync(folderPath)) {
+      fs.mkdirSync(folderPath, { recursive: true })
+  }
+
+  const res = await drive.files.list({
+      q: `'${folderId}' in parents and trashed = false`,
+      fields: 'files(id, name, mimeType)'
+  })
+
+  for (const file of res.data.files || []) {
+      const filePath = path.join(folderPath, file.name)
+
+      if (file.mimeType === 'application/vnd.google-apps.folder') {
+          await downloadFolder(drive, file.id, filePath) // Recursively download nested folders
+      } else {
+          await downloadFile(drive, file.id, filePath)
+      }
+  }
+}

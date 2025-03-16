@@ -8,12 +8,14 @@ function Profile({
     userinfo,
     loading,
     refreshName,
-    name
+    name,
+    Image
 }: {
     userinfo: drive_v3.Schema$About
     loading: boolean
     refreshName: () => void
     name: string
+    Image: string
 }): JSX.Element {
     return (
         <>
@@ -42,7 +44,7 @@ function Profile({
                         
                         <Avatar.Root shape="full" size="2xl">
                             <Avatar.Fallback name="Random User" />
-                            <Avatar.Image src={userinfo?.user?.photoLink || ''} w={'24'} />
+                            <Avatar.Image src={Image} w={'24'} />
                         </Avatar.Root>
                         <VStack gap={1} alignItems={'flex-start'}>
                             <Text fontSize="xl" fontWeight={'medium'}>
@@ -51,7 +53,7 @@ function Profile({
                             <Text fontSize="md" color={'gray.400'}>
                                 {userinfo?.user?.emailAddress}
                             </Text>
-                            <Edit_Profile userinfo={userinfo} refreshName={refreshName} name={name}/>
+                            <Edit_Profile refreshName={refreshName} name={name}/>
                         </VStack>
                     </HStack>
                 )}

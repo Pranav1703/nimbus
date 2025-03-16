@@ -8,7 +8,7 @@ import { drive_v3 } from 'googleapis'
 import { SkeletonCircle } from './ui/skeleton'
 import Icons from '../assets/Icons'
 
-function Layout({ name }: { name: string }): JSX.Element {
+function Layout({ name,Image }: { name: string,Image:string }): JSX.Element {
     const location = useLocation()
     const [page, setPage] = useState('Dashboard')
     const [userinfo, setuserinfo] = useState<drive_v3.Schema$About>({})
@@ -50,7 +50,7 @@ function Layout({ name }: { name: string }): JSX.Element {
     return (
         <>
             <HStack gap={0} align="start">
-                <Sidebar data={data} name={name} />
+                <Sidebar data={data} name={name} Image={Image}/>
                 <Box mx={5} pt={5} w={'-webkit-fill-available'}>
                     <HStack justifyContent={'flex-end'} mx={15}>
                         {data.loading ? (
@@ -69,7 +69,7 @@ function Layout({ name }: { name: string }): JSX.Element {
                                 </IconButton>
                                     <Avatar
                                         name={name}
-                                        src={data.userinfo?.user?.photoLink || ''}
+                                        src={Image}
                                     />
                             </>
                         )}

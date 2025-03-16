@@ -35,6 +35,7 @@ function App(): JSX.Element {
     const [rootId, setRootId] = useState<string>('')
     const hasRun = useRef(false)
     const [Name, setName] = useState('')
+    const [Image, setImage] = useState('')
     //Setting the theme when opened
     window.api.storeGet('Color_Pallet').then((color) => {
         if (color) {
@@ -117,13 +118,15 @@ function App(): JSX.Element {
     }, [wasOffline])
     // console.log('You are in app')
     console.log(rootId)
-    const fetchName = async (): Promise<void> => {
+    const fetchNameandImage = async (): Promise<void> => {
         const name = await window.api.storeGet('Name')
+        const image = await window.api.storeGet('Image')
         setName(name || '')
+        setImage(image || '')
     }
 
     useEffect(() => {
-        fetchName()
+        fetchNameandImage()
     }, []) // Runs once on mount
     return (
         <>
@@ -135,7 +138,7 @@ function App(): JSX.Element {
                                 <>
                                     {/* If user is logged in, show the dashboard */}
                                     <Route path="/" element={<Navigate to="/Dashboard" />} />
-                                    <Route path="/" element={<Layout name={Name} />}>
+                                    <Route path="/" element={<Layout name={Name} Image={Image}/>}>
                                         <Route
                                             path="Dashboard"
                                             element={<Dashboard selectedColor={colorPalette} />}
@@ -149,8 +152,9 @@ function App(): JSX.Element {
                                                 <Settings
                                                     selectedColor={colorPalette}
                                                     onChange={setColorPalette}
-                                                    fetchName={fetchName}
+                                                    fetchName={fetchNameandImage}
                                                     name={Name}
+                                                    Image={Image}
                                                 />
                                             }
                                         />

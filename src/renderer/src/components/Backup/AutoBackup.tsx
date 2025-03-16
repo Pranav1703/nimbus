@@ -28,23 +28,8 @@ function AutoBackup({ rootId }: { rootId }): JSX.Element {
     })
     console.log(selectedTime)
 
-    window.api.onFileChange(async (_event, path) => {
-        console.log(path)
-        if (!path) return
-        await window.api.updateFile(backupPath, backupFileId)
-    })
     const backup = async ():Promise<void> => {
-        const userInfo = await window.api.getInfo()
 
-        if (rootId && userInfo?.user?.emailAddress) {
-            await window.api.saveUser(userInfo.user.emailAddress, rootId)
-            const { id } = await window.api.fileUpload(backupPath, rootId)
-            setBackupFileId(id!)
-            window.api.initWatcher([backupPath])
-            await window.api.savePath(userInfo.user.emailAddress, backupPath)
-            const hash = await window.api.getFileHash(backupPath)
-            await window.api.saveState(userInfo.user.emailAddress, backupPath, hash) //before app quits
-        }
     }
 
     const handleFolderUpload = () => async (): Promise<void> => {

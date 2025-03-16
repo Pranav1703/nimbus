@@ -5,7 +5,7 @@ import icon from '../../resources/icon.png?asset'
 import { registerFileIpcHandlers } from './ipcHandlers/fileIPC'
 import { registerUserIpcHandlers } from './ipcHandlers/userIPC'
 import path from "node:path"
-import { registerWatcherIPCHandlers } from './ipcHandlers/watcherIPC'
+import { backupInterval, registerWatcherIPCHandlers } from './ipcHandlers/watcherIPC'
 import { cleanUpWatchers } from './helper'
 import { connectDB } from './db'
 
@@ -103,6 +103,10 @@ app.whenReady().then(async() => {
 
 
 app.on("before-quit", async () => {
+  if (backupInterval) {
+    clearInterval(backupInterval);
+    console.log("Backup interval cleared.");
+}
   await cleanUpWatchers();
 });
 

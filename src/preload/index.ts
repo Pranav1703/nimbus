@@ -28,7 +28,7 @@ if (process.contextIsolated) {
       savePath:(email:string,filepath:string)=>ipcRenderer.invoke("save-path",email,filepath),
       saveState: (email:string,filePath:string,hash:string)=>ipcRenderer.invoke("save-state",email,filePath,hash),
 
-      initWatcher: (watchPaths:string[])=>ipcRenderer.invoke("watch",watchPaths),
+      initWatcher: (watchPaths:string[],rootId:string)=>ipcRenderer.invoke("watch",watchPaths,rootId),
       getFileHash: (filePath:string)=>ipcRenderer.invoke("get-hash",filePath),
       checkState: (email:string)=>ipcRenderer.invoke("check-state",email),
 

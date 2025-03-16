@@ -5,9 +5,9 @@ import crypto from 'crypto';
 import { activeWatchers } from './ipcHandlers/watcherIPC';
 import { uploadResp } from './ipcHandlers/fileIPC';
 import { authClient } from './ipcHandlers/userIPC';
-import { google } from 'googleapis';
+import { drive_v3, google } from 'googleapis';
 
-export async function uploadFile(drive, filePath:string,rootId:string):Promise<uploadResp> {
+export async function uploadFile(drive: drive_v3.Drive, filePath:string,rootId:string):Promise<uploadResp> {
   const fileName = path.basename(filePath)
 
   const requestBody = {
@@ -96,26 +96,66 @@ export async function uploadFolder(drive, folderPath:string, parentFolderId?:str
     return folder.data.id
 }
 
-export async function backup(paths:string[],rootId:string){
+export async function backup(paths: string[], rootId: string) {
   const drive = google.drive({
       version: 'v3',
       auth: authClient
   });
 
-  await cleanupDeletedFiles(drive, paths, rootId);
+  
+  // await cleanupDeletedFiles(drive, paths, rootId); 
+  //// only works for individual files. deletes folders if files inside it are marked for backup which in not intended behaviour
 
   for (const filePath of paths) {
       const stat = fs.statSync(filePath);
 
       if (stat.isDirectory()) {
           console.log(`Uploading folder: ${filePath}`);
-          await uploadFolder(drive, filePath, rootId);
+          await uploadFolder(drive, filePath, rootId);  // Already handles nested folders internally
       } else if (stat.isFile()) {
-          console.log(`Uploading file: ${filePath}`);
-          await uploadFile(drive, filePath, rootId);
+          const relativePath = path.relative(watchRoot, filePath); // Relative path for folder structure
+          const folderPath = path.dirname(relativePath); // Extract folder structure
+
+          // Create or locate the correct folder hierarchy in Drive
+          const folderId = await createNestedFolders(drive, folderPath, rootId);
+
+          console.log(`Uploading file: ${filePath} to ${folderPath}`);
+          await uploadFile(drive, filePath, folderId);
       }
   }
 }
+
+async function createNestedFolders(drive, folderPath: string, rootId: string): Promise<string> {
+  if (!folderPath || folderPath === '.') return rootId; // Root-level file, no folders needed
+
+  const folders = folderPath.split(path.sep); // Split by `/` or `\` depending on OS
+  let currentParentId = rootId;
+
+  for (const folderName of folders) {
+      const res = await drive.files.list({
+          q: `'${currentParentId}' in parents and name='${folderName}' and mimeType='application/vnd.google-apps.folder' and trashed=false`,
+          fields: 'files(id)'
+      });
+
+      if (res.data.files && res.data.files.length > 0) {
+          currentParentId = res.data.files[0].id as string; // Folder exists
+      } else {
+          const folder = await drive.files.create({
+              resource: {
+                  name: folderName,
+                  mimeType: 'application/vnd.google-apps.folder',
+                  parents: [currentParentId]
+              },
+              fields: 'id'
+          });
+
+          currentParentId = folder.data.id as string;
+      }
+  }
+
+  return currentParentId; // Return the deepest folder's ID
+}
+
 
 async function cleanupDeletedFiles(drive, localFiles: string[], rootFolderId: string) {
   try {

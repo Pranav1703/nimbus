@@ -8,6 +8,8 @@ import { IFileState } from "../models/state";
 export const activeWatchers = new Map();
 const filesToBackup = new Set<string>();
 
+export let backupInterval: NodeJS.Timeout | null = null;
+
 export const registerWatcherIPCHandlers = ()=>{
 
     ipcMain.handle("watch",async(_event,watchPaths:string[],rootId:string)=>{
@@ -44,25 +46,28 @@ export const registerWatcherIPCHandlers = ()=>{
             watcher.on("error", (error) => {
                 console.error("Watcher error:", error);
             });
-            console.log("active watchers: ",activeWatchers.entries())
 
         });  
 
-        setInterval(() => {
-            if (filesToBackup.size > 0) {
-                console.log(`Backing up ${filesToBackup.size} file(s)...`);
-                const filesArray = [...filesToBackup];
-                (async()=>{
-                    await backup(filesArray,rootId);
-                })();
-                 //implement backup func for both files and folders in helper.ts
-    
-                filesToBackup.clear(); // Clear the list after backup
-            } else {
-                console.log("No new changes to backup.");
-            }
-        }, 60 * 1000);
-        //6 * 60 * 60 * 1000
+        if(!backupInterval){
+            backupInterval = setInterval(() => {
+                if (filesToBackup.size > 0) {
+                    console.log(`Backing up ${filesToBackup.size} file(s)...`);
+                    const filesArray = [...filesToBackup];
+                    (async()=>{
+                        await backup(filesArray,rootId);
+                    })();
+                     //implement backup func for both files and folders in helper.ts
+        
+                    filesToBackup.clear(); // Clear the list after backup
+                } else {
+                    console.log("No new changes to backup.");
+                }
+                console.log("active watchers: ",activeWatchers.entries().toArray()[0])
+            }, 60 * 1000);
+            //6 * 60 * 60 * 1000
+        }
+
     })
 
     ipcMain.handle("get-hash",async(_event,filePath:string):Promise<string | null>=>{

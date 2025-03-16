@@ -4,7 +4,7 @@ import { IFileState } from "./state";
 export interface IUser extends Document {
     email: string;
     rootId: string;
-    fileStates: mongoose.Types.ObjectId[] | IFileState[]; 
+    paths: string
 }
 
 const UserSchema = new mongoose.Schema<IUser>({
@@ -17,10 +17,9 @@ const UserSchema = new mongoose.Schema<IUser>({
         type: String,
         required: true
     },
-    fileStates:[{
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "FileState"
-    }]
+    paths:{
+        type: String,
+    }
 })
 
 export const User = mongoose.model<IUser>("User",UserSchema)

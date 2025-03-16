@@ -14,14 +14,14 @@ const Test = () => {
   const [backupFileId,setBackupFileId] = useState<string>("")
 
 
-  const fileStateCheck = async()=>{
-    const userInfo = await window.api.getInfo()
-    window.api.checkState(userInfo!.user?.emailAddress as string)
-  }
+  // const fileStateCheck = async()=>{
+  //   const userInfo = await window.api.getInfo()
+  //   window.api.checkState(userInfo!.user?.emailAddress as string)
+  // }
 
-  useEffect(() => {
-    fileStateCheck()
-  }, [])
+  // useEffect(() => {
+  //   fileStateCheck()
+  // }, [])
   
 
   // const fileChange = async()=>{
@@ -161,7 +161,8 @@ const Test = () => {
   // }
 
   const watchTest = async()=>{
-    await window.api.initWatcher(["C:/Users/prana_zhfhs6u/OneDrive/Desktop/testing"])
+    const root = await window.api.getRoot() as string
+    await window.api.initWatcher(["C:/Users/prana_zhfhs6u/OneDrive/Desktop/testing"],root)
   } 
 
   return (

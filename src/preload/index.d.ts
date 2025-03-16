@@ -24,7 +24,7 @@ type api = {
   saveState: (email:string,filePath:string,hash:string) => Promise<void>
 
 
-  initWatcher: (watchPaths: string[])=>Promise<void>
+  initWatcher: (watchPaths: string[],rootId:string)=>Promise<void>
   getFileHash: (filePath:string)=>Promise<string>
   checkState: (email:string)=>Promise<void>
   

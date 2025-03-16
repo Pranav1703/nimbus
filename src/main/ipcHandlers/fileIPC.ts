@@ -242,48 +242,34 @@ export const registerFileIpcHandlers = ():void => {
             email: email
         })
         if (user) {
-            const fileState = await FileState.create({
-                path: filepath
-            })
 
-            const updated = await User.updateOne(
-                {
-                    email: email
-                },
-                {
-                    $push: {
-                        fileStates: fileState._id
-                    }
-                }
-            )
-            console.log('added path: ', updated)
         } else {
             console.log('user not found')
         }
     })
 
-    ipcMain.handle('save-state', async (_event, email: string, filePath: string, hash: string) => {
-        const user = await User.findOne({
-            email: email
-        })
+    // ipcMain.handle('save-state', async (_event, email: string, filePath: string, hash: string) => {
+    //     const user = await User.findOne({
+    //         email: email
+    //     })
 
-        if (!user) {
-            console.log('user not found to update state')
-            return
-        }
-        const fileState = await FileState.updateOne(
-            {
-                _id: { $in: user.fileStates },
-                path: filePath
-            },
-            {
-                $set: {
-                    hash: hash
-                }
-            }
-        )
-        console.log('updated fileState: ', fileState)
-    })
+    //     if (!user) {
+    //         console.log('user not found to update state')
+    //         return
+    //     }
+    //     const fileState = await FileState.updateOne(
+    //         {
+    //             _id: { $in: user.fileStates },
+    //             path: filePath
+    //         },
+    //         {
+    //             $set: {
+    //                 hash: hash
+    //             }
+    //         }
+    //     )
+    //     console.log('updated fileState: ', fileState)
+    // })
 
     // ipcMain.handle('update-file', async (_event, filePath: string, fileId: string) => {
     //     const drive = google.drive({

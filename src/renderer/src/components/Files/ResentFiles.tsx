@@ -40,7 +40,7 @@ const ResentFiles = ({
     const startRange = (page - 1) * pageSize
     const endRange = startRange + pageSize
 
-    const visibleItems = Files.slice(startRange, endRange)
+    const visibleItems:FileProps[] = Files.slice(startRange, endRange)
 
     const [selection, setSelection] = useState<string[]>([])
 

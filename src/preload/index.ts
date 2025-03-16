@@ -27,11 +27,8 @@ if (process.contextIsolated) {
       getRoot: ()=>ipcRenderer.invoke("get-root"),
       savePath:(email:string,filepath:string)=>ipcRenderer.invoke("save-path",email,filepath),
       saveState: (email:string,filePath:string,hash:string)=>ipcRenderer.invoke("save-state",email,filePath,hash),
-      updateFile:(filePath:string,fileId:string)=>ipcRenderer.invoke("update-file",filePath,fileId),
 
       initWatcher: (watchPaths:string[])=>ipcRenderer.invoke("watch",watchPaths),
-      onFileChange: (callback) =>ipcRenderer.on("file-change",callback),
-      // cleanUpWatchers: ()=> ipcRenderer.invoke("cleanup-watchers"),
       getFileHash: (filePath:string)=>ipcRenderer.invoke("get-hash",filePath),
       checkState: (email:string)=>ipcRenderer.invoke("check-state",email),
 

@@ -3,6 +3,47 @@ import path from 'path';
 import mime from 'mime';
 import crypto from 'crypto';
 import { activeWatchers } from './ipcHandlers/watcherIPC';
+import { uploadResp } from './ipcHandlers/fileIPC';
+import { authClient } from './ipcHandlers/userIPC';
+import { google } from 'googleapis';
+
+export async function uploadFile(drive, filePath:string,rootId:string):Promise<uploadResp> {
+  const fileName = path.basename(filePath)
+
+  const requestBody = {
+      name: fileName,
+      fields: 'id',
+      parents: [rootId]
+  }
+
+  const stream = fs.createReadStream(filePath)
+  const mimeType = mime.getType(filePath) as string
+
+  const media = {
+      mimeType: mimeType,
+      body: stream
+  }
+
+  try {
+      const file = await drive.files.create({
+          requestBody,
+          media: media
+      })
+      console.log('----------------------------------')
+      console.log('File Id:', file.data.id)
+      console.log('mime type: ', mimeType)
+      console.log('bytes read :', stream.bytesRead)
+      console.log('----------------------------------')
+      return {
+          id: file.data.id
+      }
+  } catch (error) {
+      console.log('error while trying to upload, Error:', error)
+      return {
+          id: null
+      }
+  }
+}
 
 export async function uploadFolder(drive, folderPath:string, parentFolderId?:string):Promise<any> {
     const folderName = path.basename(folderPath);
@@ -54,6 +95,59 @@ export async function uploadFolder(drive, folderPath:string, parentFolderId?:str
     }
     return folder.data.id
 }
+
+export async function backup(paths:string[],rootId:string){
+  const drive = google.drive({
+      version: 'v3',
+      auth: authClient
+  });
+
+  await cleanupDeletedFiles(drive, paths, rootId);
+
+  for (const filePath of paths) {
+      const stat = fs.statSync(filePath);
+
+      if (stat.isDirectory()) {
+          console.log(`Uploading folder: ${filePath}`);
+          await uploadFolder(drive, filePath, rootId);
+      } else if (stat.isFile()) {
+          console.log(`Uploading file: ${filePath}`);
+          await uploadFile(drive, filePath, rootId);
+      }
+  }
+}
+
+async function cleanupDeletedFiles(drive, localFiles: string[], rootFolderId: string) {
+  try {
+      // Step 1: List all files in the Google Drive folder
+      const driveFiles = await drive.files.list({
+          q: `'${rootFolderId}' in parents and trashed = false`,
+          fields: 'files(id, name)'
+      });
+
+      const driveFileMap = new Map<string, string>(
+        (driveFiles.data.files || [])
+            .filter(file => file.name) // Filter out entries with undefined names
+            .map(file => [file.name as string, file.id as string]) // Assert types
+      );
+
+      // Step 2: Identify files that are missing locally
+      const localFileNames = new Set(localFiles.map(file => path.basename(file)));
+
+      for (const [fileName, fileId] of driveFileMap) {
+          if (!localFileNames.has(fileName)) {
+              console.log(`Deleting ${fileName} from Drive...`);
+              await drive.files.delete({ fileId });
+              console.log(`Deleted: ${fileName}`);
+          }
+      }
+
+      console.log('Cleanup complete.');
+  } catch (error) {
+      console.error('Error during cleanup:', error);
+  }
+}
+
 
 export function computeFileHash(filePath: string): Promise<string> {
   return new Promise((resolve, reject) => {

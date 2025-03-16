@@ -58,7 +58,7 @@ if (!gotTheLock) {
   app.quit()
 } else {
   app.on('second-instance', function () {
-    // Someone tried to run a second instance, we should focus our window.
+    // if someone tried to run a second instance, focus our window.
     if (mainWindow) {
       if (mainWindow.isMinimized()) mainWindow.restore()
       mainWindow.focus()

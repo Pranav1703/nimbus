@@ -1,17 +1,16 @@
 import { ipcMain } from "electron"
 import chokidar, { FSWatcher } from "chokidar"
 import { mainWindow } from "../index"
-import { computeFileHash } from "../helper"
+import { backup, computeFileHash } from "../helper"
 import { User } from "../models/user";
 import { IFileState } from "../models/state";
-import { file } from "googleapis/build/src/apis/file";
 
 export const activeWatchers = new Map();
 const filesToBackup = new Set<string>();
 
 export const registerWatcherIPCHandlers = ()=>{
 
-    ipcMain.handle("watch",async(_event,watchPaths:string[])=>{
+    ipcMain.handle("watch",async(_event,watchPaths:string[],rootId:string)=>{
 
         watchPaths.forEach((path) => {
             // Check if the path is already being watched
@@ -49,19 +48,21 @@ export const registerWatcherIPCHandlers = ()=>{
 
         });  
 
-        // setInterval(() => {
-        //     if (filesToBackup.size > 0) {
-        //         console.log(`Backing up ${filesToBackup.size} file(s)...`);
-        //         const filesArray = [...filesToBackup];
-                
-        //         backup(filesArray); //implement backup func for both files and folders in helper.ts
+        setInterval(() => {
+            if (filesToBackup.size > 0) {
+                console.log(`Backing up ${filesToBackup.size} file(s)...`);
+                const filesArray = [...filesToBackup];
+                (async()=>{
+                    await backup(filesArray,rootId);
+                })();
+                 //implement backup func for both files and folders in helper.ts
     
-        //         filesToBackup.clear(); // Clear the list after backup
-        //     } else {
-        //         console.log("No new changes to backup.");
-        //     }
-        // }, 6 * 60 * 60 * 1000);
-
+                filesToBackup.clear(); // Clear the list after backup
+            } else {
+                console.log("No new changes to backup.");
+            }
+        }, 60 * 1000);
+        //6 * 60 * 60 * 1000
     })
 
     ipcMain.handle("get-hash",async(_event,filePath:string):Promise<string | null>=>{

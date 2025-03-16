@@ -24,147 +24,141 @@ const Test = () => {
   }, [])
   
 
-  window.api.onFileChange(async(_event,path)=>{
-    console.log(path)
-    if (!path) return;
-    await window.api.updateFile(backupPath,backupFileId)
-  })
+  // const fileChange = async()=>{
+  //   // setFileValue(e.target.value)
+  //   // const filePath = e.target.files![0].path
+  //   setFilePath("D:/Btech/Btech-3/Sem-6/DATA WAREHOUSING AND MINING/Theory/Unit-1/1.1 Additional Topics.pdf")
+  //   console.log(filePath)
+  // }
 
-  const fileChange = async()=>{
-    // setFileValue(e.target.value)
-    // const filePath = e.target.files![0].path
-    setFilePath("D:/Btech/Btech-3/Sem-6/DATA WAREHOUSING AND MINING/Theory/Unit-1/1.1 Additional Topics.pdf")
-    console.log(filePath)
-  }
-
-  const uploadFile = async() => {
-    if(filePath.length===0){
-      console.log("no filePath provided.")
-      return
-    }
-    try {
-      console.log(filePath)
-      const {id} = await window.api.fileUpload(filePath,rootId);
-    } catch (error) {
-      console.log("error uploading file: ",error)
-    }    
-    setFileValue("")
-  }
+  // const uploadFile = async() => {
+  //   if(filePath.length===0){
+  //     console.log("no filePath provided.")
+  //     return
+  //   }
+  //   try {
+  //     console.log(filePath)
+  //     const {id} = await window.api.fileUpload(filePath,rootId);
+  //   } catch (error) {
+  //     console.log("error uploading file: ",error)
+  //   }    
+  //   setFileValue("")
+  // }
   
-  const getFiles = async()=>{
-    try {
-      const resp = await window.api.getList(rootId);
-      console.log("file list array: ",resp)
-      setFileList(resp)
-    } catch (error) {
-      console.log(error)
-    }
-  }
+  // const getFiles = async()=>{
+  //   try {
+  //     const resp = await window.api.getList(rootId);
+  //     console.log("file list array: ",resp)
+  //     setFileList(resp)
+  //   } catch (error) {
+  //     console.log(error)
+  //   }
+  // }
 
-  const deleteHandler = async()=>{
-    try {
-      await window.api.deleteFile(fileId)
-    } catch (error) {
-      console.log(error)
-    }
-    setFileId("")
-    await getFiles()
-  }
+  // const deleteHandler = async()=>{
+  //   try {
+  //     await window.api.deleteFile(fileId)
+  //   } catch (error) {
+  //     console.log(error)
+  //   }
+  //   setFileId("")
+  //   await getFiles()
+  // }
 
-  const downloadFile = async(id:string,destPath)=>{
-    console.log("id clicked:", id)
-    try {
-      await window.api.downloadFile(id,destPath)
-    } catch (error) {
-     console.log("error while downloading the file. ",error) 
-    }
-  }
+  // const downloadFile = async(id:string,destPath)=>{
+  //   console.log("id clicked:", id)
+  //   try {
+  //     await window.api.downloadFile(id,destPath)
+  //   } catch (error) {
+  //    console.log("error while downloading the file. ",error) 
+  //   }
+  // }
 
-  const DownloadBtn = ({id,name})=>{
-    //C:\Users\prana_zhfhs6u\OneDrive\Desktop\destPath\{filename.ext}  //test path
-    const destPath = `C:/Users/shanm/Desktop/New folder/${name}`
-    return(
-      <Box
-      display={"flex"}
-      justifyContent={"space-between"}
-      >
-        <Button m={'1px'} onClick={()=>{downloadFile(id,destPath)}}>
-          download File
-        </Button>
-      </Box>
-    )
-  } 
+  // const DownloadBtn = ({id,name})=>{
+  //   //C:\Users\prana_zhfhs6u\OneDrive\Desktop\destPath\{filename.ext}  //test path
+  //   const destPath = `C:/Users/shanm/Desktop/New folder/${name}`
+  //   return(
+  //     <Box
+  //     display={"flex"}
+  //     justifyContent={"space-between"}
+  //     >
+  //       <Button m={'1px'} onClick={()=>{downloadFile(id,destPath)}}>
+  //         download File
+  //       </Button>
+  //     </Box>
+  //   )
+  // } 
 
-  const uploadFolder = async()=>{
-    try {
-      await window.api.folderUpload("C:/Users/shanm/Desktop/New folder",rootId)
-    } catch (error) {
-      console.log(error)
-    }
-  }
+  // const uploadFolder = async()=>{
+  //   try {
+  //     await window.api.folderUpload("C:/Users/shanm/Desktop/New folder",rootId)
+  //   } catch (error) {
+  //     console.log(error)
+  //   }
+  // }
   
-  const userInfoLogger = async()=>{
-    try {
-      const info = await window.api.getInfo()  //user, storageQuota in Bytes, maxUploadSize
-      console.log("user info: ",info?.user)
-      console.log("storageQuota: ",info?.storageQuota)
-      console.log("maxUploadSize: ",info?.maxUploadSize)
-    } catch (error) {
-      console.log(error)
-    }
-  }
+  // const userInfoLogger = async()=>{
+  //   try {
+  //     const info = await window.api.getInfo()  //user, storageQuota in Bytes, maxUploadSize
+  //     console.log("user info: ",info?.user)
+  //     console.log("storageQuota: ",info?.storageQuota)
+  //     console.log("maxUploadSize: ",info?.maxUploadSize)
+  //   } catch (error) {
+  //     console.log(error)
+  //   }
+  // }
 
-  const watcher = async()=>{
-    try {
-      await window.api.initWatcher(["C:/Users/prana_zhfhs6u/OneDrive/Desktop/testing/watchThis.txt"])      
+  // const watcher = async()=>{
+  //   try {
+  //     await window.api.initWatcher(["C:/Users/prana_zhfhs6u/OneDrive/Desktop/testing/watchThis.txt"])      
       
-    } catch (error) {
-      console.log(error)
-    }
-  }
+  //   } catch (error) {
+  //     console.log(error)
+  //   }
+  // }
 
-  const generateHash = async()=>{
-    try {
-      const hash = await window.api.getFileHash(filePath)
-      setHash(hash)
-    } catch (error) {
-      console.log(error)
-    }
-  }
+  // const generateHash = async()=>{
+  //   try {
+  //     const hash = await window.api.getFileHash(filePath)
+  //     setHash(hash)
+  //   } catch (error) {
+  //     console.log(error)
+  //   }
+  // }
 
-  const createRoot = async()=>{
-    const resp = await window.api.createRoot() // true - root created,  false - root already exists
-    console.log(resp)
-  }
+  // const createRoot = async()=>{
+  //   const resp = await window.api.createRoot() // true - root created,  false - root already exists
+  //   console.log(resp)
+  // }
 
-  const getRoot = async()=>{
-    const rootId = await window.api.getRoot()
-    if(rootId){
-      setRootId(rootId)
-    }
-  }
+  // const getRoot = async()=>{
+  //   const rootId = await window.api.getRoot()
+  //   if(rootId){
+  //     setRootId(rootId)
+  //   }
+  // }
 
-  const backupFileChange = async(e:React.ChangeEvent<HTMLInputElement>)=>{
-    setBackupFileValue(e.target.value)
-    const filePath = e.target.files![0].path
-    setBackupPath(filePath)
-  }
+  // const backupFileChange = async(e:React.ChangeEvent<HTMLInputElement>)=>{
+  //   setBackupFileValue(e.target.value)
+  //   const filePath = e.target.files![0].path
+  //   setBackupPath(filePath)
+  // }
 
-  const backup = async()=>{
-    const rootId = await window.api.getRoot()
-    const userInfo = await window.api.getInfo()
+  // const backup = async()=>{
+  //   const rootId = await window.api.getRoot()
+  //   const userInfo = await window.api.getInfo()
 
-    if(rootId && userInfo?.user?.emailAddress){
-      await window.api.saveUser(userInfo.user.emailAddress,rootId)
-      const {id} = await window.api.fileUpload(backupPath,rootId)
-      setBackupFileId(id!)
-      window.api.initWatcher([backupPath])
-      await window.api.savePath(userInfo.user.emailAddress,backupPath)
-      const hash = await window.api.getFileHash(backupPath)
-      await window.api.saveState(userInfo.user.emailAddress,backupPath,hash) //before app quits 
-    }
+  //   if(rootId && userInfo?.user?.emailAddress){
+  //     await window.api.saveUser(userInfo.user.emailAddress,rootId)
+  //     const {id} = await window.api.fileUpload(backupPath,rootId)
+  //     setBackupFileId(id!)
+  //     window.api.initWatcher([backupPath])
+  //     await window.api.savePath(userInfo.user.emailAddress,backupPath)
+  //     const hash = await window.api.getFileHash(backupPath)
+  //     await window.api.saveState(userInfo.user.emailAddress,backupPath,hash) //before app quits 
+  //   }
 
-  }
+  // }
 
   const watchTest = async()=>{
     await window.api.initWatcher(["C:/Users/prana_zhfhs6u/OneDrive/Desktop/testing"])
@@ -173,7 +167,7 @@ const Test = () => {
   return (
     <>
         <h1>testing api's</h1><br/>
-        <div className="uploadFile">
+        {/* <div className="uploadFile">
           <input type="file" onChange={fileChange}/>
           <Button 
           m={'10px'}
@@ -296,7 +290,7 @@ const Test = () => {
           >
             BackUp
           </Button>
-        </div>
+        </div> */}
 
         <Button onClick={watchTest}>
           test

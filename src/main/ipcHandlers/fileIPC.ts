@@ -4,8 +4,7 @@ import { authClient } from './userIPC'
 import * as fs from 'fs'
 import path from 'path'
 import os from 'os'
-import mime from 'mime'
-import { downloadFile, downloadFolder, uploadFolder } from '../helper'
+import { downloadFile, downloadFolder, uploadFile, uploadFolder } from '../helper'
 import { User } from '../models/user'
 import { FileState } from '../models/state'
 import { dialog } from 'electron/main'
@@ -53,41 +52,8 @@ export const registerFileIpcHandlers = () => {
                 auth: authClient
             })
 
-            const fileName = path.basename(filePath)
-
-            const requestBody = {
-                name: fileName,
-                fields: 'id',
-                parents: [rootId]
-            }
-
-            const stream = fs.createReadStream(filePath)
-            const mimeType = mime.getType(filePath) as string
-
-            const media = {
-                mimeType: mimeType,
-                body: stream
-            }
-
-            try {
-                const file = await drive.files.create({
-                    requestBody,
-                    media: media
-                })
-                console.log('----------------------------------')
-                console.log('File Id:', file.data.id)
-                console.log('mime type: ', mimeType)
-                console.log('bytes read :', stream.bytesRead)
-                console.log('----------------------------------')
-                return {
-                    id: file.data.id
-                }
-            } catch (error) {
-                console.log('error while trying to upload, Error:', error)
-                return {
-                    id: null
-                }
-            }
+            const resp:uploadResp = await uploadFile(drive,filePath,rootId)
+            return resp
         }
     )
 
@@ -319,25 +285,25 @@ export const registerFileIpcHandlers = () => {
         console.log('updated fileState: ', fileState)
     })
 
-    ipcMain.handle('update-file', async (_event, filePath: string, fileId: string) => {
-        const drive = google.drive({
-            version: 'v3',
-            auth: authClient
-        })
+    // ipcMain.handle('update-file', async (_event, filePath: string, fileId: string) => {
+    //     const drive = google.drive({
+    //         version: 'v3',
+    //         auth: authClient
+    //     })
 
-        const fileName = path.basename(filePath)
+    //     const fileName = path.basename(filePath)
 
-        try {
-            const response = await drive.files.update({
-                fileId,
-                media: {
-                    mimeType: 'application/octet-stream',
-                    body: fs.createReadStream(filePath)
-                }
-            })
-            console.log(`File updated: ${fileName}`)
-        } catch (error) {
-            console.error(`Failed to update file: ${fileName}`, error)
-        }
-    })
+    //     try {
+    //         const response = await drive.files.update({
+    //             fileId,
+    //             media: {
+    //                 mimeType: 'application/octet-stream',
+    //                 body: fs.createReadStream(filePath)
+    //             }
+    //         })
+    //         console.log(`File updated: ${fileName}`)
+    //     } catch (error) {
+    //         console.error(`Failed to update file: ${fileName}`, error)
+    //     }
+    // })
 }

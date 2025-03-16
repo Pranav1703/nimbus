@@ -12,3 +12,6 @@ work around :
 1.Record the State of Files: When your application stops, save the state of the watched files (e.g., checksums). -- done
 2.Compare the State on Restart: When the application starts, compare the current state of the files with the previously saved state to identify any changes.-- in progress.
 
+watchroot issue
+save-user and save-path re-implement
+schema changes to db

@@ -64,7 +64,6 @@ export const registerUserIpcHandlers = ()=>{
         }else{
             const newUser = await User.create({
                 email: email,
-                rootId: rootId,
             })
             console.log("new user created. NewUser: ",newUser)
         }

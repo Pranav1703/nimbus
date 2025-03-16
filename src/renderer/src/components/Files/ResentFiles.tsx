@@ -129,7 +129,7 @@ const ResentFiles = ({
     }
     const handleDownloadAndOpen = async (fileId, fielName): Promise<void> => {
         try {
-            addAlert('info', 'Downloading...', 2000, true)
+            addAlert('info', 'Opening...', 2000, true)
             const filePath = await window.api.CreateTempFile(fielName)
             if (filePath) {
                 await window.api.downloadFile(fileId, filePath)

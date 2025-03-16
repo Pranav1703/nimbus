@@ -35,6 +35,7 @@ type api = {
   showOpenDialog: (options: Electron.OpenDialogOptions)=>Promise<Electron.OpenDialogReturnValue>
   storeGet: (key:string)=>Promise<string | null>
   storeSet: (key:string,value:string)=>Promise<void>
+  ImageToBase64: (filePath:string)=>Promise<string>
 }
 
 declare global {

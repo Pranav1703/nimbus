@@ -10,11 +10,15 @@ import CollorPallet from '../components/Settings/CollorPallet'
 interface CollorPalletProps {
     selectedColor: string
     onChange: (color: string) => void
+    fetchName: () => void
+    name: string
+    Image: string
 }
 
-function Settings({ selectedColor, onChange }: CollorPalletProps): JSX.Element {
+function Settings({ selectedColor, onChange, fetchName, name, Image }: CollorPalletProps): JSX.Element {
     const [userinfo, setuserinfo] = useState<drive_v3.Schema$About>({})
     const [loading, setloading] = useState(true)
+
     useEffect(() => {
         const logger = async (): Promise<void> => {
             try {
@@ -22,6 +26,16 @@ function Settings({ selectedColor, onChange }: CollorPalletProps): JSX.Element {
                 if (info) {
                     setloading(false)
                     setuserinfo(info)
+                    if (info.user && (await window.api.storeGet('Name')) === undefined) {
+                        if (info.user.displayName) {
+                            await window.api.storeSet('Name', info.user.displayName)
+                        }
+                    }
+                    if (info.user && (await window.api.storeGet('Image')) === undefined) {
+                        if (info.user.photoLink) {
+                            await window.api.storeSet('Image', info.user.photoLink)
+                        }
+                    }
                 } else {
                     setuserinfo({})
                 }
@@ -31,10 +45,14 @@ function Settings({ selectedColor, onChange }: CollorPalletProps): JSX.Element {
         }
         logger()
     }, [])
+
+
+
+
     return (
         <>
             <HStack flexDirection={'column'} gap={4} mb={15}>
-                <Profile userinfo={userinfo} loading={loading} />
+                <Profile userinfo={userinfo} loading={loading} refreshName={fetchName} name={name} Image={Image}/>
                 <CollorPallet selectedColor={selectedColor} onChange={onChange} />
                 <Connected_Acc userinfo={userinfo} loading={loading} />
                 <StorageUsage userinfo={userinfo} loading={loading} />

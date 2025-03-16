@@ -1,5 +1,5 @@
 import { Fieldset, FileUploadFileAcceptDetails, Group, Input } from '@chakra-ui/react'
-import React from 'react'
+import React, { useEffect } from 'react'
 import {
     PopoverArrow,
     PopoverBody,
@@ -16,10 +16,12 @@ import { useAlert } from '../../Alert'
 
 interface EditProfileProps {
     userinfo: drive_v3.Schema$About
+    refreshName: () => void
+    name: string
 }
 
-function Edit_Profile({ userinfo }: EditProfileProps): JSX.Element {
-    const addAlert = useAlert();
+function Edit_Profile({ userinfo,refreshName,name}: EditProfileProps): JSX.Element {
+    const {addAlert} = useAlert();
     const [ChangePhoto, setChangePhoto] = React.useState(false)
     const handleSubmit = async(event: React.FormEvent<HTMLFormElement>): Promise<void> => {
         event.preventDefault()
@@ -27,12 +29,13 @@ function Edit_Profile({ userinfo }: EditProfileProps): JSX.Element {
         const nameInput = form.elements.namedItem('name') as HTMLInputElement
         await window.api.storeSet('Name', nameInput.value);
         console.log(await window.api.storeGet('Name'))
-        addAlert('success', 'Name updated successfully')
+        refreshName();
+        addAlert('success', 'Name updated successfully',null)
     }
     const handlefileSubmit = (details: FileUploadFileAcceptDetails): void => {
         console.log(details)
         setChangePhoto(true)
-        addAlert('success', 'Photo uploaded successfully')
+        addAlert('success', 'Photo uploaded successfully',null)
     }
     return (
         <>
@@ -56,7 +59,7 @@ function Edit_Profile({ userinfo }: EditProfileProps): JSX.Element {
                                         <Field label="Default Name" textStyle={'2xl'}>
                                             <Input
                                                 name="name"
-                                                defaultValue={userinfo?.user?.displayName || ''}
+                                                defaultValue={name || ''}
                                                 size={'sm'}
                                                 id="name"
                                             />

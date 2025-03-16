@@ -21,9 +21,10 @@ import Icons from '../assets/Icons'
 import { Tooltip } from './ui/tooltip'
 
 function Sidebar({
-    data
+    data,name
 }: {
     data: { userinfo: drive_v3.Schema$About; loading: boolean }
+    name:string
 }): JSX.Element {
     const navigate = useNavigate()
     const location = useLocation()
@@ -184,7 +185,7 @@ function Sidebar({
                                 />
                                 <VStack w={'full'}>
                                     <Text>
-                                        {data.userinfo ? data.userinfo?.user?.displayName : ''}
+                                        {name}
                                     </Text>
                                     <Text>
                                         {data.userinfo ? data.userinfo?.user?.emailAddress : ''}

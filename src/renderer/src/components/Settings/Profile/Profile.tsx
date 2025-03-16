@@ -6,10 +6,14 @@ import { Skeleton, SkeletonCircle } from '../../ui/skeleton'
 
 function Profile({
     userinfo,
-    loading
+    loading,
+    refreshName,
+    name
 }: {
     userinfo: drive_v3.Schema$About
     loading: boolean
+    refreshName: () => void
+    name: string
 }): JSX.Element {
     return (
         <>
@@ -42,12 +46,12 @@ function Profile({
                         </Avatar.Root>
                         <VStack gap={1} alignItems={'flex-start'}>
                             <Text fontSize="xl" fontWeight={'medium'}>
-                                {userinfo?.user?.displayName}
+                                {name}
                             </Text>
                             <Text fontSize="md" color={'gray.400'}>
                                 {userinfo?.user?.emailAddress}
                             </Text>
-                            <Edit_Profile userinfo={userinfo} />
+                            <Edit_Profile userinfo={userinfo} refreshName={refreshName} name={name}/>
                         </VStack>
                     </HStack>
                 )}

@@ -217,9 +217,8 @@ const ResentFiles = ({
                                                 <VStack alignItems="flex-start" gap={1}>
                                                     <Text>{item.name}</Text>
                                                     <Text fontSize="sm" color="gray.500">
-                                                        {/* {item.modified} */}
-                                                        {/* {category} */}
-                                                        {formatBytesBase2(item.size)} · Modified{' '}
+                                                    
+                                                        {formatBytesBase2(Number(item.size))} · Modified{' '}
                                                         {formatDate(item.modifiedByMeTime)}
                                                     </Text>
                                                 </VStack>

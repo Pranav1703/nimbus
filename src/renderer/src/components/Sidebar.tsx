@@ -145,7 +145,7 @@ function Sidebar({
                     <DrawerBody>
                         <Stack mt={3}>
                             {[
-                                { logo: <Icons.Dashboard />, data: 'Dashboard' },
+                                { logo: <Icons.Dashboard/>, data: 'Dashboard' },
                                 { logo: <Icons.Folder />, data: 'Files' },
                                 { logo: <Icons.Backup1 />, data: 'Backup' },
                                 { logo: <Icons.Versions1 />, data: 'Versions' },
@@ -160,7 +160,7 @@ function Sidebar({
                                     justifyContent={'flex-start'}
                                     pl={30}
                                 >
-                                    <Icon mr={3}>{item.logo}</Icon>
+                                    <Icon  mr={3} >{item.logo}</Icon>
                                     <Text>{item.data}</Text>
                                 </Button>
                             ))}

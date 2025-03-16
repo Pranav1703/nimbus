@@ -20,7 +20,7 @@ export type uploadResp = {
     id: string | null | undefined
 }
 
-export const registerFileIpcHandlers = () => {
+export const registerFileIpcHandlers = ():void => {
     ipcMain.handle('list', async (_event, rootId): Promise<drive_v3.Schema$File[]> => {
         try {
             const drive = google.drive({ version: 'v3', auth: authClient })
@@ -340,4 +340,15 @@ export const registerFileIpcHandlers = () => {
             console.error(`Failed to update file: ${fileName}`, error)
         }
     })
+    
+    ipcMain.handle('convert-image-to-base64', async (_, filePath) => {
+        try {
+            const imageBuffer = fs.readFileSync(filePath);
+            const base64Image = `data:image/png;base64,${imageBuffer.toString('base64')}`;
+            return base64Image;
+        } catch (error) {
+            console.error('Error converting image:', error);
+            return null;
+        }
+    });
 }

@@ -34,7 +34,8 @@ function App(): JSX.Element {
     const offlineAlertId = useRef<number | null>(null) // Track the alert ID
     const [rootId, setRootId] = useState<string>('')
     const hasRun = useRef(false)
-
+    const [Name, setName] = useState('')
+    const [Image, setImage] = useState('')
     //Setting the theme when opened
     window.api.storeGet('Color_Pallet').then((color) => {
         if (color) {
@@ -82,14 +83,14 @@ function App(): JSX.Element {
     setTheme('dark')
 
     useEffect(() => {
-        const handleOffline = () => {
+        const handleOffline = (): void => {
             if (!wasOffline) {
                 offlineAlertId.current = addAlert('warning', 'You are offline', null) // Sticky alert
                 setWasOffline(true)
             }
         }
 
-        const handleOnline = () => {
+        const handleOnline = (): void => {
             setWasOffline(false)
 
             // Remove the "You are offline" alert manually
@@ -110,13 +111,23 @@ function App(): JSX.Element {
         window.addEventListener('offline', handleOffline)
         window.addEventListener('online', handleOnline)
 
-        return () => {
+        return (): void => {
             window.removeEventListener('offline', handleOffline)
             window.removeEventListener('online', handleOnline)
         }
     }, [wasOffline])
     // console.log('You are in app')
     console.log(rootId)
+    const fetchNameandImage = async (): Promise<void> => {
+        const name = await window.api.storeGet('Name')
+        const image = await window.api.storeGet('Image')
+        setName(name || '')
+        setImage(image || '')
+    }
+
+    useEffect(() => {
+        fetchNameandImage()
+    }, []) // Runs once on mount
     return (
         <>
             <CustomChakraProvider colorPalette={colorPalette}>
@@ -127,7 +138,7 @@ function App(): JSX.Element {
                                 <>
                                     {/* If user is logged in, show the dashboard */}
                                     <Route path="/" element={<Navigate to="/Dashboard" />} />
-                                    <Route path="/" element={<Layout />}>
+                                    <Route path="/" element={<Layout name={Name} Image={Image}/>}>
                                         <Route
                                             path="Dashboard"
                                             element={<Dashboard selectedColor={colorPalette} />}
@@ -141,6 +152,9 @@ function App(): JSX.Element {
                                                 <Settings
                                                     selectedColor={colorPalette}
                                                     onChange={setColorPalette}
+                                                    fetchName={fetchNameandImage}
+                                                    name={Name}
+                                                    Image={Image}
                                                 />
                                             }
                                         />

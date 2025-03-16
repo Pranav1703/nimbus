@@ -41,6 +41,7 @@ if (process.contextIsolated) {
       showOpenDialog: (options) => ipcRenderer.invoke("show-open-dialog", options),
       storeGet: (key:string) => ipcRenderer.invoke("store-get", key),
       storeSet: (key:string, value:string) => ipcRenderer.invoke("store-set", key, value),
+      ImageToBase64: (filePath:string) => ipcRenderer.invoke("convert-image-to-base64", filePath),
     })
   } catch (error) {
     console.error(error)

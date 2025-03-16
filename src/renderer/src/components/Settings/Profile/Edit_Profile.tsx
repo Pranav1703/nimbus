@@ -1,5 +1,5 @@
 import { Fieldset, FileUploadFileAcceptDetails, Group, Input } from '@chakra-ui/react'
-import React from 'react'
+import React, { useEffect } from 'react'
 import {
     PopoverArrow,
     PopoverBody,
@@ -15,11 +15,12 @@ import { HiUpload } from 'react-icons/hi'
 import { useAlert } from '../../Alert'
 
 interface EditProfileProps {
-    userinfo: drive_v3.Schema$About
+    refreshName: () => void
+    name: string
 }
 
-function Edit_Profile({ userinfo }: EditProfileProps): JSX.Element {
-    const addAlert = useAlert();
+function Edit_Profile({ refreshName,name}: EditProfileProps): JSX.Element {
+    const {addAlert} = useAlert();
     const [ChangePhoto, setChangePhoto] = React.useState(false)
     const handleSubmit = async(event: React.FormEvent<HTMLFormElement>): Promise<void> => {
         event.preventDefault()
@@ -27,12 +28,21 @@ function Edit_Profile({ userinfo }: EditProfileProps): JSX.Element {
         const nameInput = form.elements.namedItem('name') as HTMLInputElement
         await window.api.storeSet('Name', nameInput.value);
         console.log(await window.api.storeGet('Name'))
-        addAlert('success', 'Name updated successfully')
+        refreshName();
+        addAlert('success', 'Name updated successfully',2000)
     }
-    const handlefileSubmit = (details: FileUploadFileAcceptDetails): void => {
-        console.log(details)
+    const handlefileSubmit = async(details: FileUploadFileAcceptDetails): Promise<void> => {
+        console.log(await window.api.storeGet('FileData'))
+        console.log(details.files[0].path)
+        const base64Image = await window.api.ImageToBase64(details.files[0].path);
+
+        if (base64Image) {
+            await window.api.storeSet('Image', base64Image);
+            refreshName();
+            console.log('Image saved successfully!');
+            addAlert('success', 'Photo uploaded successfully',2000)
+        }
         setChangePhoto(true)
-        addAlert('success', 'Photo uploaded successfully')
     }
     return (
         <>
@@ -56,7 +66,7 @@ function Edit_Profile({ userinfo }: EditProfileProps): JSX.Element {
                                         <Field label="Default Name" textStyle={'2xl'}>
                                             <Input
                                                 name="name"
-                                                defaultValue={userinfo?.user?.displayName || ''}
+                                                defaultValue={name || ''}
                                                 size={'sm'}
                                                 id="name"
                                             />

@@ -16,7 +16,7 @@ if (process.contextIsolated) {
       authorizeUser: ()=>ipcRenderer.invoke("authorize"),
       checkToken: ()=>ipcRenderer.invoke("check-token"),
       getInfo: ()=>ipcRenderer.invoke("user-info"),
-      saveUser: (email:string,rootId:string)=>ipcRenderer.invoke("save-user",email,rootId),
+      saveUser: ()=>ipcRenderer.invoke("save-user"),
 
       getList: (rootId:string)=> ipcRenderer.invoke("list",rootId),
       fileUpload: (filePath:string,rootId:string)=> ipcRenderer.invoke('upload-file',filePath,rootId),
@@ -25,8 +25,7 @@ if (process.contextIsolated) {
       downloadFile: (fileId:string,destPath:string)=>ipcRenderer.invoke('download',fileId,destPath),
       createRoot: ()=> ipcRenderer.invoke("create-root"),
       getRoot: ()=>ipcRenderer.invoke("get-root"),
-      savePath:(email:string,filepath:string)=>ipcRenderer.invoke("save-path",email,filepath),
-      saveState: (email:string,filePath:string,hash:string)=>ipcRenderer.invoke("save-state",email,filePath,hash),
+      savePath:(Path:string)=>ipcRenderer.invoke("save-path",Path),
 
       initWatcher: (watchPaths:string[],rootId:string)=>ipcRenderer.invoke("watch",watchPaths,rootId),
       getFileHash: (filePath:string)=>ipcRenderer.invoke("get-hash",filePath),

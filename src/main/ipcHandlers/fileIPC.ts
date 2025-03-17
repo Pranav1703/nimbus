@@ -51,9 +51,39 @@ export const registerFileIpcHandlers = ():void => {
                 version: 'v3',
                 auth: authClient
             })
+            try{
+                
+                const info = await drive.about.get({
+                    fields:'user'
+                })
+    
+                const user = await User.findOne({
+                    email: info.data.user?.emailAddress
+                })
+                if (user) {
+                    const updatedDoc = await User.findByIdAndUpdate(
+                        user._id, 
+                        { $addToSet: { rootpaths: filePath.trim() } },
+                        { new: true } // Returns the updated document
+                    )
 
-            const resp:uploadResp = await uploadFile(drive,filePath,rootId)
-            return resp
+                    console.log('Updated user:', updatedDoc);
+
+                    const resp:uploadResp = await uploadFile(drive,filePath,rootId)
+                    return resp   
+                }else {
+                    console.log('user not found, cannot add rootpath.')
+                    return {
+                        id: null
+                    }
+                }
+            } catch (error) {
+                console.log(error)
+                return {
+                    id: null
+                }
+            }
+
         }
     )
 
@@ -81,6 +111,32 @@ export const registerFileIpcHandlers = ():void => {
             })
 
             try {
+                const info = await drive.about.get({
+                    fields:'user'
+                })
+    
+                const user = await User.findOne({
+                    email: info.data.user?.emailAddress
+                })
+
+                console.log("folderPath (trimmed):", `"${folderPath.trim()}"`);
+                console.log("Current rootpaths in DB:", user?.rootpaths);
+
+                if (user) {
+                    const updatedDoc = await User.findByIdAndUpdate(
+                        user._id, 
+                        { $addToSet: { rootpaths: folderPath.trim() } },
+                        { new: true } // Returns the updated document
+                    )
+
+                    console.log('Updated user:', updatedDoc);
+                } else {
+                    console.log('user not found, cannot add rootpath.')
+                    return {
+                        id: null
+                    }
+                }
+
                 const folderId = await uploadFolder(drive, folderPath, rootFolderId)
                 return {
                     id: folderId
@@ -237,16 +293,23 @@ export const registerFileIpcHandlers = ():void => {
         }
     })
 
-    ipcMain.handle('save-path', async (_event, email: string, filepath: string) => {
-        const user = await User.findOne({
-            email: email
-        })
-        if (user) {
+    // ipcMain.handle('save-path', async (_event, path: string) => {
+        
+    //     const drive = google.drive({
+    //         version: 'v3',
+    //         auth: authClient
+    //     })
 
-        } else {
-            console.log('user not found')
-        }
-    })
+    //     try {
+
+            
+    //     } catch (error) {
+    //         console.log(error)
+    //         return 
+    //     }
+
+
+    // })
 
     // ipcMain.handle('save-state', async (_event, email: string, filePath: string, hash: string) => {
     //     const user = await User.findOne({

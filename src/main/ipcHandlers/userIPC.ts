@@ -52,20 +52,39 @@ export const registerUserIpcHandlers = ()=>{
             return null
         }
     })
-    ipcMain.handle("save-user",async(_event,email:string,rootId:string)=>{
+    ipcMain.handle("save-user",async(_event)=>{
 
-        const result = await User.findOne({
-            email: email
+        const drive = google.drive({
+            version: 'v3',
+            auth: authClient
         })
-        
-        if(result){
-            console.log("user already exists. User: ",result)
-            return 
-        }else{
-            const newUser = await User.create({
-                email: email,
+
+        try {
+            const info = await drive.about.get({
+                fields:'user' 
             })
-            console.log("new user created. NewUser: ",newUser)
+
+            if(info.data.user){
+                const result = await User.findOne({
+                    email: info.data.user.emailAddress
+                })
+                
+                if(result){
+                    console.log("user already exists. User: ",result+"\n")
+                    return 
+                }else{
+                    const newUser = await User.create({
+                        email: info.data.user.emailAddress,
+                    })
+                    console.log("new user created. NewUser: ",newUser)
+                }
+            }else{
+                console.error("info.data.user is undefined")
+            }
+
+        } catch (error) {
+            console.log(error)
+            return 
         }
 
     })

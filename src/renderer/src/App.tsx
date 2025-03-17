@@ -78,6 +78,7 @@ function App(): JSX.Element {
     }
     useEffect(() => {
         checkUserToken()
+        getRoot()
     }, [])
 
     setTheme('dark')

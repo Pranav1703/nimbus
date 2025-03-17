@@ -29,7 +29,7 @@ function AutoBackup({ rootId }: { rootId }): JSX.Element {
     console.log(selectedTime)
 
     const backup = async ():Promise<void> => {
-
+        
     }
 
     const handleFolderUpload = () => async (): Promise<void> => {

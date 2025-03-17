@@ -162,7 +162,7 @@ const Test = () => {
 
   const watchTest = async()=>{
     const root = await window.api.getRoot() as string
-    await window.api.initWatcher(["C:/Users/prana_zhfhs6u/OneDrive/Desktop/testing","C:\\Users\\prana_zhfhs6u\\OneDrive\\Desktop\\link.txt"],root)
+    await window.api.initWatcher(["C:/Users/prana_zhfhs6u/OneDrive/Desktop/testing","C:\\Users\\prana_zhfhs6u\\OneDrive\\Desktop\\link.txt"],root, 30 * 1000)
   } 
 
   return (

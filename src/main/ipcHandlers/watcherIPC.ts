@@ -12,7 +12,7 @@ export let backupInterval: NodeJS.Timeout | null = null;
 
 export const registerWatcherIPCHandlers = ()=>{
 
-    ipcMain.handle("watch",async(_event,watchPaths:string[],rootId:string)=>{
+    ipcMain.handle("watch",async(_event,watchPaths:string[],rootId:string,intervalTime:number)=>{
 
         watchPaths.forEach((path) => {
             // Check if the path is already being watched
@@ -64,7 +64,7 @@ export const registerWatcherIPCHandlers = ()=>{
                     console.log("No new changes to backup.");
                 }
                 console.log("active watchers: ",activeWatchers.entries().toArray().length)
-            }, 30 * 60 * 1000);
+            }, intervalTime);
             //6 * 60 * 60 * 1000
         }
 

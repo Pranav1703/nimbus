@@ -64,7 +64,7 @@ export const registerWatcherIPCHandlers = ()=>{
                     console.log("No new changes to backup.");
                 }
                 console.log("active watchers: ",activeWatchers.entries().toArray().length)
-            }, 5 * 60 * 1000);
+            }, 30 * 60 * 1000);
             //6 * 60 * 60 * 1000
         }
 

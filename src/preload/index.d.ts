@@ -12,6 +12,7 @@ type api = {
   checkToken: ()=>Promise<boolean>
   getInfo: ()=>Promise<drive_v3.Schema$About | null>
   saveUser: ()=> Promise<void>
+  disconnect: ()=> Promise<void>
 
   getList: (rootId:string)=>Promise<drive_v3.Schema$File[]>
   fileUpload: (filePath:string,rootId:string)=>Promise<uploadResp>
@@ -21,12 +22,12 @@ type api = {
   createRoot: ()=>Promise<boolean | null>
   getRoot: ()=>Promise<string | null>
   savePath: (Path:string)=>Promise<void>
-  // saveState: (email:string,filePath:string,hash:string) => Promise<void>
+
 
 
   initWatcher: (watchPaths: string[],rootId:string,intervalTime:number)=>Promise<void>
   getFileHash: (filePath:string)=>Promise<string>
-  checkState: (email:string)=>Promise<void>
+
   
   showSaveDialog: (options: Electron.SaveDialogOptions)=>Promise<Electron.SaveDialogReturnValue>
   downloadAndOpenFile: (fileId:string,fileName:string)=>Promise<void>

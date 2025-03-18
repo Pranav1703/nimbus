@@ -1,5 +1,5 @@
 import mongoose from "mongoose"
-import { IFileState } from "./state";
+
 
 export interface IUser extends Document {
     email: string;

@@ -3,7 +3,6 @@ import chokidar, { FSWatcher } from "chokidar"
 import { mainWindow } from "../index"
 import { backup, computeFileHash } from "../helper"
 import { User } from "../models/user";
-import { IFileState } from "../models/state";
 
 export const activeWatchers = new Map();
 const filesToBackup = new Set<string>();
@@ -67,6 +66,7 @@ export const registerWatcherIPCHandlers = ()=>{
             }, intervalTime);
             //6 * 60 * 60 * 1000
         }
+        
 
     })
 
@@ -77,19 +77,6 @@ export const registerWatcherIPCHandlers = ()=>{
         } catch (error) {
             console.log(error)
             return null
-        }
-
-    })
-
-    ipcMain.handle("check-state",async(_event,email)=>{
-        const user = await User.findOne({ email: email }).populate<{ fileStates: IFileState[] }>("fileStates");
-        if(!user){
-            console.log("no user found with given email")
-            return
-        }
-    
-        for(let state of user.fileStates){
-            console.log(`path: ${state.path} --- hash: ${state.hash}`)
         }
 
     })

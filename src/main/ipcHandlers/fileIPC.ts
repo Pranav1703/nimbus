@@ -6,7 +6,6 @@ import path from 'path'
 import os from 'os'
 import { downloadFile, downloadFolder, uploadFile, uploadFolder } from '../helper'
 import { User } from '../models/user'
-import { FileState } from '../models/state'
 import { dialog } from 'electron/main'
 import { mainWindow } from '..'
 import Store from 'electron-store';
@@ -109,6 +108,7 @@ export const registerFileIpcHandlers = ():void => {
                 version: 'v3',
                 auth: authClient
             })
+         
 
             try {
                 const info = await drive.about.get({

@@ -165,13 +165,12 @@ export async function backup(paths: string[], rootId: string) {
                 filePath.startsWith(root) || root === filePath
             );
             
-
             if (!watchRoot) {
                 console.log(`No matching watchRoot found for: ${filePath}`);
                 continue; // Skip files without a known watchRoot
             }
 
-
+            
             const baseFolderName = path.basename(watchRoot);
             const relativePath = path.relative(watchRoot, filePath);
             const folderPath = path.dirname(relativePath);
@@ -198,7 +197,7 @@ export async function backup(paths: string[], rootId: string) {
 
 async function createNestedFolders(drive, folderPath: string, rootId: string): Promise<string> {
   if (!folderPath || folderPath === '.') return rootId; // Root-level file, no folders needed
-
+    // ./user/f1/f2/f3
   const folders = folderPath.split(path.sep); // Split by `/` or `\` depending on OS
   let currentParentId = rootId;
 

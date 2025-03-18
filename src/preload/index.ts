@@ -17,6 +17,7 @@ if (process.contextIsolated) {
       checkToken: ()=>ipcRenderer.invoke("check-token"),
       getInfo: ()=>ipcRenderer.invoke("user-info"),
       saveUser: ()=>ipcRenderer.invoke("save-user"),
+      disconnect: ()=>ipcRenderer.invoke("user-disconnect"),
 
       getList: (rootId:string)=> ipcRenderer.invoke("list",rootId),
       fileUpload: (filePath:string,rootId:string)=> ipcRenderer.invoke('upload-file',filePath,rootId),
@@ -29,7 +30,7 @@ if (process.contextIsolated) {
 
       initWatcher: (watchPaths:string[],rootId:string,intervalTime:number)=>ipcRenderer.invoke("watch",watchPaths,rootId,intervalTime),
       getFileHash: (filePath:string)=>ipcRenderer.invoke("get-hash",filePath),
-      checkState: (email:string)=>ipcRenderer.invoke("check-state",email),
+
 
       showSaveDialog: (options) => ipcRenderer.invoke("show-save-dialog", options),
       CreateTempFile: (fileName:string) => ipcRenderer.invoke("create-temp-file", fileName),

@@ -6,61 +6,98 @@ import { activeWatchers } from './ipcHandlers/watcherIPC';
 import { uploadResp } from './ipcHandlers/fileIPC';
 import { authClient } from './ipcHandlers/userIPC';
 import { drive_v3, google } from 'googleapis';
+import { User } from './models/user';
 
 export async function uploadFile(drive: drive_v3.Drive, filePath:string,rootId:string):Promise<uploadResp> {
-  const fileName = path.basename(filePath)
+    const fileName = path.basename(filePath)
 
-  const requestBody = {
-      name: fileName,
-      fields: 'id',
-      parents: [rootId]
-  }
+      // Check if file already exists
+      const existingFile = await drive.files.list({
+        q: `'${rootId}' in parents and name='${fileName}' and trashed=false`,
+        fields: 'files(id)',
+    });
 
-  const stream = fs.createReadStream(filePath)
-  const mimeType = mime.getType(filePath) as string
+    const files = existingFile.data.files || []; // Ensure it's always an array
+    const fileId = files.length > 0 ? files[0].id : null;
 
-  const media = {
-      mimeType: mimeType,
-      body: stream
-  }
 
-  try {
-      const file = await drive.files.create({
-          requestBody,
-          media: media
-      })
-      console.log('----------------------------------')
-      console.log('File Id:', file.data.id)
-      console.log('mime type: ', mimeType)
-      console.log('bytes read :', stream.bytesRead)
-      console.log('----------------------------------')
-      return {
-          id: file.data.id
-      }
-  } catch (error) {
-      console.log('error while trying to upload, Error:', error)
-      return {
-          id: null
-      }
-  }
+    const requestBody = {
+        name: fileName,
+        parents: [rootId]
+    }   
+
+    const stream = fs.createReadStream(filePath)
+    const mimeType = mime.getType(filePath) as string   
+    const media = {
+        mimeType: mimeType,
+        body: stream
+    } 
+
+    try {
+        let file;
+
+        if (fileId) {
+            // Update existing file
+            file = await drive.files.update({
+                fileId,
+                media: media
+            });
+            console.log(`Updated existing file: ${fileName} (ID: ${fileId})`);
+        } else {
+            // Create new file
+            file = await drive.files.create({
+                requestBody,
+                media: media,
+                fields: 'id',
+            });
+            console.log(`Uploaded new file: ${fileName} (ID: ${file.data.id})`);
+        }
+        
+        console.log('----------------------------------')
+        console.log('File Id:', file.data.id)
+        console.log('mime type: ', mimeType)
+        console.log('bytes read :', stream.bytesRead)
+        console.log('----------------------------------')
+        return {
+            id: file.data.id
+        }
+    } catch (error) {
+        console.log('error while trying to upload, Error:', error)
+        return {
+            id: null
+        }
+    }
 }
 
 export async function uploadFolder(drive, folderPath:string, parentFolderId?:string):Promise<any> {
     const folderName = path.basename(folderPath);
   
-    // Create the folder in Google Drive
-    const folderMetadata = {
-      name: folderName,
-      mimeType: "application/vnd.google-apps.folder",
-      parents: parentFolderId ? [parentFolderId] : [],
-    };
-  
-    const folder = await drive.files.create({
-      requestBody: folderMetadata,
-      fields: "id",
+
+    let folderId;  // Declare folderId outside to ensure proper scoping
+
+    // Check if folder already exists
+    const existingFolder = await drive.files.list({
+        q: `'${parentFolderId}' in parents and name='${folderName}' and mimeType='application/vnd.google-apps.folder' and trashed=false`,
+        fields: 'files(id)'
     });
-  
-    console.log(`Created folder: ${folderName}, ID: ${folder.data.id}`);
+
+    if (existingFolder.data.files && existingFolder.data.files.length > 0) {
+        folderId = existingFolder.data.files[0].id;
+        console.log(`Folder already exists: ${folderName}, ID: ${folderId}`);
+    } else {
+        // Create the folder if it doesn't exist
+        const folder = await drive.files.create({
+            requestBody: {
+                name: folderName,
+                mimeType: "application/vnd.google-apps.folder",
+                parents: parentFolderId ? [parentFolderId] : [],
+            },
+            fields: "id",
+        });
+
+        folderId = folder.data.id;
+        console.log(`Created folder: ${folderName}, ID: ${folderId}`);
+    }
   
     // Iterate through the local folder contents
     const items = fs.readdirSync(folderPath);
@@ -71,29 +108,29 @@ export async function uploadFolder(drive, folderPath:string, parentFolderId?:str
   
       if (stats.isFile()) {
         // Upload the file
-        const fileMetadata = {
-          name: item,
-          parents: [folder.data.id],
-        };
+        // const fileMetadata = {
+        //   name: item,
+        //   parents: [folder.data.id],
+        // };
   
-        const media = {
-          mimeType: mime.getType(itemPath),
-          body: fs.createReadStream(itemPath),
-        };
+        // const media = {
+        //   mimeType: mime.getType(itemPath),
+        //   body: fs.createReadStream(itemPath),
+        // };
   
-        const file = await drive.files.create({
-          requestBody: fileMetadata,
-          media: media,
-          fields: "id",
-        });
-  
-        console.log(`Uploaded file: ${item}, ID: ${file.data.id}`);
+        // const file = await drive.files.create({
+        //   requestBody: fileMetadata,
+        //   media: media,
+        //   fields: "id",
+        // });
+        await uploadFile(drive, itemPath, folderId);
+
       } else if (stats.isDirectory()) {
         // Recursively upload the subfolder
-        await uploadFolder(drive, itemPath, folder.data.id);
+        await uploadFolder(drive, itemPath, folderId);
       }
     }
-    return folder.data.id
+    return folderId
 }
 
 export async function backup(paths: string[], rootId: string) {
@@ -102,32 +139,65 @@ export async function backup(paths: string[], rootId: string) {
       auth: authClient
   });
 
-  
   // await cleanupDeletedFiles(drive, paths, rootId); 
   //// only works for individual files. deletes folders if files inside it are marked for backup which in not intended behaviour
 
-  for (const filePath of paths) {
-      const stat = fs.statSync(filePath);
+  try {
+    const info = await drive.about.get({
+        fields:'user' 
+    })
 
-      if (stat.isDirectory()) {
-          console.log(`Uploading folder: ${filePath}`);
-          await uploadFolder(drive, filePath, rootId);  // Already handles nested folders internally
-      } else if (stat.isFile()) {
-          const relativePath = path.relative(watchRoot, filePath); // Relative path for folder structure
-          const folderPath = path.dirname(relativePath); // Extract folder structure
+    const user = await User.findOne({
+        email: info.data.user?.emailAddress
+    })
 
-          // Create or locate the correct folder hierarchy in Drive
-          const folderId = await createNestedFolders(drive, folderPath, rootId);
+    const watchroots = Array.isArray(user?.rootpaths) ? user.rootpaths : [];
 
-          console.log(`Uploading file: ${filePath} to ${folderPath}`);
-          await uploadFile(drive, filePath, folderId);
-      }
+    for (const filePath of paths) {
+        const stat = fs.statSync(filePath);
+  
+        if (stat.isDirectory()) {
+            console.log(`Uploading folder: ${filePath}`);
+            await uploadFolder(drive, filePath, rootId);  // Already handles nested folders internally
+        } else if (stat.isFile()) {
+
+            const watchRoot = watchroots.find(root => 
+                filePath.startsWith(root) || root === filePath
+            );
+            
+            if (!watchRoot) {
+                console.log(`No matching watchRoot found for: ${filePath}`);
+                continue; // Skip files without a known watchRoot
+            }
+
+            
+            const baseFolderName = path.basename(watchRoot);
+            const relativePath = path.relative(watchRoot, filePath);
+            const folderPath = path.dirname(relativePath);
+
+            if (folderPath === '.') {
+                // Directly upload individual files to root folder without creating extra folders
+                console.log(`Uploading file: ${filePath}`);
+                await uploadFile(drive, filePath, rootId);
+            } else {
+                // Handle nested folder structure
+                console.log(`Uploading file: ${filePath}`);
+                const folderId = await createNestedFolders(drive, path.join(baseFolderName, folderPath), rootId);
+                await uploadFile(drive, filePath, folderId);
+            }
+        }
+    }
+  } catch (error) {
+    console.log(error)
+    return
   }
+  
+
 }
 
 async function createNestedFolders(drive, folderPath: string, rootId: string): Promise<string> {
   if (!folderPath || folderPath === '.') return rootId; // Root-level file, no folders needed
-
+    // ./user/f1/f2/f3
   const folders = folderPath.split(path.sep); // Split by `/` or `\` depending on OS
   let currentParentId = rootId;
 

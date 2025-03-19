@@ -3,7 +3,6 @@ import chokidar, { FSWatcher } from "chokidar"
 import { mainWindow } from "../index"
 import { backup, computeFileHash } from "../helper"
 import { User } from "../models/user";
-import { IFileState } from "../models/state";
 
 export const activeWatchers = new Map();
 const filesToBackup = new Set<string>();
@@ -12,7 +11,7 @@ export let backupInterval: NodeJS.Timeout | null = null;
 
 export const registerWatcherIPCHandlers = ()=>{
 
-    ipcMain.handle("watch",async(_event,watchPaths:string[],rootId:string)=>{
+    ipcMain.handle("watch",async(_event,watchPaths:string[],rootId:string,intervalTime:number)=>{
 
         watchPaths.forEach((path) => {
             // Check if the path is already being watched
@@ -63,10 +62,11 @@ export const registerWatcherIPCHandlers = ()=>{
                 } else {
                     console.log("No new changes to backup.");
                 }
-                console.log("active watchers: ",activeWatchers.entries().toArray()[0])
-            }, 60 * 1000);
+                console.log("active watchers: ",activeWatchers.entries().toArray().length)
+            }, intervalTime);
             //6 * 60 * 60 * 1000
         }
+        
 
     })
 
@@ -77,19 +77,6 @@ export const registerWatcherIPCHandlers = ()=>{
         } catch (error) {
             console.log(error)
             return null
-        }
-
-    })
-
-    ipcMain.handle("check-state",async(_event,email)=>{
-        const user = await User.findOne({ email: email }).populate<{ fileStates: IFileState[] }>("fileStates");
-        if(!user){
-            console.log("no user found with given email")
-            return
-        }
-    
-        for(let state of user.fileStates){
-            console.log(`path: ${state.path} --- hash: ${state.hash}`)
         }
 
     })

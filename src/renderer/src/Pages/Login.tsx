@@ -17,7 +17,8 @@ function Login(): JSX.Element {
         setUser(true)
         navigate('/')
       }
-      console.log("resp: ",resp)
+      
+      await window.api.saveUser()
     } catch (error) {
       console.log(error)
     }

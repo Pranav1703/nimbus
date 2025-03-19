@@ -11,7 +11,8 @@ type api = {
   authorizeUser: ()=>Promise<boolean>
   checkToken: ()=>Promise<boolean>
   getInfo: ()=>Promise<drive_v3.Schema$About | null>
-  saveUser: (email:string,rootId:string)=> Promise<void>
+  saveUser: ()=> Promise<void>
+  disconnect: ()=> Promise<void>
 
   getList: (rootId:string)=>Promise<drive_v3.Schema$File[]>
   fileUpload: (filePath:string,rootId:string)=>Promise<uploadResp>
@@ -20,13 +21,13 @@ type api = {
   downloadFile: (fileId:string,destPath:string)=>Promise<any>
   createRoot: ()=>Promise<boolean | null>
   getRoot: ()=>Promise<string | null>
-  savePath: (email:string,filePath:string)=>Promise<void>
-  saveState: (email:string,filePath:string,hash:string) => Promise<void>
+  savePath: (Path:string)=>Promise<void>
 
 
-  initWatcher: (watchPaths: string[],rootId:string)=>Promise<void>
+
+  initWatcher: (watchPaths: string[],rootId:string,intervalTime:number)=>Promise<void>
   getFileHash: (filePath:string)=>Promise<string>
-  checkState: (email:string)=>Promise<void>
+
   
   showSaveDialog: (options: Electron.SaveDialogOptions)=>Promise<Electron.SaveDialogReturnValue>
   downloadAndOpenFile: (fileId:string,fileName:string)=>Promise<void>

@@ -1,5 +1,7 @@
 import { Box, Button, Input } from "@chakra-ui/react"
-import { useEffect, useState } from "react"
+import { useContext, useEffect, useState } from "react"
+import { useNavigate } from "react-router-dom"
+import { UserContext } from "../App"
 
 const Test = () => {
 
@@ -144,26 +146,20 @@ const Test = () => {
   //   setBackupPath(filePath)
   // }
 
-  // const backup = async()=>{
-  //   const rootId = await window.api.getRoot()
-  //   const userInfo = await window.api.getInfo()
-
-  //   if(rootId && userInfo?.user?.emailAddress){
-  //     await window.api.saveUser(userInfo.user.emailAddress,rootId)
-  //     const {id} = await window.api.fileUpload(backupPath,rootId)
-  //     setBackupFileId(id!)
-  //     window.api.initWatcher([backupPath])
-  //     await window.api.savePath(userInfo.user.emailAddress,backupPath)
-  //     const hash = await window.api.getFileHash(backupPath)
-  //     await window.api.saveState(userInfo.user.emailAddress,backupPath,hash) //before app quits 
-  //   }
-
-  // }
 
   const watchTest = async()=>{
     const root = await window.api.getRoot() as string
-    await window.api.initWatcher(["C:/Users/prana_zhfhs6u/OneDrive/Desktop/testing"],root)
+    await window.api.initWatcher(["C:/Users/prana_zhfhs6u/OneDrive/Desktop/testing","C:\\Users\\prana_zhfhs6u\\OneDrive\\Desktop\\link.txt"],root, 30 * 1000)
   } 
+  const navigate = useNavigate()
+
+  const {setUser} = useContext(UserContext)
+
+  const logout = async()=>{
+    await window.api.disconnect()
+    setUser(false)
+
+  }
 
   return (
     <>
@@ -295,6 +291,10 @@ const Test = () => {
 
         <Button onClick={watchTest}>
           test
+        </Button>
+
+        <Button onClick={logout}>
+          logout
         </Button>
 
     </>

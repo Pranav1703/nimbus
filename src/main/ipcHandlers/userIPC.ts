@@ -49,7 +49,6 @@ export const registerUserIpcHandlers = ()=>{
             const info = await drive.about.get({
                 fields:'storageQuota,user,maxUploadSize' //storageQuota in Bytes
             })
-            console.log(info.data)
             return info.data
         } catch (error) {
             console.log(error)
@@ -77,9 +76,11 @@ export const registerUserIpcHandlers = ()=>{
                     console.log("user already exists. User: ",result+"\n")
                     return 
                 }else{
+                    
                     const newUser = await User.create({
                         email: info.data.user.emailAddress,
                     })
+                    
                     console.log("new user created. NewUser: ",newUser)
                 }
             }else{

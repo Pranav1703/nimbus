@@ -7,6 +7,8 @@ import { uploadResp } from './ipcHandlers/fileIPC';
 import { authClient } from './ipcHandlers/userIPC';
 import { drive_v3, google } from 'googleapis';
 import { User } from './models/user';
+import { readdir, stat } from 'fs/promises';
+
 
 export async function uploadFile(drive: drive_v3.Drive, filePath:string,rootId:string):Promise<uploadResp> {
     const fileName = path.basename(filePath)
@@ -133,6 +135,31 @@ export async function uploadFolder(drive, folderPath:string, parentFolderId?:str
     return folderId
 }
 
+
+async function dirSize( directory){
+    const files = await readdir(directory, { withFileTypes: true });
+
+    const sizePromises = files.map(async file => {
+        const filePath = path.join(directory, file.name);
+        try {
+            const fileStat = await stat(filePath);
+
+            if (fileStat.isFile()) {
+                return fileStat.size;
+            } else if (fileStat.isDirectory()) {
+                return await dirSize(filePath);
+            }
+        } catch (error) {
+            console.error(`Error accessing ${filePath}:`, error);
+            return 0; // Skip problematic files
+        }
+    });
+
+    const sizes = await Promise.all(sizePromises);
+    return sizes.reduce((acc, size) => acc + size, 0);
+};
+
+
 export async function backup(paths: string[], rootId: string) {
   const drive = google.drive({
       version: 'v3',
@@ -141,7 +168,7 @@ export async function backup(paths: string[], rootId: string) {
 
   // await cleanupDeletedFiles(drive, paths, rootId); 
   //// only works for individual files. deletes folders if files inside it are marked for backup which in not intended behaviour
-
+  let totalSize = 0;
   try {
     const info = await drive.about.get({
         fields:'user' 
@@ -152,6 +179,10 @@ export async function backup(paths: string[], rootId: string) {
     })
 
     const watchroots = Array.isArray(user?.rootpaths) ? user.rootpaths : [];
+
+    for (const root of watchroots) {
+        totalSize += await dirSize(root);
+    }
 
     for (const filePath of paths) {
         const stat = fs.statSync(filePath);
@@ -227,36 +258,36 @@ async function createNestedFolders(drive, folderPath: string, rootId: string): P
 }
 
 
-async function cleanupDeletedFiles(drive, localFiles: string[], rootFolderId: string) {
-  try {
-      // Step 1: List all files in the Google Drive folder
-      const driveFiles = await drive.files.list({
-          q: `'${rootFolderId}' in parents and trashed = false`,
-          fields: 'files(id, name)'
-      });
+// async function cleanupDeletedFiles(drive, localFiles: string[], rootFolderId: string) {
+//   try {
+//       // Step 1: List all files in the Google Drive folder
+//       const driveFiles = await drive.files.list({
+//           q: `'${rootFolderId}' in parents and trashed = false`,
+//           fields: 'files(id, name)'
+//       });
 
-      const driveFileMap = new Map<string, string>(
-        (driveFiles.data.files || [])
-            .filter(file => file.name) // Filter out entries with undefined names
-            .map(file => [file.name as string, file.id as string]) // Assert types
-      );
+//       const driveFileMap = new Map<string, string>(
+//         (driveFiles.data.files || [])
+//             .filter(file => file.name) // Filter out entries with undefined names
+//             .map(file => [file.name as string, file.id as string]) // Assert types
+//       );
 
-      // Step 2: Identify files that are missing locally
-      const localFileNames = new Set(localFiles.map(file => path.basename(file)));
+//       // Step 2: Identify files that are missing locally
+//       const localFileNames = new Set(localFiles.map(file => path.basename(file)));
 
-      for (const [fileName, fileId] of driveFileMap) {
-          if (!localFileNames.has(fileName)) {
-              console.log(`Deleting ${fileName} from Drive...`);
-              await drive.files.delete({ fileId });
-              console.log(`Deleted: ${fileName}`);
-          }
-      }
+//       for (const [fileName, fileId] of driveFileMap) {
+//           if (!localFileNames.has(fileName)) {
+//               console.log(`Deleting ${fileName} from Drive...`);
+//               await drive.files.delete({ fileId });
+//               console.log(`Deleted: ${fileName}`);
+//           }
+//       }
 
-      console.log('Cleanup complete.');
-  } catch (error) {
-      console.error('Error during cleanup:', error);
-  }
-}
+//       console.log('Cleanup complete.');
+//   } catch (error) {
+//       console.error('Error during cleanup:', error);
+//   }
+// }
 
 
 export function computeFileHash(filePath: string): Promise<string> {

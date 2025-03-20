@@ -1,5 +1,5 @@
 import { Box, Input, Text, VStack } from '@chakra-ui/react'
-import React, { useState } from 'react'
+import React, { useContext, useState } from 'react'
 import { Button } from '../ui/button'
 import {
     DialogActionTrigger,
@@ -13,18 +13,23 @@ import {
     DialogTrigger
 } from '../ui/dialog'
 import { useAlert } from '../Alert'
+import { UserContext } from '../../App'
 
 const DeleteAcc = (): JSX.Element => {
-    const {addAlert} = useAlert();
-    const [inputValue, setInputValue] = useState("");
-    const requiredText = "sudo delete nimbus";
+    const { addAlert } = useAlert()
+    const [inputValue, setInputValue] = useState('')
+    const requiredText = 'sudo delete nimbus'
     const [open, setOpen] = useState(false)
-    const isMatch = inputValue.trim() === requiredText;
+    const isMatch = inputValue.trim() === requiredText
+    const { setUser } = useContext(UserContext)
 
-    const handleDelete = () => {
-        addAlert('success', 'Account Deleted');
+    const handleDelete = async (): Promise<void> => {
+        await window.api.disconnect()
+        setUser(false)
+
+        addAlert('success', 'Account Deleted')
         // console.log("Account Deleted");
-        setOpen(false);
+        setOpen(false)
     }
 
     return (
@@ -41,7 +46,13 @@ const DeleteAcc = (): JSX.Element => {
                     Danger Zone
                 </Text>
 
-                <DialogRoot placement={'center'} motionPreset="slide-in-bottom" size={'lg'} open={open} onOpenChange={(e) => setOpen(e.open)}>
+                <DialogRoot
+                    placement={'center'}
+                    motionPreset="slide-in-bottom"
+                    size={'lg'}
+                    open={open}
+                    onOpenChange={(e) => setOpen(e.open)}
+                >
                     <DialogTrigger asChild>
                         <Button
                             w={'full'}
@@ -67,19 +78,30 @@ const DeleteAcc = (): JSX.Element => {
                                 <Text>Are you sure you want to remove it?</Text>
                                 <Text>
                                     Type{' '}
-                                    <Text fontWeight={'medium'} color={'red.600/90'} as="span" fontSize={'lg'}>
+                                    <Text
+                                        fontWeight={'medium'}
+                                        color={'red.600/90'}
+                                        as="span"
+                                        fontSize={'lg'}
+                                    >
                                         sudo delete nimbus
                                     </Text>{' '}
                                     below to confirm.
                                 </Text>
-                                <Input placeholder="sudo delete nimbus" mt={4} onChange={(e) => setInputValue(e.target.value)}/>
+                                <Input
+                                    placeholder="sudo delete nimbus"
+                                    mt={4}
+                                    onChange={(e) => setInputValue(e.target.value)}
+                                />
                             </VStack>
                         </DialogBody>
                         <DialogFooter>
                             <DialogActionTrigger asChild>
                                 <Button variant="outline">Cancel</Button>
                             </DialogActionTrigger>
-                            <Button colorPalette="red" disabled={!isMatch} onClick={handleDelete}>Delete</Button>
+                            <Button colorPalette="red" disabled={!isMatch} onClick={handleDelete}>
+                                Delete
+                            </Button>
                         </DialogFooter>
                         <DialogCloseTrigger />
                     </DialogContent>

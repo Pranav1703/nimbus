@@ -21,11 +21,6 @@ const Connected_Acc = ({
         const [open, setOpen] = useState(false)
         const isMatch = inputValue.trim() === requiredText;
     
-        const handleDelete = ():void => {
-            addAlert('success', 'Account disconnected');
-            // console.log("Account Deleted");
-            setOpen(false);
-        }
     return (
         <>
             <Box
@@ -67,64 +62,6 @@ const Connected_Acc = ({
                                 </VStack>
                             </HStack>
                         </>
-                        <DialogRoot
-                            placement={'center'}
-                            motionPreset="slide-in-bottom"
-                            size={'lg'}
-                            open={open}
-                            onOpenChange={(e) => setOpen(e.open)}
-                        >
-                            <DialogTrigger asChild>
-                                <Button
-                                >
-                                    Disconnect
-                                </Button>
-                            </DialogTrigger>
-                            <DialogContent>
-                                <DialogHeader>
-                                    <DialogTitle fontSize={'2xl'}>Disconnect</DialogTitle>
-                                </DialogHeader>
-                                <DialogBody>
-                                    <VStack alignItems={'flex-start'} gap={2} fontSize={'md'}>
-                                        <Text>
-                                            All resources stored Google Account will removed immediately.
-                                            This action cannot be undone.
-                                        </Text>
-                                        <Text>Are you sure you want to Disconnect?</Text>
-                                        <Text>
-                                            Type{' '}
-                                            <Text
-                                                fontWeight={'medium'}
-                                                color={'red.600/90'}
-                                                as="span"
-                                                fontSize={'lg'}
-                                            >
-                                                disconnect
-                                            </Text>{' '}
-                                            below to confirm.
-                                        </Text>
-                                        <Input
-                                            placeholder="sudo delete nimbus"
-                                            mt={4}
-                                            onChange={(e) => setInputValue(e.target.value)}
-                                        />
-                                    </VStack>
-                                </DialogBody>
-                                <DialogFooter>
-                                    <DialogActionTrigger asChild>
-                                        <Button variant="outline">Cancel</Button>
-                                    </DialogActionTrigger>
-                                    <Button
-                                        colorPalette="red"
-                                        disabled={!isMatch}
-                                        onClick={handleDelete}
-                                    >
-                                        Delete
-                                    </Button>
-                                </DialogFooter>
-                                <DialogCloseTrigger />
-                            </DialogContent>
-                        </DialogRoot>
                     </HStack>
                 </VStack>
             </Box>

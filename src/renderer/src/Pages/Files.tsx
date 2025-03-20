@@ -26,7 +26,6 @@ function Files({ rootId }: { rootId: string }): JSX.Element {
             if (!alertIdRef.current) {
                 alertIdRef.current = addAlert('info', 'Loading...', null, true);
             }
-
             const resp = await window.api.getList(rootId);
             console.log('file list array: ', resp);
             setFileList(resp);

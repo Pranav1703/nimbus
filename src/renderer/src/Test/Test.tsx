@@ -158,7 +158,6 @@ const Test = () => {
   const logout = async()=>{
     await window.api.disconnect()
     setUser(false)
-
   }
 
   return (

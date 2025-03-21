@@ -164,7 +164,7 @@ const Test = () => {
   }
 
   window.api.onBackupStatus((_event,data)=>{
-    console.log(`Backup complete for: ${data.size} at ${new Date(data.time).toLocaleTimeString()}`);
+    console.log(`Backup complete for: ${data.size}B at ${new Date(data.time).toLocaleTimeString()}`);
   })
 
   return (

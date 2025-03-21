@@ -1,4 +1,4 @@
-import { app, shell, BrowserWindow, ipcMain } from 'electron'
+import { app, shell, BrowserWindow, ipcMain, Tray, Menu } from 'electron'
 import { join } from 'path'
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 import icon from '../../resources/icon.png?asset'
@@ -9,7 +9,9 @@ import { backupInterval, registerWatcherIPCHandlers } from './ipcHandlers/watche
 import { cleanUpWatchers } from './helper'
 import { connectDB } from './db'
 
+
 export let mainWindow: BrowserWindow;
+let tray:Tray;
 
 if (process.defaultApp) {
   if (process.argv.length >= 2) {
@@ -89,6 +91,14 @@ app.whenReady().then(async() => {
 
   createWindow()
 
+  tray = new Tray(icon); // Use your app's icon here
+  const contextMenu = Menu.buildFromTemplate([
+      { label: 'Show App', click: () => mainWindow.show() },
+      { label: 'Quit', click: () => app.quit() }
+  ]);
+  tray.setToolTip('My Background App');
+  tray.setContextMenu(contextMenu);
+
   await connectDB()
   registerUserIpcHandlers()
   registerFileIpcHandlers()
@@ -111,7 +121,8 @@ app.on("before-quit", async () => {
 });
 
 app.on("window-all-closed", async () => {
-  await cleanUpWatchers();
+  // await cleanUpWatchers();
+  
 });
 
 // Quit when all windows are closed, except on macOS. There, it's common

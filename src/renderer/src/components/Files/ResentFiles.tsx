@@ -1,5 +1,5 @@
 import { Box, For, Group, HStack, Icon, IconButton, Table, Text, VStack } from '@chakra-ui/react'
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import Icons from '../../assets/Icons'
 import getFileCategory from './FileCategory'
 import { MenuContent, MenuItem, MenuRoot, MenuTrigger } from '../ui/menu'

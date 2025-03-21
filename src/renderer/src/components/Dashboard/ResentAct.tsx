@@ -1,4 +1,4 @@
-import { Box, Color, HStack, Icon, Table, Text, VStack } from '@chakra-ui/react'
+import { Box, HStack, Icon, Table, Text, VStack } from '@chakra-ui/react'
 import React from 'react'
 import Icons from '../../assets/Icons'
 

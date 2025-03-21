@@ -1,6 +1,6 @@
-import { Box, Text } from '@chakra-ui/react'
+import {  Text } from '@chakra-ui/react'
 import React from 'react'
-import { Skeleton, SkeletonText } from '../ui/skeleton'
+import { Skeleton } from '../ui/skeleton'
 
 interface Props {
   bytes: number

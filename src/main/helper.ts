@@ -8,6 +8,7 @@ import { authClient } from './ipcHandlers/userIPC';
 import { drive_v3, google } from 'googleapis';
 import { User } from './models/user';
 import { readdir, stat } from 'fs/promises';
+import { mainWindow } from '.';
 
 
 export async function uploadFile(drive: drive_v3.Drive, filePath:string,rootId:string):Promise<uploadResp> {
@@ -55,11 +56,11 @@ export async function uploadFile(drive: drive_v3.Drive, filePath:string,rootId:s
             console.log(`Uploaded new file: ${fileName} (ID: ${file.data.id})`);
         }
         
-        console.log('----------------------------------')
+        console.log('--------------------------------------------------')
         console.log('File Id:', file.data.id)
         console.log('mime type: ', mimeType)
         console.log('bytes read :', stream.bytesRead)
-        console.log('----------------------------------')
+        console.log('--------------------------------------------------')
         return {
             id: file.data.id
         }
@@ -136,31 +137,46 @@ export async function uploadFolder(drive, folderPath:string, parentFolderId?:str
 }
 
 
-async function dirSize( directory){
-    const files = await readdir(directory, { withFileTypes: true });
+async function getSize(Path) {
+    try {
+        const fileStat = await stat(Path);
 
-    const sizePromises = files.map(async file => {
-        const filePath = path.join(directory, file.name);
-        try {
-            const fileStat = await stat(filePath);
-
-            if (fileStat.isFile()) {
-                return fileStat.size;
-            } else if (fileStat.isDirectory()) {
-                return await dirSize(filePath);
-            }
-        } catch (error) {
-            console.error(`Error accessing ${filePath}:`, error);
-            return 0; // Skip problematic files
+        if (fileStat.isFile()) {
+            return fileStat.size; // Handle single file directly
         }
-    });
 
-    const sizes = await Promise.all(sizePromises);
-    return sizes.reduce((acc, size) => acc + size, 0);
+        const files = await readdir(Path, { withFileTypes: true });
+
+        const sizePromises = files.map(async file => {
+            const filePath = path.join(Path, file.name);
+            try {
+                const fileStat = await stat(filePath);
+
+                if (fileStat.isFile()) {
+                    return fileStat.size;
+                } else if (fileStat.isDirectory()) {
+                    return await getSize(filePath);
+                }
+            } catch (error) {
+                console.error(`Error accessing ${filePath}:`, error);
+                return 0;
+            }
+        });
+
+        const sizes = await Promise.all(sizePromises);
+        return sizes.reduce((acc, size) => acc + size, 0);
+    } catch (error) {
+        console.error(`Error accessing ${Path}:`, error);
+        return 0;
+    }
 };
 
+export function sendBackupNotification(size:number, time:number) {
+    mainWindow.webContents.send('backup-info', { size, time });
+}
 
-export async function backup(paths: string[], rootId: string) {
+
+export async function backup(paths: string[], rootId: string):Promise<number> {
   const drive = google.drive({
       version: 'v3',
       auth: authClient
@@ -180,16 +196,14 @@ export async function backup(paths: string[], rootId: string) {
 
     const watchroots = Array.isArray(user?.rootpaths) ? user.rootpaths : [];
 
-    for (const root of watchroots) {
-        totalSize += await dirSize(root);
-    }
 
     for (const filePath of paths) {
-        const stat = fs.statSync(filePath);
-  
+        const stat = await fs.promises.stat(filePath);
+
         if (stat.isDirectory()) {
             console.log(`Uploading folder: ${filePath}`);
             await uploadFolder(drive, filePath, rootId);  // Already handles nested folders internally
+            totalSize += await getSize(filePath)
         } else if (stat.isFile()) {
 
             const watchRoot = watchroots.find(root => 
@@ -201,29 +215,32 @@ export async function backup(paths: string[], rootId: string) {
                 continue; // Skip files without a known watchRoot
             }
 
-            
             const baseFolderName = path.basename(watchRoot);
             const relativePath = path.relative(watchRoot, filePath);
             const folderPath = path.dirname(relativePath);
 
-            if (folderPath === '.') {
+            if (folderPath === '.' || folderPath === '') {
                 // Directly upload individual files to root folder without creating extra folders
-                console.log(`Uploading file: ${filePath}`);
-                await uploadFile(drive, filePath, rootId);
+                const parentFolderPath = path.dirname(filePath); 
+                const relativeParentPath = path.relative(watchRoot, parentFolderPath); 
+            
+                const folderId = await createNestedFolders(drive, path.join(baseFolderName, relativeParentPath), rootId);  
+                await uploadFile(drive, filePath, folderId);
             } else {
                 // Handle nested folder structure
                 console.log(`Uploading file: ${filePath}`);
                 const folderId = await createNestedFolders(drive, path.join(baseFolderName, folderPath), rootId);
                 await uploadFile(drive, filePath, folderId);
             }
+            totalSize += stat.size;
         }
     }
+
+    return totalSize;
   } catch (error) {
     console.log(error)
-    return
+    return -1
   }
-  
-
 }
 
 async function createNestedFolders(drive, folderPath: string, rootId: string): Promise<string> {

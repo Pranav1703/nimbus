@@ -118,7 +118,6 @@ function App(): JSX.Element {
         }
     }, [wasOffline])
     // console.log('You are in app')
-    console.log(rootId)
     const fetchNameandImage = async (): Promise<void> => {
         const name = await window.api.storeGet('Name')
         const image = await window.api.storeGet('Image')

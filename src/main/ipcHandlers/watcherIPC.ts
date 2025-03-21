@@ -1,7 +1,7 @@
 import { ipcMain } from "electron"
 import chokidar from "chokidar"
 // import { mainWindow } from "../index"
-import { backup, computeFileHash } from "../helper"
+import { backup, computeFileHash, sendBackupNotification } from "../helper"
 import { BackupInfo } from "../models/backup";
 import { User } from "../models/user";
 import { google } from "googleapis";
@@ -74,19 +74,31 @@ export const registerWatcherIPCHandlers = ()=>{
                         console.log(`Backing up ${filesToBackup.size} file(s)...`);
                         const filesArray = [...filesToBackup];
                         try {
-                            await backup(filesArray,rootId);
+                            const backedUpSize = await backup(filesArray,rootId);
 
                             // ping frontend(send notification,file name,time) and save backup time
-                        
-                            await BackupInfo.create({
-                                
-                            }) 
-                        } catch (error) {
+
+                            if(backedUpSize>0){
+                                let time = Date.now()
+                                const newInfo = await BackupInfo.create({
+                                    size: backedUpSize,
+                                    time: time
+                                })
+                                await user?.updateOne({
+                                    $push:{
+                                        backupStatus: newInfo
+                                    }
+                                })
+                                console.log(`Backup successful: ${backedUpSize} bytes`);
+                                sendBackupNotification(backedUpSize,time)
+                            }
+
                             
+                        } catch (error) {
+                            console.log("backup failed.",error)
                         }
-
-
                         filesToBackup.clear(); // Clear the list after backup
+
                     } else {
                         console.log("No new changes to backup.");
                     }
@@ -99,8 +111,6 @@ export const registerWatcherIPCHandlers = ()=>{
         } catch (error) {
             console.log(error)
         }
-
-        
 
     })
 

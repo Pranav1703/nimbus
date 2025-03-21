@@ -9,10 +9,10 @@ const backupInfoSchema = new mongoose.Schema<IBackupInfo>({
     size:{
         type: String,
         required: true,
-        unique:true
     },
     time:{
         type: Number,
+        required: true,
     }    
 })
 

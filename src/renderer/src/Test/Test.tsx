@@ -2,6 +2,8 @@ import { Box, Button, Input } from "@chakra-ui/react"
 import { useContext, useEffect, useState } from "react"
 import { useNavigate } from "react-router-dom"
 import { UserContext } from "../App"
+import { ipcRenderer } from "electron"
+
 
 const Test = () => {
 
@@ -149,7 +151,7 @@ const Test = () => {
 
   const watchTest = async()=>{
     const root = await window.api.getRoot() as string
-    await window.api.initWatcher(["C:/Users/prana_zhfhs6u/OneDrive/Desktop/testing","C:\\Users\\prana_zhfhs6u\\OneDrive\\Desktop\\link.txt"],root, 30 * 1000)
+    await window.api.initWatcher(["C:/Users/prana_zhfhs6u/OneDrive/Desktop/testing","C:\\Users\\prana_zhfhs6u\\OneDrive\\Desktop\\link.txt"],root, 60 * 1000)
   } 
   const navigate = useNavigate()
 
@@ -157,8 +159,13 @@ const Test = () => {
 
   const logout = async()=>{
     await window.api.disconnect()
+    
     setUser(false)
   }
+
+  window.api.onBackupStatus((_event,data)=>{
+    console.log(`Backup complete for: ${data.size} at ${new Date(data.time).toLocaleTimeString()}`);
+  })
 
   return (
     <>
@@ -295,6 +302,7 @@ const Test = () => {
         <Button onClick={logout}>
           logout
         </Button>
+
 
     </>
   )

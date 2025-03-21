@@ -30,6 +30,8 @@ if (process.contextIsolated) {
 
       initWatcher: (watchPaths:string[],rootId:string,intervalTime:number)=>ipcRenderer.invoke("watch",watchPaths,rootId,intervalTime),
       getFileHash: (filePath:string)=>ipcRenderer.invoke("get-hash",filePath),
+      stopWatching: ()=>ipcRenderer.invoke("stop-watching"),
+      onBackupStatus: (callback) => ipcRenderer.on('backup-info', callback),
 
 
       showSaveDialog: (options) => ipcRenderer.invoke("show-save-dialog", options),

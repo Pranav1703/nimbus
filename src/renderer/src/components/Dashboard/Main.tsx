@@ -4,8 +4,7 @@ import { MdHistoryToggleOff, MdSettingsBackupRestore, MdStorage } from 'react-ic
 import { ProgressBar, ProgressRoot } from '../ui/progress'
 import StorageConv from './StorageConv'
 import { Skeleton } from '../ui/skeleton'
-import { useTheme } from 'next-themes'
-import { set } from 'mongoose'
+
 
 function Main({
   Main_data, selectedColor

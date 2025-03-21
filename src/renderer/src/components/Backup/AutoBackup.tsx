@@ -1,5 +1,5 @@
 import { Box, createListCollection, HStack, Input, Text, VStack } from '@chakra-ui/react'
-import React, { useRef, useState } from 'react'
+import React, { useState } from 'react'
 import { Switch } from '../ui/switch'
 import {
     SelectContent,
@@ -13,10 +13,9 @@ import { Button } from '../ui/button'
 import { HiUpload } from 'react-icons/hi'
 import { useAlert } from '../Alert'
 
-function AutoBackup({ rootId }: { rootId }): JSX.Element {
+function AutoBackup({ rootId }: { rootId:string }): JSX.Element {
     const [IsChecked, setIsChecked] = useState(false)
     const [selectedTime, setSelectedTime] = useState('')
-    const [backupFileId, setBackupFileId] = useState<string>('')
     const [backupPath, setBackupPath] = useState<string>('')
     const { addAlert } = useAlert() // Now supports manual removal
     const frameworks = createListCollection({
@@ -27,39 +26,12 @@ function AutoBackup({ rootId }: { rootId }): JSX.Element {
         ]
     })
     console.log(selectedTime)
-
+    console.log(rootId)
+    console.log(backupPath)
     const backup = async ():Promise<void> => {
         
     }
 
-    const handleFolderUpload = () => async (): Promise<void> => {
-        try {
-            console.log('Folder Upload function called')
-            const multiOptions = {
-                title: 'Select a File to Upload',
-                buttonLabel: 'Upload',
-                properties: ['openDirectory' as const] // Allows selecting a folder
-            }
-
-            const result = await window.api.showOpenDialog(multiOptions)
-
-            if (result.canceled || !result.filePaths) {
-                addAlert('error', 'Upload Cancelled', 2000)
-                return
-            }
-
-            if (result.filePaths.length > 0) {
-                // Set sticky alert
-                addAlert('info', 'Uploading...', 2000, true)
-                console.log('Selected Folder:', result.filePaths)
-                setBackupPath(result.filePaths[0])
-                await backup()
-            }
-        } catch (error) {
-            console.error('Unexpected error:', error)
-            addAlert('error', 'Something went wrong', 2000)
-        }
-    }
     return (
         <>
             <Box
@@ -125,15 +97,6 @@ function AutoBackup({ rootId }: { rootId }): JSX.Element {
                                 (selectedTime !== 'Daily' && selectedTime !== 'Weekly')
                             }
                         />
-                    </VStack>
-                    <VStack alignItems={'flex-start'} w={'-webkit-fill-available'}>
-                        <Text textStyle={'lg'} pb={1} color={!IsChecked ? 'gray' : ''}>
-                            Track Folder
-                        </Text>
-                        <Button variant="outline" size="sm" onClick={() => handleFolderUpload()()} 
-                        disabled={!IsChecked}>
-                            <HiUpload /> Folder Location
-                        </Button>
                     </VStack>
                 </VStack>
             </Box>

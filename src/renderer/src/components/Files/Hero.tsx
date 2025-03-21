@@ -59,6 +59,7 @@ const Hero = ({
         try {
             console.log(filePath)
             const { id } = await window.api.fileUpload(filePath, rootId)
+            console.log(id)
         } catch (error) {
             console.log('error uploading file: ', error)
         }

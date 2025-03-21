@@ -1,5 +1,5 @@
-import { Box, For, HStack, Icon } from '@chakra-ui/react'
-import React, { useState } from 'react'
+import { For, HStack, Icon } from '@chakra-ui/react'
+import React from 'react'
 import { Button } from '../ui/button'
 import Icons from '../../assets/Icons'
 import { useNavigate } from 'react-router-dom'

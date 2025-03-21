@@ -12,6 +12,10 @@ import { connectDB } from './db'
 
 export let mainWindow: BrowserWindow;
 let tray:Tray;
+let isQuitting:boolean = false;
+
+type WindowState = 'shown' | 'hidden';
+let windowState: WindowState = 'shown';
 
 if (process.defaultApp) {
   if (process.argv.length >= 2) {
@@ -39,6 +43,14 @@ function createWindow(): void {
   mainWindow.on('ready-to-show', () => {
     mainWindow.show()
   })
+
+  mainWindow.on('close', (event) => {
+    if (!isQuitting) {
+      event.preventDefault();
+      mainWindow.hide();
+      windowState = 'hidden';
+    }
+  });
 
   mainWindow.webContents.setWindowOpenHandler((details) => {
     shell.openExternal(details.url)
@@ -93,10 +105,17 @@ app.whenReady().then(async() => {
 
   tray = new Tray(icon); // Use your app's icon here
   const contextMenu = Menu.buildFromTemplate([
-      { label: 'Show App', click: () => mainWindow.show() },
-      { label: 'Quit', click: () => app.quit() }
+      { label: 'Show App', click: () => {
+        mainWindow.show()
+        windowState = 'shown'
+      }},
+      { label: 'Quit', click: () => {
+        isQuitting = true
+        app.quit()
+        
+      }}
   ]);
-  tray.setToolTip('My Background App');
+  tray.setToolTip('Nimbus');
   tray.setContextMenu(contextMenu);
 
   await connectDB()
@@ -111,14 +130,15 @@ app.whenReady().then(async() => {
   })
 })
 
-
 app.on("before-quit", async () => {
   if (backupInterval) {
     clearInterval(backupInterval);
     console.log("Backup interval cleared.");
-}
+  }
   await cleanUpWatchers();
+  // app.quit()
 });
+
 
 app.on("window-all-closed", async () => {
   // await cleanUpWatchers();

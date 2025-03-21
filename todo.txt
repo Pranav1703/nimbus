@@ -15,5 +15,5 @@ rootpaths fetch func.
 
 store autobackup state in electron store
 
-
+implement close db func
 encryption after building the app

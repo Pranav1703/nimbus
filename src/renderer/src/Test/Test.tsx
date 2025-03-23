@@ -167,6 +167,10 @@ const Test = () => {
     console.log(`Backup complete for: ${data.size}B at ${new Date(data.time).toLocaleTimeString()}`);
   })
 
+  const getPaths = async()=>{
+    const paths = await window.api.getWatchPaths()
+    console.log(paths)
+  }
   return (
     <>
         <h1>testing api's</h1><br/>
@@ -302,6 +306,11 @@ const Test = () => {
         <Button onClick={logout}>
           logout
         </Button>
+        
+        <Button onClick={getPaths}>
+          logout
+        </Button>
+
 
 
     </>

@@ -31,6 +31,7 @@ if (process.contextIsolated) {
       initWatcher: (watchPaths:string[],rootId:string,intervalTime:number)=>ipcRenderer.invoke("watch",watchPaths,rootId,intervalTime),
       getFileHash: (filePath:string)=>ipcRenderer.invoke("get-hash",filePath),
       stopWatching: ()=>ipcRenderer.invoke("stop-watching"),
+      getWatchPaths: ()=>ipcRenderer.invoke("get-watchpaths"),
       onBackupStatus: (callback) => ipcRenderer.on('backup-info', callback),
 
 

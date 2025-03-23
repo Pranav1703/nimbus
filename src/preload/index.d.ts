@@ -28,6 +28,7 @@ type api = {
   initWatcher: (watchPaths: string[],rootId:string,intervalTime:number)=>Promise<void>
   getFileHash: (filePath:string)=>Promise<string>
   stopWatching: ()=>Promise<void>
+  getWatchPaths: ()=>Promise<String[]>
   onBackupStatus: (callback) => void
   
   showSaveDialog: (options: Electron.SaveDialogOptions)=>Promise<Electron.SaveDialogReturnValue>

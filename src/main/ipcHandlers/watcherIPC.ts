@@ -114,6 +114,34 @@ export const registerWatcherIPCHandlers = ()=>{
 
     })
 
+    ipcMain.handle("get-watchpaths",async(_event)=>{
+        
+        const drive = google.drive({
+            version: 'v3',
+            auth: authClient
+        })
+
+        try {
+            
+            const info = await drive.about.get({
+                fields:'user'
+            })
+
+            const user = await User.findOne({
+                email: info.data.user?.emailAddress
+            })
+            if(!user) {
+                console.log("user not found.");
+                return [] 
+            }     
+            // return user.rootpaths
+            return JSON.parse(JSON.stringify(user.rootpaths));
+        } catch (error) {
+            console.log(error)
+            return []
+        }
+    })
+
     ipcMain.handle("get-hash",async(_event,filePath:string):Promise<string | null>=>{
         try {
             const hash = await computeFileHash(filePath)

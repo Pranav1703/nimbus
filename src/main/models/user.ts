@@ -4,7 +4,7 @@ import { IBackupInfo } from "./backup";
 export interface IUser extends Document {
     email: string;
     rootId: string;
-    rootpaths: string;
+    rootpaths: string[];
     backupStatus: IBackupInfo[]
 }
 

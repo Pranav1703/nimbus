@@ -11,7 +11,6 @@ probable fix: fetch root after app mounts? tried it in app.tsx tho still the iss
 
 max listeners 11;
 
-rootpaths fetch func.
 
 store autobackup state in electron store
 

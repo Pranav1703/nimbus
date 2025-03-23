@@ -7,7 +7,7 @@ import { registerUserIpcHandlers } from './ipcHandlers/userIPC'
 import path from "node:path"
 import { backupInterval, registerWatcherIPCHandlers } from './ipcHandlers/watcherIPC'
 import { cleanUpWatchers } from './helper'
-import { connectDB } from './db'
+import { closeDB, connectDB } from './db'
 
 
 export let mainWindow: BrowserWindow;
@@ -136,7 +136,7 @@ app.on("before-quit", async () => {
     console.log("Backup interval cleared.");
   }
   await cleanUpWatchers();
-  // app.quit()
+  await closeDB();
 });
 
 

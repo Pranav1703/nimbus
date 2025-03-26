@@ -14,5 +14,4 @@ max listeners 11;
 
 store autobackup state in electron store
 
-implement close db func
 encryption after building the app

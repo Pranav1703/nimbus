@@ -23,13 +23,12 @@ type api = {
   getRoot: ()=>Promise<string | null>
   savePath: (Path:string)=>Promise<void>
 
-
-
   initWatcher: (watchPaths: string[],rootId:string,intervalTime:number)=>Promise<void>
   getFileHash: (filePath:string)=>Promise<string>
   stopWatching: ()=>Promise<void>
   getWatchPaths: ()=>Promise<String[]>
   onBackupStatus: (callback) => void
+  getBackupInfo: ()=>Promise<String[]>
   
   showSaveDialog: (options: Electron.SaveDialogOptions)=>Promise<Electron.SaveDialogReturnValue>
   downloadAndOpenFile: (fileId:string,fileName:string)=>Promise<void>

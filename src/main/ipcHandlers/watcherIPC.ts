@@ -11,7 +11,7 @@ import { authClient } from "./userIPC";
 export const activeWatchers = new Map();
 const filesToBackup = new Set<string>();
 
-export let backupInterval: NodeJS.Timeout | null = null;
+export let backupInterval: NodeJS.Timeout | null = null; 
 
 export const registerWatcherIPCHandlers = ()=>{
 
@@ -91,9 +91,7 @@ export const registerWatcherIPCHandlers = ()=>{
                                 })
                                 console.log(`Backup successful: ${backedUpSize} bytes`);
                                 sendBackupNotification(backedUpSize,time)
-                            }
-
-                            
+                            } 
                         } catch (error) {
                             console.log("backup failed.",error)
                         }
@@ -161,5 +159,30 @@ export const registerWatcherIPCHandlers = ()=>{
         
         activeWatchers.clear(); // Clear the Map
         console.log("All watchers cleared");
+    })
+
+    ipcMain.handle("get-backup-info",async(_event)=>{
+        const drive = google.drive({
+            version: 'v3',
+            auth: authClient
+        })
+
+        try {
+            const info = await drive.about.get({
+                fields:'user'
+            })
+
+            const user = await User.findOne({
+                email: info.data.user?.emailAddress
+            }).populate("backupStatus")
+            if(!user) {
+                console.log("user not found.");
+                return [] 
+            }  
+            console.log(user.backupStatus)
+            return JSON.parse(JSON.stringify(user.backupStatus));
+        } catch (error) {
+            console.log(error)
+        }
     })
 }

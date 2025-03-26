@@ -171,6 +171,13 @@ const Test = () => {
     const paths = await window.api.getWatchPaths()
     console.log(paths)
   }
+
+  const getBackupInfo = async()=>{
+    const res = await window.api.getBackupInfo()
+    //time - ms
+    //size - B
+    console.log(res)
+  }
   return (
     <>
         <h1>testing api's</h1><br/>
@@ -308,10 +315,14 @@ const Test = () => {
         </Button>
         
         <Button onClick={getPaths}>
-          logout
+          getpaths
         </Button>
 
-
+        <Button
+        onClick={getBackupInfo}
+        >
+          get backup info
+        </Button>
 
     </>
   )

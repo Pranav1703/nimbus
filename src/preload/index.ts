@@ -33,6 +33,7 @@ if (process.contextIsolated) {
       stopWatching: ()=>ipcRenderer.invoke("stop-watching"),
       getWatchPaths: ()=>ipcRenderer.invoke("get-watchpaths"),
       onBackupStatus: (callback) => ipcRenderer.on('backup-info', callback),
+      getBackupInfo: ()=>ipcRenderer.invoke("get-backup-info"),
 
 
       showSaveDialog: (options) => ipcRenderer.invoke("show-save-dialog", options),

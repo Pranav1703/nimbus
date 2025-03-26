@@ -14,7 +14,7 @@ import { HiUpload } from 'react-icons/hi'
 import { useAlert } from '../Alert'
 
 function AutoBackup({ rootId }: { rootId:string }): JSX.Element {
-    const [IsChecked, setIsChecked] = useState(false)
+    const [IsChecked, setIsChecked] = useState(true)
     const [selectedTime, setSelectedTime] = useState('')
     const { addAlert } = useAlert() // Now supports manual removal
     const frameworks = createListCollection({
@@ -70,7 +70,7 @@ function AutoBackup({ rootId }: { rootId:string }): JSX.Element {
                                 Automatically backup your files at scheduled intervals
                             </Text>
                         </VStack>
-                        <Switch checked={IsChecked} />
+                        <Switch checked={IsChecked} disabled/>
                     </HStack>
                     <SelectRoot
                         collection={frameworks}

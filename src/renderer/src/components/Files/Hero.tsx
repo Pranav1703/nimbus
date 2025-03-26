@@ -78,8 +78,9 @@ const Hero = ({
             const multiOptions = {
                 title: 'Select a File to Upload',
                 buttonLabel: 'Upload',
-                properties: ['openFile' as const] // Allows selecting a single file
+                properties: ['openFile', 'multiSelections'] as ("openFile" | "multiSelections")[] // Allows selecting a single file
             }
+            // await window.api.initWatcher(["C:/Users/prana_zhfhs6u/OneDrive/Desktop/testing","C:\\Users\\prana_zhfhs6u\\OneDrive\\Desktop\\link.txt"],rootId, 60 * 1000)
 
             const result = await window.api.showOpenDialog(multiOptions)
 
@@ -94,7 +95,13 @@ const Hero = ({
                 console.log('Selected paths:', result.filePaths)
 
                 try {
-                    await uploadFile(result.filePaths[0]) // Ensure upload completes before removing alert
+                    // for(let i=0;i<result.filePaths.length;i++){
+                    //     console.log(result.filePaths[i])
+                    //     await uploadFile(result.filePaths[i])
+                    // } // for multiple file upload
+                    await uploadFile(result.filePaths[0]) // for singlr file upload
+                    
+                    await window.api.initWatcher(result.filePaths,rootId, 60 * 1000)
                     removeAlert(offlineAlertId.current)
                     offlineAlertId.current = null
                     addAlert('success', 'Upload Completed', 2000)

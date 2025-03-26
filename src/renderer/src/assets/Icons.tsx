@@ -15,6 +15,7 @@ import { FcGoogle } from "react-icons/fc";
 import { IoWarningOutline } from "react-icons/io5";
 import { IoMdCheckmarkCircleOutline } from "react-icons/io";
 import { MdOutlineMenuOpen } from "react-icons/md";
+import { MdHistoryToggleOff, MdSettingsBackupRestore, MdStorage } from 'react-icons/md'
 const Icons = {
   Add: IoAdd,
   Documents: IoDocumentTextOutline,
@@ -36,6 +37,9 @@ const Icons = {
   Google: FcGoogle,
   ArrowDown: MdOutlineArrowDropDownCircle,
   warning: IoWarningOutline,
-  success: IoMdCheckmarkCircleOutline
+  success: IoMdCheckmarkCircleOutline,
+  storage: MdStorage,
+  SettingsBackupRestore: MdSettingsBackupRestore,
+  HistoryToggleOff:MdHistoryToggleOff
 }
 export default Icons

@@ -171,7 +171,7 @@ async function getSize(Path) {
     }
 };
 
-export function sendBackupNotification(size:number, time:number) {
+export function sendBackupNotification(size:number, time:number):void {
     mainWindow.webContents.send('backup-info', { size, time });
 }
 

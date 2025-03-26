@@ -1,5 +1,6 @@
 import { Box, HStack, Icon, Table, Text, VStack } from '@chakra-ui/react'
 import React from 'react'
+import { IconType } from 'react-icons'
 import Icons from '../../assets/Icons'
 
 const ResentAct = (): JSX.Element => {
@@ -10,7 +11,10 @@ const ResentAct = (): JSX.Element => {
     ]
 
     // Function to get the correct icon
-    const getIcon = (status: string) => {
+    const getIcon = (status: string): {
+        icon: IconType;
+        color: string;
+    } => {
         const lastWord = status.split(' ').pop()?.toLowerCase() // Extract the last word
         switch (lastWord) {
             case 'completed':

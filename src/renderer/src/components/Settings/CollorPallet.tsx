@@ -63,9 +63,8 @@ const CollorPallet = ({ selectedColor, onChange }: CollorPalletProps): JSX.Eleme
                                     justifyContent={'space-between'}
                                 >
                                     {selectedColor}
-                                    <Icon>
-                                        <Icons.ArrowDown />
-                                    </Icon>
+                                    <Icon as={Icons.ArrowDown}/>
+                                        
                                 </Button>
                             </MenuTrigger>
                             <MenuContent>

@@ -31,7 +31,7 @@ const Search = ({ SearchVal }: { SearchVal: (value: string) => void }): JSX.Elem
     return (
         <>
             <HStack w={'full'}>
-                <InputGroup flex="1" startElement={<Icons.Search />} endElement={<Kbd>⌘K</Kbd>}>
+                <InputGroup flex="1" startElement={<Icon as={Icons.Search}/> } endElement={<Kbd>⌘K</Kbd>}>
                     <Input
                         placeholder="Search Files..."
                         ref={inputRef}
@@ -39,9 +39,8 @@ const Search = ({ SearchVal }: { SearchVal: (value: string) => void }): JSX.Elem
                     />
                 </InputGroup>
                 <Button>
-                    <Icon>
-                        <Icons.Download />
-                    </Icon>
+                    <Icon as={Icons.Download}/>
+                        
                     Download Files
                 </Button>
             </HStack>

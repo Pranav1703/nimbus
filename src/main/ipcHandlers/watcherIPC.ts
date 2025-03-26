@@ -11,7 +11,8 @@ import { authClient } from "./userIPC";
 export const activeWatchers = new Map();
 const filesToBackup = new Set<string>();
 
-export let backupInterval: NodeJS.Timeout | null = null; 
+export let backupInterval: NodeJS.Timeout | null = null;
+ 
 
 export const registerWatcherIPCHandlers = ()=>{
 
@@ -100,7 +101,7 @@ export const registerWatcherIPCHandlers = ()=>{
                     } else {
                         console.log("No new changes to backup.");
                     }
-                    console.log("active watchers: ",activeWatchers.entries().toArray().length)
+                    console.log("No of paths watching: ",activeWatchers.entries().toArray().length)
                 }, intervalTime);
                 //6 * 60 * 60 * 1000
             }

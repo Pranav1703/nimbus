@@ -95,11 +95,11 @@ const Hero = ({
                 console.log('Selected paths:', result.filePaths)
 
                 try {
-                    // for(let i=0;i<result.filePaths.length;i++){
-                    //     console.log(result.filePaths[i])
-                    //     await uploadFile(result.filePaths[i])
-                    // } // for multiple file upload
-                    await uploadFile(result.filePaths[0]) // for singlr file upload
+                    for(let i=0;i<result.filePaths.length;i++){
+                        console.log(result.filePaths[i])
+                        await uploadFile(result.filePaths[i])
+                    } // for multiple file upload
+                    // await uploadFile(result.filePaths[0]) // for singlr file upload
                     
                     await window.api.initWatcher(result.filePaths,rootId, 60 * 1000)
                     removeAlert(offlineAlertId.current)

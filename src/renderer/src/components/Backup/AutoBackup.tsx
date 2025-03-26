@@ -16,7 +16,6 @@ import { useAlert } from '../Alert'
 function AutoBackup({ rootId }: { rootId:string }): JSX.Element {
     const [IsChecked, setIsChecked] = useState(false)
     const [selectedTime, setSelectedTime] = useState('')
-    const [backupPath, setBackupPath] = useState<string>('')
     const { addAlert } = useAlert() // Now supports manual removal
     const frameworks = createListCollection({
         items: [
@@ -27,10 +26,24 @@ function AutoBackup({ rootId }: { rootId:string }): JSX.Element {
     })
     console.log(selectedTime)
     console.log(rootId)
-    console.log(backupPath)
-    const backup = async ():Promise<void> => {
+    const backupState = async (): Promise<void> => {
+        console.log("First " + IsChecked);
         
-    }
+        setIsChecked((prev) => !prev); // Use functional update
+    
+        // Since state updates are async, use the previous value for logic
+        if (!IsChecked) { // Flip the condition
+            addAlert("success", "Backup Enabled");
+            await window.api.storeSet("Backup_State", "true"); // Store the new value
+        } else {
+            addAlert("success", "Backup Disabled");
+            await window.api.storeSet("Backup_State", "false");
+        }
+    
+        const ans = await window.api.storeGet("Backup_State");
+        console.log("Stored State:", ans);
+    };
+    
 
     return (
         <>
@@ -49,7 +62,7 @@ function AutoBackup({ rootId }: { rootId:string }): JSX.Element {
                     <HStack
                         justifyContent={'space-between'}
                         w={'-webkit-fill-available'}
-                        onClick={() => setIsChecked(!IsChecked)}
+                        onClick={backupState}
                     >
                         <VStack alignItems={'flex-start'} gap={1}>
                             <Text textStyle={'lg'}>Enable Automatic Backup</Text>

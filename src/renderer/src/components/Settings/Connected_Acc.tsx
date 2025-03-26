@@ -5,7 +5,17 @@ import { Avatar } from '../ui/avatar'
 import Icons from '../../assets/Icons'
 import { drive_v3 } from 'googleapis'
 import { Skeleton } from '../ui/skeleton'
-import { DialogActionTrigger, DialogBody, DialogCloseTrigger, DialogContent, DialogFooter, DialogHeader, DialogRoot, DialogTitle, DialogTrigger } from '../ui/dialog'
+import {
+    DialogActionTrigger,
+    DialogBody,
+    DialogCloseTrigger,
+    DialogContent,
+    DialogFooter,
+    DialogHeader,
+    DialogRoot,
+    DialogTitle,
+    DialogTrigger
+} from '../ui/dialog'
 import { useAlert } from '../Alert'
 
 const Connected_Acc = ({
@@ -15,12 +25,12 @@ const Connected_Acc = ({
     userinfo: drive_v3.Schema$About
     loading: boolean
 }): JSX.Element => {
-        const {addAlert} = useAlert();
-        const [inputValue, setInputValue] = useState("");
-        const requiredText = "disconnect";
-        const [open, setOpen] = useState(false)
-        const isMatch = inputValue.trim() === requiredText;
-    
+    const { addAlert } = useAlert()
+    const [inputValue, setInputValue] = useState('')
+    const requiredText = 'disconnect'
+    const [open, setOpen] = useState(false)
+    const isMatch = inputValue.trim() === requiredText
+
     return (
         <>
             <Box
@@ -47,9 +57,8 @@ const Connected_Acc = ({
                     >
                         <>
                             <HStack gap={4}>
-                                <Icon size={'2xl'}>
-                                    <Icons.Google />
-                                </Icon>
+                                <Icon size={'2xl'} as={Icons.Google} />
+
                                 <VStack alignItems={'flex-start'} gap={1}>
                                     <Text>Google Account</Text>
                                     {loading ? (

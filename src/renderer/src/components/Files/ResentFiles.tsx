@@ -40,20 +40,20 @@ const ResentFiles = ({
     const startRange = (page - 1) * pageSize
     const endRange = startRange + pageSize
 
-    const visibleItems:FileProps[] = Files.slice(startRange, endRange)
+    const visibleItems: FileProps[] = Files.slice(startRange, endRange)
 
     const [selection, setSelection] = useState<string[]>([])
 
     const hasSelection = selection.length > 0
     const [showseletcion, setShowSelection] = useState(false)
-    const { addAlert,removeAlert } = useAlert()
+    const { addAlert, removeAlert } = useAlert()
     const handleActionTrigger = (): void => {
         setShowSelection(!showseletcion)
         setSelection([])
     }
 
     const formatBytesBase2 = (bytes: number): string | null => {
-        if(typeof bytes !== 'number' || isNaN(bytes)) {
+        if (typeof bytes !== 'number' || isNaN(bytes)) {
             return null // Handle invalid input gracefully
         }
 
@@ -167,7 +167,10 @@ const ResentFiles = ({
                                 {HeadingName}
                             </Table.ColumnHeader>
                             <Table.ColumnHeader bg={'gray.900/50'} textAlign={'end'}>
-                                <IconButton variant="ghost" onClick={handleActionTrigger}>
+                                <IconButton
+                                    variant="ghost"
+                                    onClick={handleActionTrigger}
+                                >
                                     <Icons.Download />
                                 </IconButton>
                             </Table.ColumnHeader>
@@ -185,10 +188,12 @@ const ResentFiles = ({
                                         key={index}
                                         _hover={{ bg: `${color}.800/10` }}
                                         bg={'transparent'}
-                                        
                                         cursor="pointer"
                                     >
-                                        <Table.Cell style={isLastRow ? { border: 'none' } : {}} onClick={() => toggleSelection(item.name)}>
+                                        <Table.Cell
+                                            style={isLastRow ? { border: 'none' } : {}}
+                                            onClick={() => toggleSelection(item.name)}
+                                        >
                                             <HStack gap={4}>
                                                 <Checkbox
                                                     top="1"
@@ -210,16 +215,17 @@ const ResentFiles = ({
                                                     bg={`${color}.800/10`}
                                                     borderRadius={'lg'}
                                                 >
-                                                    <Icon fontSize="2xl" color={`${color}.400`}>
-                                                        <CategoryIcon />
-                                                    </Icon>
+                                                    <Icon
+                                                        fontSize="2xl"
+                                                        color={`${color}.400`}
+                                                        as={CategoryIcon}
+                                                    />
                                                 </Box>
                                                 <VStack alignItems="flex-start" gap={1}>
                                                     <Text>{item.name}</Text>
                                                     <Text fontSize="sm" color="gray.500">
-                                                    
-                                                        {formatBytesBase2(Number(item.size))} · Modified{' '}
-                                                        {formatDate(item.modifiedByMeTime)}
+                                                        {formatBytesBase2(Number(item.size))} ·
+                                                        Modified {formatDate(item.modifiedByMeTime)}
                                                     </Text>
                                                 </VStack>
                                             </HStack>

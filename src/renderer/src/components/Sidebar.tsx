@@ -85,13 +85,13 @@ function Sidebar({
 
                 {/* Navigation Icons */}
                 {[
-                    { icon: <Icons.Dashboard />, page: 'Dashboard' },
-                    { icon: <Icons.Folder />, page: 'Files' },
-                    { icon: <Icons.Backup1 />, page: 'Backup' },
-                    { icon: <Icons.Versions1 />, page: 'Versions' },
-                    { icon: <Icons.Settings />, page: 'Settings' },
-                    { icon: <Icons.Settings />, page: 'Test' },
-                    { icon: <Icons.Settings />, page: 'Test2' }
+                    { icon: Icons.Dashboard , page: 'Dashboard' },
+                    { icon: Icons.Folder , page: 'Files' },
+                    { icon: Icons.Backup1 , page: 'Backup' },
+                    { icon: Icons.Versions1 , page: 'Versions' },
+                    { icon: Icons.Settings , page: 'Settings' },
+                    { icon: Icons.Settings , page: 'Test' },
+                    { icon: Icons.Settings , page: 'Test2' }
                 ].map((item, index) => (
                     <Tooltip
                         content={item.page}
@@ -106,7 +106,7 @@ function Sidebar({
                             colorScheme={currentPage === item.page ? 'blue' : 'whiteAlpha'}
                             p={3}
                         >
-                            <Icon>{item.icon}</Icon>
+                            <Icon as={item.icon}/>
                         </Button>
                     </Tooltip>
                 ))}
@@ -145,13 +145,13 @@ function Sidebar({
                     <DrawerBody>
                         <Stack mt={3}>
                             {[
-                                { logo: <Icons.Dashboard/>, data: 'Dashboard' },
-                                { logo: <Icons.Folder />, data: 'Files' },
-                                { logo: <Icons.Backup1 />, data: 'Backup' },
-                                { logo: <Icons.Versions1 />, data: 'Versions' },
-                                { logo: <Icons.Settings />, data: 'Settings' },
-                                { logo: <Icons.Settings />, data: 'Test' },
-                                { logo: <Icons.Settings />, data: 'Test2' }
+                                { logo: Icons.Dashboard, data: 'Dashboard' },
+                                { logo: Icons.Folder , data: 'Files' },
+                                { logo: Icons.Backup1 , data: 'Backup' },
+                                { logo: Icons.Versions1 , data: 'Versions' },
+                                { logo: Icons.Settings , data: 'Settings' },
+                                { logo: Icons.Settings , data: 'Test' },
+                                { logo: Icons.Settings , data: 'Test2' }
                             ].map((item, index) => (
                                 <Button
                                     variant={currentPage === item.data ? 'subtle' : 'ghost'}
@@ -160,7 +160,7 @@ function Sidebar({
                                     justifyContent={'flex-start'}
                                     pl={30}
                                 >
-                                    <Icon  mr={3} >{item.logo}</Icon>
+                                    <Icon  mr={3} as={item.logo}/>
                                     <Text>{item.data}</Text>
                                 </Button>
                             ))}

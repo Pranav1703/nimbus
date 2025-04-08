@@ -5,9 +5,8 @@ import Test from './Test/Test'
 import Dashboard from './Pages/Dashboard'
 import Files from './Pages/Files'
 import Backup from './Pages/Backup'
-import Versions from './Pages/Versions'
+// import Versions from './Pages/Versions'
 import Settings from './Pages/Settings'
-import Test2 from './Test/Test2'
 import { createContext, useEffect, useRef, useState } from 'react'
 import Hero from './Pages/Hero'
 import Layout from './components/Layout'
@@ -159,7 +158,7 @@ function App(): JSX.Element {
                                         />
                                         <Route path="Files" element={<Files rootId={rootId} />} />
                                         <Route path="Backup" element={<Backup rootId={rootId} />} />
-                                        <Route path="Versions" element={<Versions />} />
+                                        {/* <Route path="Versions" element={<Versions />} /> */}
                                         <Route
                                             path="Settings"
                                             element={
@@ -173,7 +172,6 @@ function App(): JSX.Element {
                                             }
                                         />
                                         <Route path="test" element={<Test />} />
-                                        <Route path="test2" element={<Test2 />} />
                                     </Route>
                                 </>
                             ) : (

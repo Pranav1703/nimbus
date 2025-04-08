@@ -86,9 +86,11 @@ const RecentAct = (): JSX.Element => {
                                 );
                             })
                         ) : (
-                            <Text color="gray.500" textAlign="center" py={4}>
-                                No recent activities
-                            </Text>
+                            <Table.Row bg={"transparent"}>
+                                <Table.Cell color="gray.500" textAlign="center" py={4} 
+                                            style={ {border: 'none' }}>
+                                No recent activities</Table.Cell>
+                            </Table.Row>
                         )}
                     </Table.Body>
                 </Table.Root>

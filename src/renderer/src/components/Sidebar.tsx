@@ -48,7 +48,13 @@ function Sidebar({
             setIsDrawerOpen(true)
         }
     }, [isSemiMode])
-
+    const items = [
+        { icon: Icons.Dashboard , page: 'Dashboard' },
+        { icon: Icons.Folder , page: 'Files' },
+        { icon: Icons.Backup1 , page: 'Backup' },
+        { icon: Icons.Settings , page: 'Settings' },
+        { icon: Icons.Settings , page: 'Test' },
+    ]
     return (
         <div style={{ display: 'flex', alignItems: 'center' }}>
             {/* Semi-mode Sidebar */}
@@ -84,15 +90,7 @@ function Sidebar({
                 </Tooltip>
 
                 {/* Navigation Icons */}
-                {[
-                    { icon: Icons.Dashboard , page: 'Dashboard' },
-                    { icon: Icons.Folder , page: 'Files' },
-                    { icon: Icons.Backup1 , page: 'Backup' },
-                    { icon: Icons.Versions1 , page: 'Versions' },
-                    { icon: Icons.Settings , page: 'Settings' },
-                    { icon: Icons.Settings , page: 'Test' },
-                    { icon: Icons.Settings , page: 'Test2' }
-                ].map((item, index) => (
+                {items.map((item, index) => (
                     <Tooltip
                         content={item.page}
                         positioning={{ placement: 'right-end' }}
@@ -144,24 +142,16 @@ function Sidebar({
 
                     <DrawerBody>
                         <Stack mt={3}>
-                            {[
-                                { logo: Icons.Dashboard, data: 'Dashboard' },
-                                { logo: Icons.Folder , data: 'Files' },
-                                { logo: Icons.Backup1 , data: 'Backup' },
-                                { logo: Icons.Versions1 , data: 'Versions' },
-                                { logo: Icons.Settings , data: 'Settings' },
-                                { logo: Icons.Settings , data: 'Test' },
-                                { logo: Icons.Settings , data: 'Test2' }
-                            ].map((item, index) => (
+                            {items.map((item, index) => (
                                 <Button
-                                    variant={currentPage === item.data ? 'subtle' : 'ghost'}
+                                    variant={currentPage === item.page ? 'subtle' : 'ghost'}
                                     key={index}
-                                    onClick={() => handleSetPage(item.data)}
+                                    onClick={() => handleSetPage(item.page)}
                                     justifyContent={'flex-start'}
                                     pl={30}
                                 >
-                                    <Icon  mr={3} as={item.logo}/>
-                                    <Text>{item.data}</Text>
+                                    <Icon  mr={3} as={item.icon}/>
+                                    <Text>{item.page}</Text>
                                 </Button>
                             ))}
                         </Stack>

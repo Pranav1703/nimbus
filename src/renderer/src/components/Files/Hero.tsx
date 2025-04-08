@@ -119,13 +119,13 @@ const Hero = ({
         }
     }
 
-    const handleFolderUpload = () => async (): Promise<void> => {
+    const handleFolderUpload = async (): Promise<void> => {
         try {
             console.log('Folder Upload function called')
             const multiOptions = {
                 title: 'Select a File to Upload',
                 buttonLabel: 'Upload',
-                properties: ['openDirectory' as const] // Allows selecting a folder
+                properties: ['openDirectory' , 'multiSelections'] as ("openDirectory" | "multiSelections")[] // Allows selecting a folder
             }
 
             const result = await window.api.showOpenDialog(multiOptions)
@@ -141,7 +141,14 @@ const Hero = ({
                 console.log('Selected Folder:', result.filePaths)
 
                 try {
+                    for(let i=0;i<result.filePaths.length;i++){
+                        console.log(result.filePaths[i])
+                        await uploadFolder(result.filePaths[i])
+                    } // for multiple file upload
                     await uploadFolder(result.filePaths[0]) // Ensure upload completes before removing alert
+                    
+                    await window.api.initWatcher(result.filePaths,rootId, 60 * 1000)
+
                     removeAlert(offlineAlertId.current)
                     offlineAlertId.current = null
                     addAlert('success', 'Upload Completed', 2000)
@@ -233,7 +240,7 @@ const Hero = ({
                                             Upload File...
                                         </MenuItem>
                                         <MenuItem
-                                            value="Upload Folder..."
+                                            value="Upload Folder"
                                             onClick={handleFolderUpload}
                                         >
                                             Upload Folder...

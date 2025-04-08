@@ -21,7 +21,6 @@ type api = {
   downloadFile: (fileId:string,destPath:string)=>Promise<any>
   createRoot: ()=>Promise<boolean | null>
   getRoot: ()=>Promise<string | null>
-  savePath: (Path:string)=>Promise<void>
 
   initWatcher: (watchPaths: string[],rootId:string,intervalTime:number)=>Promise<void>
   getFileHash: (filePath:string)=>Promise<string>

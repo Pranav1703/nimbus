@@ -26,7 +26,7 @@ if (process.contextIsolated) {
       downloadFile: (fileId:string,destPath:string)=>ipcRenderer.invoke('download',fileId,destPath),
       createRoot: ()=> ipcRenderer.invoke("create-root"),
       getRoot: ()=>ipcRenderer.invoke("get-root"),
-      savePath:(Path:string)=>ipcRenderer.invoke("save-path",Path),
+
 
       initWatcher: (watchPaths:string[],rootId:string,intervalTime:number)=>ipcRenderer.invoke("watch",watchPaths,rootId,intervalTime),
       getFileHash: (filePath:string)=>ipcRenderer.invoke("get-hash",filePath),
@@ -34,7 +34,6 @@ if (process.contextIsolated) {
       getWatchPaths: ()=>ipcRenderer.invoke("get-watchpaths"),
       onBackupStatus: (callback) => ipcRenderer.on('backup-info', callback),
       getBackupInfo: ()=>ipcRenderer.invoke("get-backup-info"),
-
 
       showSaveDialog: (options) => ipcRenderer.invoke("show-save-dialog", options),
       CreateTempFile: (fileName:string) => ipcRenderer.invoke("create-temp-file", fileName),

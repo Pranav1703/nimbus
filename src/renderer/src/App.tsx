@@ -68,7 +68,7 @@ function App(): JSX.Element {
                 // console.log(resp)
                 setUser(true)
                 if (!hasRun.current) {
-                    getRoot()
+                    await getRoot()
                     hasRun.current = true
                 }
             }
@@ -76,9 +76,17 @@ function App(): JSX.Element {
             console.log(error)
         }
     }
+
+    const initializeWatchers = async()=>{
+        await getRoot()
+        const paths = await window.api.getWatchPaths() as string[]
+        await window.api.initWatcher(paths,rootId,5*60*1000)
+    }
     useEffect(() => {
-        checkUserToken()
-        getRoot()
+        (async()=>{
+            await checkUserToken()
+            await initializeWatchers()
+        })();
     }, [])
 
     setTheme('dark')

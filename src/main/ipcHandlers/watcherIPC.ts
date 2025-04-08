@@ -22,6 +22,7 @@ export const registerWatcherIPCHandlers = ()=>{
             version: 'v3',
             auth: authClient
         })
+        console.log("root id:", rootId)
 
         watchPaths.forEach((path) => {
             // Check if the path is already being watched

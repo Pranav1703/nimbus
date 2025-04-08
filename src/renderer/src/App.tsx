@@ -44,21 +44,24 @@ function App(): JSX.Element {
     })
     const getRoot = async (): Promise<void> => {
         const create_root = await window.api.createRoot() // true - root created,  false - root already exists
+  
         if (create_root) {
-            addAlert('success', 'Hello There', 2000)
-            const rootId = await window.api.getRoot()
-            if (rootId) {
-                setRootId(rootId)
-                console.log(rootId)
+            
+            const root = await window.api.getRoot()
+            if (root) {
+                setRootId(root)
+                console.log("root id :",root)
             }
+            addAlert('success', 'Hello There', 2000)
         } else {
-            const rootId = await window.api.getRoot()
-            if (rootId) {
-                setRootId(rootId)
+            const root = await window.api.getRoot()
+            if (root) {
+                setRootId(root)
                 addAlert('success', 'Welcome Back', 2000)
             }
-            console.log(rootId)
+            console.log("root id :",root)
         }
+
     }
 
     const checkUserToken = async (): Promise<void> => {
@@ -78,15 +81,18 @@ function App(): JSX.Element {
     }
 
     const initializeWatchers = async()=>{
-        await getRoot()
+        const root = await window.api.getRoot() as string
         const paths = await window.api.getWatchPaths() as string[]
-        await window.api.initWatcher(paths,rootId,5*60*1000)
+        await window.api.initWatcher(paths,root,10*1000)
     }
     useEffect(() => {
         (async()=>{
             await checkUserToken()
             await initializeWatchers()
+            await getRoot()
         })();
+        // checkUserToken()
+        // initializeWatchers()
     }, [])
 
     setTheme('dark')
